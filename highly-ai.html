@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Highly AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #05060e;
+      --surface: #0a0b1a;
+      --surface2: #0e1020;
+      --border: rgba(255,255,255,0.07);
+      --accent: #f59e0b;
+      --accent2: #a78bfa;
+      --accent3: #4f6ef7;
+      --text: #eeeeff;
+      --muted: #4a4d6a;
+      --user-bubble: #141628;
+      --ai-bubble: #0e1022;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Background */
+    .bg-mesh {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 10% 20%, rgba(245,158,11,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(167,139,250,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(79,110,247,0.04) 0%, transparent 60%);
+    }
+    .grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* Nav */
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px;
+      background: rgba(5,6,14,0.9);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      flex-shrink: 0;
+    }
+    .nav-left { display:flex; align-items:center; gap:12px; }
+    .nav-logo { display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--text); }
+    .nav-logo-icon {
+      width:32px; height:32px; border-radius:9px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Syne',sans-serif; font-weight:800; font-size:15px; color:#fff;
+      box-shadow: 0 4px 14px rgba(245,158,11,0.35);
+    }
+    .nav-logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; }
+    .nav-badge {
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.25);
+      color: var(--accent); font-size:10px; font-weight:700;
+      letter-spacing:1px; padding:3px 10px; border-radius:999px;
+      text-transform:uppercase;
+    }
+    .nav-back { color:var(--muted); text-decoration:none; font-size:13px; transition:color 0.2s; }
+    .nav-back:hover { color:var(--text); }
+    .new-chat-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius:8px; padding:7px 14px;
+      color:var(--muted); font-size:12px; font-weight:600;
+      font-family:'DM Sans',sans-serif;
+      cursor:pointer; transition:all 0.2s;
+    }
+    .new-chat-btn:hover { background:rgba(255,255,255,0.08); color:var(--text); }
+
+    /* Chat area */
+    .chat-wrap {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      position: relative; z-index: 2;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.07) transparent;
+    }
+    .chat-inner {
+      max-width: 760px; margin: 0 auto;
+      padding: 32px 24px 24px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+
+    /* Welcome screen */
+    .welcome {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: calc(100vh - 200px);
+      text-align: center; gap: 0;
+      animation: fadeUp 0.6s ease;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
+    .welcome-orb {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin-bottom: 24px;
+      box-shadow: 0 0 0 16px rgba(245,158,11,0.06), 0 0 0 32px rgba(245,158,11,0.03);
+      animation: orbPulse 3s ease infinite;
+    }
+    @keyframes orbPulse {
+      0%,100%{ box-shadow: 0 0 0 16px rgba(245,158,11,0.06), 0 0 0 32px rgba(245,158,11,0.03); }
+      50%{ box-shadow: 0 0 0 20px rgba(245,158,11,0.1), 0 0 0 40px rgba(245,158,11,0.04); }
+    }
+    .welcome h1 {
+      font-family:'Syne',sans-serif; font-size:clamp(28px,5vw,44px);
+      font-weight:800; letter-spacing:-1.5px; margin-bottom:10px;
+    }
+    .welcome h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .welcome p { color:var(--muted); font-size:15px; font-weight:300; margin-bottom:36px; }
+
+    .suggestion-grid {
+      display: grid; grid-template-columns: repeat(2,1fr); gap:10px;
+      width: 100%; max-width: 520px;
+    }
+    .suggestion {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 16px;
+      text-align: left; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .suggestion:hover { border-color: rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); transform:translateY(-1px); }
+    .suggestion-icon { font-size:18px; margin-bottom:6px; }
+    .suggestion-text { font-size:13px; color:var(--muted); line-height:1.4; }
+
+    /* Messages */
+    .message { display:flex; gap:14px; animation:fadeUp 0.3s ease; }
+    .message.user { flex-direction:row-reverse; }
+
+    .avatar {
+      width:34px; height:34px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:16px; flex-shrink:0; margin-top:2px;
+    }
+    .avatar.ai {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 4px 12px rgba(245,158,11,0.25);
+    }
+    .avatar.user {
+      background: rgba(79,110,247,0.2);
+      border: 1px solid rgba(79,110,247,0.3);
+    }
+
+    .bubble {
+      max-width: 80%;
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-size: 15px; line-height: 1.7;
+    }
+    .bubble.ai {
+      background: var(--ai-bubble);
+      border: 1px solid var(--border);
+      border-radius: 4px 16px 16px 16px;
+    }
+    .bubble.user {
+      background: var(--user-bubble);
+      border: 1px solid rgba(79,110,247,0.2);
+      border-radius: 16px 4px 16px 16px;
+      color: var(--text);
+    }
+
+    /* Markdown-like formatting */
+    .bubble.ai strong { color:#c4b5fd; font-weight:600; }
+    .bubble.ai code {
+      background: rgba(255,255,255,0.07);
+      padding: 2px 7px; border-radius:5px;
+      font-family: monospace; font-size:13px;
+      color: #34d399;
+    }
+    .bubble.ai pre {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px;
+      overflow-x:auto; margin-top:10px;
+      font-family:monospace; font-size:13px;
+      color: #a5f3fc; line-height:1.6;
+    }
+    .bubble.ai ul, .bubble.ai ol { padding-left:20px; margin-top:6px; }
+    .bubble.ai li { margin-bottom:4px; }
+    .bubble.ai h3 { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin:12px 0 6px; color:var(--accent); }
+
+    /* Typing indicator */
+    .typing { display:flex; gap:5px; align-items:center; padding:14px 18px; }
+    .typing span {
+      width:7px; height:7px; border-radius:50%;
+      background:var(--accent); opacity:0.5;
+      animation:typingDot 1.2s ease infinite;
+    }
+    .typing span:nth-child(2){animation-delay:0.2s}
+    .typing span:nth-child(3){animation-delay:0.4s}
+    @keyframes typingDot{0%,80%,100%{transform:scale(0.7);opacity:0.3}40%{transform:scale(1);opacity:1}}
+
+    /* Input area */
+    .input-area {
+      position: relative; z-index: 10;
+      background: rgba(5,6,14,0.95);
+      border-top: 1px solid var(--border);
+      padding: 16px 24px 20px;
+      flex-shrink: 0;
+    }
+    .input-inner {
+      max-width: 760px; margin: 0 auto;
+      display: flex; gap: 10px; align-items: flex-end;
+    }
+    .input-box {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 15px;
+      outline: none; resize: none;
+      min-height: 52px; max-height: 180px;
+      line-height: 1.5;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      overflow-y: auto;
+    }
+    .input-box:focus { border-color: rgba(245,158,11,0.4); box-shadow: 0 0 0 3px rgba(245,158,11,0.08); }
+    .input-box::placeholder { color: var(--muted); }
+    .send-btn {
+      width: 48px; height: 48px; flex-shrink:0;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+      box-shadow: 0 4px 14px rgba(245,158,11,0.3);
+    }
+    .send-btn:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(245,158,11,0.4); }
+    .send-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+
+    .input-hint {
+      text-align:center; margin-top:10px;
+      font-size:11px; color:var(--muted); letter-spacing:0.3px;
+    }
+
+    /* Model tag */
+    .model-tag {
+      display:inline-flex; align-items:center; gap:5px;
+      background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2);
+      border-radius:999px; padding:3px 10px;
+      font-size:10px; font-weight:700; color:var(--accent);
+      letter-spacing:0.5px; text-transform:uppercase;
+      margin-bottom:6px;
+    }
+
+    @media(max-width:600px){
+      .suggestion-grid { grid-template-columns:1fr; }
+      nav { padding:12px 16px; }
+      .input-area { padding:12px 16px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="grid"></div>
+
+<nav>
+  <div class="nav-left">
+    <a href="highly-anasayfa.html" class="nav-logo">
+      <div class="nav-logo-icon">✦</div>
+      <span class="nav-logo-text">Highly AI</span>
+    </a>
+    <span class="nav-badge">Beta</span>
+  </div>
+  <button class="new-chat-btn" onclick="newChat()">+ Yeni Sohbet</button>
+  <a href="highly-anasayfa.html" class="nav-back">← Ana Sayfa</a>
+</nav>
+
+<div class="chat-wrap" id="chatWrap">
+  <div class="chat-inner" id="chatInner">
+    <!-- Welcome -->
+    <div class="welcome" id="welcome">
+      <div class="welcome-orb">✦</div>
+      <h1>Merhaba! Ben <span>Highly AI</span></h1>
+      <p>Sana her konuda yardımcı olmaya hazırım. Ne öğrenmek istiyorsun?</p>
+      <div class="suggestion-grid">
+        <div class="suggestion" onclick="suggest('Python ile basit bir hesap makinesi nasıl yapılır?')">
+          <div class="suggestion-icon">💻</div>
+          <div class="suggestion-text">Python ile hesap makinesi yap</div>
+        </div>
+        <div class="suggestion" onclick="suggest('Yapay zeka nedir, basitçe anlat')">
+          <div class="suggestion-icon">🤖</div>
+          <div class="suggestion-text">Yapay zeka nedir?</div>
+        </div>
+        <div class="suggestion" onclick="suggest('Motivasyon için güzel bir söz söyle')">
+          <div class="suggestion-icon">✨</div>
+          <div class="suggestion-text">Motivasyon sözü söyle</div>
+        </div>
+        <div class="suggestion" onclick="suggest('Türkiye hakkında ilginç 5 bilgi ver')">
+          <div class="suggestion-icon">🇹🇷</div>
+          <div class="suggestion-text">Türkiye hakkında ilginç bilgiler</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="input-area">
+  <div class="input-inner">
+    <textarea class="input-box" id="inputBox" placeholder="Highly AI'ya bir şey sor..." rows="1"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+  </div>
+  <div class="input-hint">Enter → gönder &nbsp;·&nbsp; Shift+Enter → yeni satır &nbsp;·&nbsp; Highly AI yanılabilir, önemli konularda doğrulayın.</div>
+</div>
+
+<script>
+  const API_URL = 'https://api.anthropic.com/v1/messages';
+  let messages = [];
+  let isLoading = false;
+
+  // Auto-resize textarea
+  const inputBox = document.getElementById('inputBox');
+  inputBox.addEventListener('input', () => {
+    inputBox.style.height = 'auto';
+    inputBox.style.height = Math.min(inputBox.scrollHeight, 180) + 'px';
+  });
+  inputBox.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+  function suggest(text) {
+    inputBox.value = text;
+    sendMessage();
+  }
+
+  function newChat() {
+    messages = [];
+    const inner = document.getElementById('chatInner');
+    inner.innerHTML = `<div class="welcome" id="welcome">
+      <div class="welcome-orb">✦</div>
+      <h1>Merhaba! Ben <span>Highly AI</span></h1>
+      <p>Sana her konuda yardımcı olmaya hazırım. Ne öğrenmek istiyorsun?</p>
+      <div class="suggestion-grid">
+        <div class="suggestion" onclick="suggest('Python ile basit bir hesap makinesi nasıl yapılır?')">
+          <div class="suggestion-icon">💻</div><div class="suggestion-text">Python ile hesap makinesi yap</div>
+        </div>
+        <div class="suggestion" onclick="suggest('Yapay zeka nedir, basitçe anlat')">
+          <div class="suggestion-icon">🤖</div><div class="suggestion-text">Yapay zeka nedir?</div>
+        </div>
+        <div class="suggestion" onclick="suggest('Motivasyon için güzel bir söz söyle')">
+          <div class="suggestion-icon">✨</div><div class="suggestion-text">Motivasyon sözü söyle</div>
+        </div>
+        <div class="suggestion" onclick="suggest('Türkiye hakkında ilginç 5 bilgi ver')">
+          <div class="suggestion-icon">🇹🇷</div><div class="suggestion-text">Türkiye hakkında ilginç bilgiler</div>
+        </div>
+      </div>
+    </div>`;
+    inputBox.value = '';
+    inputBox.style.height = 'auto';
+  }
+
+  async function sendMessage() {
+    const text = inputBox.value.trim();
+    if (!text || isLoading) return;
+
+    // Hide welcome
+    const welcome = document.getElementById('welcome');
+    if (welcome) welcome.remove();
+
+    isLoading = true;
+    document.getElementById('sendBtn').disabled = true;
+    inputBox.value = '';
+    inputBox.style.height = 'auto';
+
+    // Add user message
+    messages.push({ role:'user', content: text });
+    appendMessage('user', text);
+
+    // Show typing
+    const typingId = appendTyping();
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: `Sen Highly AI'sın — Highly ekosistemine entegre edilmiş, Türkçe konuşan, zeki ve samimi bir yapay zeka asistanısın. 
+Kullanıcıyla sıcak ve doğal bir Türkçeyle konuş. Kısa ve net cevaplar ver ama gerektiğinde detaylı açıkla.
+Highly ekosistemi şu uygulamalardan oluşur: Highly ID (giriş sistemi), Highly Hava (hava durumu), Highly Harita (harita), Highly Arama (arama motoru), Highly AI (sen).
+Markdown formatını kullanabilirsin: **kalın**, \`kod\`, \`\`\`kod bloğu\`\`\`, başlıklar için ### kullan.`,
+          messages: messages
+        })
+      });
+
+      const data = await res.json();
+      removeTyping(typingId);
+
+      if (data.content && data.content[0]) {
+        const reply = data.content[0].text;
+        messages.push({ role:'assistant', content: reply });
+        appendMessage('ai', reply);
+      } else {
+        appendMessage('ai', 'Üzgünüm, bir hata oluştu. Lütfen tekrar dene.');
+      }
+    } catch(e) {
+      removeTyping(typingId);
+      appendMessage('ai', '⚠️ Bağlantı hatası oluştu. İnternet bağlantını kontrol et ve tekrar dene.');
+    }
+
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+    inputBox.focus();
+    scrollToBottom();
+  }
+
+  function appendMessage(role, text) {
+    const inner = document.getElementById('chatInner');
+    const div = document.createElement('div');
+    div.className = `message ${role}`;
+
+    const formatted = role === 'ai' ? formatMarkdown(text) : escapeHtml(text);
+
+    div.innerHTML = `
+      <div class="avatar ${role}">${role === 'ai' ? '✦' : '👤'}</div>
+      <div>
+        ${role === 'ai' ? '<div class="model-tag">✦ Highly AI</div>' : ''}
+        <div class="bubble ${role}">${formatted}</div>
+      </div>`;
+    inner.appendChild(div);
+    scrollToBottom();
+  }
+
+  function appendTyping() {
+    const inner = document.getElementById('chatInner');
+    const id = 'typing-' + Date.now();
+    const div = document.createElement('div');
+    div.className = 'message ai'; div.id = id;
+    div.innerHTML = `
+      <div class="avatar ai">✦</div>
+      <div class="bubble ai"><div class="typing"><span></span><span></span><span></span></div></div>`;
+    inner.appendChild(div);
+    scrollToBottom();
+    return id;
+  }
+
+  function removeTyping(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  function scrollToBottom() {
+    const wrap = document.getElementById('chatWrap');
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+
+  function escapeHtml(t) {
+    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function formatMarkdown(text) {
+    let t = escapeHtml(text);
+    // Code blocks
+    t = t.replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+    // Inline code
+    t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // Bold
+    t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // Italic
+    t = t.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    // H3
+    t = t.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    // Lists
+    t = t.replace(/^- (.+)$/gm, '<li>$1</li>');
+    t = t.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    // Line breaks
+    t = t.replace(/\n\n/g, '</p><p>');
+    t = t.replace(/\n/g, '<br>');
+    return `<p>${t}</p>`;
+  }
+</script>
+</body>
+</html>
