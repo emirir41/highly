@@ -17,7 +17,6 @@
       --accent3: #38bdf8;
       --text: #eeeeff;
       --muted: #5a5d7a;
-      --card-hover: rgba(79,110,247,0.08);
     }
 
     html { scroll-behavior: smooth; }
@@ -31,14 +30,13 @@
       cursor: none;
     }
 
-    /* Custom cursor */
     .cursor {
       position: fixed; pointer-events: none; z-index: 9999;
       width: 10px; height: 10px;
       background: var(--accent);
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      transition: transform 0.1s, width 0.2s, height 0.2s, opacity 0.2s;
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
     }
     .cursor-ring {
       position: fixed; pointer-events: none; z-index: 9998;
@@ -46,11 +44,9 @@
       border: 1.5px solid rgba(79,110,247,0.5);
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      transition: transform 0.12s ease, width 0.3s, height 0.3s;
+      transition: width 0.3s, height 0.3s;
     }
-    body:hover .cursor { opacity: 1; }
 
-    /* Background */
     canvas#bg { position: fixed; inset: 0; z-index: 0; opacity: 0.35; }
 
     .grid-lines {
@@ -76,19 +72,11 @@
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px;
-      color: #fff;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: #fff;
     }
-    .nav-logo-text {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
-      color: var(--text); letter-spacing: -0.5px;
-    }
+    .nav-logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: var(--text); letter-spacing: -0.5px; }
     .nav-links { display: flex; gap: 32px; align-items: center; }
-    .nav-links a {
-      color: var(--muted); text-decoration: none; font-size: 14px;
-      font-weight: 500; transition: color 0.2s;
-      letter-spacing: 0.2px;
-    }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
     .nav-btn {
       padding: 9px 22px;
@@ -116,10 +104,8 @@
       display: inline-flex; align-items: center; gap: 8px;
       background: rgba(79,110,247,0.1);
       border: 1px solid rgba(79,110,247,0.25);
-      border-radius: 999px;
-      padding: 7px 18px;
-      font-size: 12px; font-weight: 600;
-      color: var(--accent2);
+      border-radius: 999px; padding: 7px 18px;
+      font-size: 12px; font-weight: 600; color: var(--accent2);
       letter-spacing: 1px; text-transform: uppercase;
       margin-bottom: 32px;
       animation: fadeDown 0.8s ease both;
@@ -134,25 +120,21 @@
     .hero h1 {
       font-family: 'Syne', sans-serif;
       font-size: clamp(52px, 8vw, 100px);
-      font-weight: 800;
-      line-height: 0.95;
-      letter-spacing: -3px;
-      margin-bottom: 28px;
+      font-weight: 800; line-height: 0.95;
+      letter-spacing: -3px; margin-bottom: 28px;
       animation: fadeDown 0.8s 0.1s ease both;
     }
     .hero h1 .line2 {
       background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-      background-size: 200%;
+      background-clip: text; background-size: 200%;
       animation: fadeDown 0.8s 0.1s ease both, gradientMove 4s ease infinite;
     }
     @keyframes gradientMove { 0%,100%{background-position:0%} 50%{background-position:100%} }
 
     .hero p {
-      font-size: 18px; font-weight: 300;
-      color: var(--muted); max-width: 520px;
-      line-height: 1.7; margin-bottom: 48px;
+      font-size: 18px; font-weight: 300; color: var(--muted);
+      max-width: 520px; line-height: 1.7; margin-bottom: 48px;
       animation: fadeDown 0.8s 0.2s ease both;
     }
 
@@ -174,8 +156,7 @@
     .btn-secondary {
       padding: 15px 36px;
       background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      border: 1px solid var(--border); border-radius: 14px;
       color: var(--text); font-family: 'Syne', sans-serif;
       font-size: 15px; font-weight: 600;
       cursor: none; transition: background 0.2s, border-color 0.2s;
@@ -188,7 +169,6 @@
       to   { opacity:1; transform: none; }
     }
 
-    /* Scroll indicator */
     .scroll-hint {
       position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -202,28 +182,16 @@
     }
     @keyframes scrollAnim { 0%{opacity:0;transform:scaleY(0) translateY(-20px)} 50%{opacity:1} 100%{opacity:0;transform:scaleY(1) translateY(20px)} }
 
-    /* Apps section */
+    /* Apps */
     .section {
       position: relative; z-index: 2;
       padding: 80px 48px 120px;
       max-width: 1200px; margin: 0 auto;
     }
-    .section-label {
-      font-size: 11px; font-weight: 600; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--accent);
-      margin-bottom: 12px;
-    }
-    .section-title {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 800; letter-spacing: -1.5px;
-      margin-bottom: 64px;
-    }
-    .section-title span {
-      color: var(--muted);
-    }
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: clamp(32px, 4vw, 52px); font-weight: 800; letter-spacing: -1.5px; margin-bottom: 64px; }
+    .section-title span { color: var(--muted); }
 
-    /* App cards grid */
     .apps-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -233,8 +201,7 @@
     .app-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 32px;
+      border-radius: 20px; padding: 32px;
       cursor: none;
       transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
       position: relative; overflow: hidden;
@@ -245,46 +212,30 @@
       content: '';
       position: absolute; inset: 0;
       background: var(--card-glow, transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
+      opacity: 0; transition: opacity 0.3s;
       border-radius: 20px;
     }
-    .app-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.12); }
+    .app-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
     .app-card:hover::before { opacity: 1; }
     .app-card:hover .app-arrow { transform: translate(3px, -3px); opacity: 1; }
 
     .app-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
+      width: 52px; height: 52px; border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
       font-size: 24px; margin-bottom: 20px;
       position: relative; z-index: 1;
     }
-    .app-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 20px; font-weight: 700;
-      margin-bottom: 8px;
-      position: relative; z-index: 1;
-    }
-    .app-desc {
-      font-size: 14px; color: var(--muted);
-      line-height: 1.6; margin-bottom: 24px;
-      position: relative; z-index: 1;
-    }
-    .app-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      position: relative; z-index: 1;
-    }
+    .app-name { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; position: relative; z-index: 1; }
+    .app-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; position: relative; z-index: 1; }
+    .app-footer { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+
     .app-status {
       font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
       padding: 5px 12px; border-radius: 999px;
     }
     .app-status.live { background: rgba(52,211,153,0.12); color: #34d399; }
-    .app-status.soon { background: rgba(251,191,36,0.12); color: #fbbf24; }
-    .app-arrow {
-      font-size: 18px; opacity: 0.3;
-      transition: transform 0.2s, opacity 0.2s;
-    }
+
+    .app-arrow { font-size: 18px; opacity: 0.3; transition: transform 0.2s, opacity 0.2s; }
 
     /* Stats */
     .stats-row {
@@ -296,12 +247,9 @@
     }
     .stat { flex: 1; min-width: 140px; }
     .stat-number {
-      font-family: 'Syne', sans-serif;
-      font-size: 40px; font-weight: 800;
-      letter-spacing: -2px;
+      font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; letter-spacing: -2px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
@@ -313,10 +261,7 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 16px;
     }
-    .footer-logo {
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: 18px; letter-spacing: -0.5px;
-    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
     .footer-logo span { color: var(--accent2); }
     footer p { font-size: 13px; color: var(--muted); }
 
@@ -325,7 +270,6 @@
       .nav-links { display: none; }
       .section { padding: 60px 20px 80px; }
       footer { padding: 32px 20px; }
-      .stats-row { gap: 28px; }
     }
   </style>
 </head>
@@ -333,13 +277,11 @@
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
-
 <canvas id="bg"></canvas>
 <div class="grid-lines"></div>
 
-<!-- Nav -->
 <nav>
-  <a href="#" class="nav-logo">
+  <a href="index.html" class="nav-logo">
     <div class="nav-logo-icon">H</div>
     <span class="nav-logo-text">Highly</span>
   </a>
@@ -350,9 +292,8 @@
   </div>
 </nav>
 
-<!-- Hero -->
 <section class="hero">
-  <div class="hero-badge">Yeni Nesil Ekosistem</div>
+  <div class="hero-badge">✦ Tüm Servisler Aktif</div>
   <h1>
     Her şey<br>
     <span class="line2">bir arada.</span>
@@ -368,7 +309,6 @@
   </div>
 </section>
 
-<!-- Apps -->
 <div class="section" id="apps">
   <div class="section-label">Ekosistem</div>
   <div class="section-title">Tüm uygulamalar<br><span>tek çatı altında.</span></div>
@@ -390,7 +330,7 @@
       <div class="app-name">Highly Hava</div>
       <div class="app-desc">Gerçek zamanlı hava durumu, saatlik ve haftalık tahminler. Nerede olursan ol.</div>
       <div class="app-footer">
-        <span class="app-status soon">◐ Yakında</span>
+        <span class="app-status live">● Canlı</span>
         <span class="app-arrow">↗</span>
       </div>
     </a>
@@ -400,7 +340,7 @@
       <div class="app-name">Highly Harita</div>
       <div class="app-desc">Ücretsiz, hızlı ve sade harita deneyimi. Konum bul, yol tarifi al.</div>
       <div class="app-footer">
-        <span class="app-status soon">◐ Yakında</span>
+        <span class="app-status live">● Canlı</span>
         <span class="app-arrow">↗</span>
       </div>
     </a>
@@ -410,112 +350,60 @@
       <div class="app-name">Highly Arama</div>
       <div class="app-desc">Reklamsız, hızlı ve gizlilik odaklı arama motoru. İnternet senin için çalışsın.</div>
       <div class="app-footer">
-        <span class="app-status soon">◐ Yakında</span>
+        <span class="app-status live">● Canlı</span>
         <span class="app-arrow">↗</span>
       </div>
     </a>
 
-    <a class="app-card" href="highly-ai.html" style="--card-glow: radial-gradient(circle at 50% 0%, rgba(251,191,36,0.08), transparent 70%);">
-      <div class="app-icon" style="background: rgba(251,191,36,0.1);">✦</div>
+    <a class="app-card" href="highly-ai.html" style="--card-glow: radial-gradient(circle at 50% 0%, rgba(245,158,11,0.08), transparent 70%);">
+      <div class="app-icon" style="background: rgba(245,158,11,0.1);">✦</div>
       <div class="app-name">Highly AI</div>
       <div class="app-desc">Yapay zeka destekli asistan. Soru sor, proje yap, fikir üret.</div>
       <div class="app-footer">
-        <span class="app-status soon">◐ Yakında</span>
+        <span class="app-status live">● Canlı</span>
         <span class="app-arrow">↗</span>
       </div>
     </a>
 
   </div>
 
-  <!-- Stats -->
   <div class="stats-row" id="about">
-    <div class="stat">
-      <div class="stat-number">5</div>
-      <div class="stat-label">Uygulama</div>
-    </div>
-    <div class="stat">
-      <div class="stat-number">%100</div>
-      <div class="stat-label">Ücretsiz</div>
-    </div>
-    <div class="stat">
-      <div class="stat-number">1</div>
-      <div class="stat-label">Hesap — Her Yerde</div>
-    </div>
-    <div class="stat">
-      <div class="stat-number">∞</div>
-      <div class="stat-label">Kullanım</div>
-    </div>
+    <div class="stat"><div class="stat-number">5</div><div class="stat-label">Uygulama</div></div>
+    <div class="stat"><div class="stat-number">%100</div><div class="stat-label">Ücretsiz</div></div>
+    <div class="stat"><div class="stat-number">1</div><div class="stat-label">Hesap — Her Yerde</div></div>
+    <div class="stat"><div class="stat-number">∞</div><div class="stat-label">Kullanım</div></div>
   </div>
 </div>
 
-<!-- Footer -->
 <footer>
   <div class="footer-logo">Highly <span>✦</span></div>
   <p>© 2025 Highly Ekosistemi. Tüm hakları saklıdır.</p>
 </footer>
 
 <script>
-  // Cursor
   const cursor = document.getElementById('cursor');
   const ring   = document.getElementById('cursorRing');
   let mx=0,my=0,rx=0,ry=0;
   document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cursor.style.left=mx+'px'; cursor.style.top=my+'px'; });
-  (function animRing(){
-    rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
-    ring.style.left=rx+'px'; ring.style.top=ry+'px';
-    requestAnimationFrame(animRing);
-  })();
-  document.querySelectorAll('a,button,.app-card').forEach(el => {
-    el.addEventListener('mouseenter', () => { cursor.style.transform='translate(-50%,-50%) scale(2.5)'; cursor.style.opacity='0.5'; ring.style.transform='translate(-50%,-50%) scale(1.5)'; });
-    el.addEventListener('mouseleave', () => { cursor.style.transform='translate(-50%,-50%) scale(1)'; cursor.style.opacity='1'; ring.style.transform='translate(-50%,-50%) scale(1)'; });
+  (function animRing(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animRing); })();
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', ()=>{ cursor.style.transform='translate(-50%,-50%) scale(2.5)'; cursor.style.opacity='0.5'; });
+    el.addEventListener('mouseleave', ()=>{ cursor.style.transform='translate(-50%,-50%) scale(1)'; cursor.style.opacity='1'; });
   });
 
-  // Canvas background — animated particles
   const canvas = document.getElementById('bg');
   const ctx = canvas.getContext('2d');
   let W,H,particles=[];
   function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
   resize(); window.addEventListener('resize', resize);
-
-  for(let i=0;i<80;i++){
-    particles.push({
-      x: Math.random()*W, y: Math.random()*H,
-      r: Math.random()*1.5+0.3,
-      vx: (Math.random()-0.5)*0.3,
-      vy: (Math.random()-0.5)*0.3,
-      o: Math.random()*0.6+0.2
-    });
-  }
-  function drawParticles(){
+  for(let i=0;i<80;i++) particles.push({ x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.5+0.3, vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3, o:Math.random()*0.6+0.2 });
+  function draw(){
     ctx.clearRect(0,0,W,H);
-    particles.forEach(p => {
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
-      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(79,110,247,${p.o})`;
-      ctx.fill();
-    });
-    // Lines between close particles
-    for(let i=0;i<particles.length;i++){
-      for(let j=i+1;j<particles.length;j++){
-        const dx=particles[i].x-particles[j].x;
-        const dy=particles[i].y-particles[j].y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<120){
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x,particles[i].y);
-          ctx.lineTo(particles[j].x,particles[j].y);
-          ctx.strokeStyle=`rgba(79,110,247,${0.12*(1-dist/120)})`;
-          ctx.lineWidth=0.5;
-          ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(drawParticles);
+    particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(79,110,247,${p.o})`; ctx.fill(); });
+    for(let i=0;i<particles.length;i++) for(let j=i+1;j<particles.length;j++){ const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy); if(d<120){ ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.strokeStyle=`rgba(79,110,247,${0.12*(1-d/120)})`; ctx.lineWidth=0.5; ctx.stroke(); } }
+    requestAnimationFrame(draw);
   }
-  drawParticles();
+  draw();
 </script>
 </body>
 </html>
