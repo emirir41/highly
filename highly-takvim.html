@@ -1,582 +1,563 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Highly Takvim</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #06070f;
-      --surface: #0b0d1e;
-      --surface2: #0f1125;
-      --border: rgba(255,255,255,0.07);
-      --accent: #818cf8;
-      --accent2: #4f6ef7;
-      --text: #e8e8ff;
-      --muted: #4a4d6a;
-      --cat1: #a78bfa; /* Kişisel */
-      --cat2: #34d399; /* İş */
-      --cat3: #f59e0b; /* Önemli */
-      --cat4: #f87171; /* Acil */
-      --cat5: #38bdf8; /* Sosyal */
-    }
-    body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; height:100vh; overflow:hidden; display:flex; flex-direction:column; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Takvim</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;
+  --border:rgba(255,255,255,0.07);
+  --a1:#818cf8;--a2:#4f6ef7;
+  --text:#e8e8ff;--muted:#4a4d6a;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 20% 20%,rgba(129,140,248,0.07) 0%,transparent 55%),
+             radial-gradient(ellipse at 80% 80%,rgba(79,110,247,0.05) 0%,transparent 55%)}
 
-    /* BG */
-    .bg-mesh { position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 20% 20%,rgba(129,140,248,0.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(79,110,247,0.06) 0%,transparent 50%); }
-    .grid-bg { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:60px 60px; }
+/* NAV */
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);
+    backdrop-filter:blur(20px);flex-shrink:0}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));
+        display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);
+        border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));
+          display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
+.btn-add{display:flex;align-items:center;gap:7px;padding:8px 18px;
+         background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:999px;
+         color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;
+         transition:opacity .2s;box-shadow:0 4px 14px rgba(129,140,248,.3)}
+.btn-add:hover{opacity:.85}
 
-    /* Nav */
-    nav { position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:rgba(6,7,15,0.92);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0; }
-    .nav-left { display:flex;align-items:center;gap:12px; }
-    .nav-logo { display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text); }
-    .nav-logo-icon { width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff; }
-    .nav-logo-text { font-family:'Syne',sans-serif;font-weight:800;font-size:17px; }
-    .nav-right { display:flex;align-items:center;gap:10px; }
-    .nav-user { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px; }
-    .nav-avatar { width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px; }
-    .nav-back { color:var(--muted);text-decoration:none;font-size:13px;transition:color 0.2s; }
-    .nav-back:hover { color:var(--text); }
-    .add-btn { display:flex;align-items:center;gap:7px;padding:8px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:999px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 14px rgba(129,140,248,0.3); }
-    .add-btn:hover { transform:translateY(-1px);box-shadow:0 8px 20px rgba(129,140,248,0.4); }
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden;position:relative;z-index:2}
 
-    /* Layout */
-    .app-body { display:flex;flex:1;overflow:hidden;position:relative;z-index:2; }
+/* SIDEBAR */
+.sidebar{width:270px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);
+         display:flex;flex-direction:column;overflow:hidden}
+.sb-inner{flex:1;overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.sb-month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sb-month-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.sb-nav-btns{display:flex;gap:4px}
+.sb-nav-btn{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;
+            padding:2px 6px;border-radius:6px;transition:all .2s;line-height:1}
+.sb-nav-btn:hover{background:rgba(255,255,255,.06);color:var(--text)}
 
-    /* Sidebar */
-    .sidebar { width:280px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden; }
-    .sidebar-inner { flex:1;overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:var(--border) transparent; }
+/* mini cal */
+.mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:20px}
+.mini-hdr{text-align:center;font-size:9px;font-weight:700;color:var(--muted);padding:3px 0;letter-spacing:.5px}
+.mini-day{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+          font-size:11px;cursor:pointer;margin:auto;transition:background .15s;position:relative;
+          border:none;background:none;color:var(--text);font-family:'DM Sans',sans-serif}
+.mini-day:hover{background:rgba(255,255,255,.07)}
+.mini-day.is-today{background:linear-gradient(135deg,var(--a1),var(--a2))!important;color:#fff;font-weight:700}
+.mini-day.is-sel{background:rgba(129,140,248,.2);color:var(--a1);font-weight:600}
+.mini-day.other{color:var(--muted);opacity:.4}
+.mini-day.has-ev::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
+                        width:3px;height:3px;border-radius:50%;background:var(--a1)}
 
-    .mini-nav { display:flex;align-items:center;justify-content:space-between;margin-bottom:12px; }
-    .mini-nav-title { font-family:'Syne',sans-serif;font-size:14px;font-weight:700; }
-    .mini-nav-btn { background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:4px;transition:color 0.2s; }
-    .mini-nav-btn:hover { color:var(--text); }
+/* cats */
+.sb-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.cat-row{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:9px;cursor:pointer;
+         transition:background .15s;font-size:13px;border:none;background:none;color:var(--text);width:100%;text-align:left}
+.cat-row:hover{background:rgba(255,255,255,.04)}
+.cat-row.active{background:rgba(255,255,255,.06)}
+.cat-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.cat-cnt{margin-left:auto;font-size:10px;color:var(--muted);background:rgba(255,255,255,.06);
+         padding:1px 7px;border-radius:999px}
 
-    /* Mini calendar */
-    .mini-cal { width:100%;border-collapse:collapse;margin-bottom:20px; }
-    .mini-cal th { font-size:10px;font-weight:600;color:var(--muted);text-align:center;padding:4px;letter-spacing:0.5px; }
-    .mini-cal td { text-align:center;padding:3px; }
-    .mini-day { width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;margin:auto;transition:background 0.15s;position:relative; }
-    .mini-day:hover { background:rgba(255,255,255,0.07); }
-    .mini-day.today { background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700; }
-    .mini-day.selected { background:rgba(129,140,248,0.2);color:var(--accent);font-weight:600; }
-    .mini-day.other-month { color:var(--muted); }
-    .mini-day.has-event::after { content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--accent); }
+/* upcoming */
+.up-item{padding:9px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);
+         margin-bottom:7px;cursor:pointer;transition:background .15s}
+.up-item:hover{background:rgba(255,255,255,.06)}
+.up-title{font-size:12px;font-weight:600;margin-bottom:2px}
+.up-when{font-size:10px;color:var(--muted)}
+.up-bar{height:2px;border-radius:2px;margin-top:7px}
 
-    /* Kategoriler */
-    .sidebar-section { margin-bottom:20px; }
-    .sidebar-label { font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px; }
-    .cat-item { display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;transition:background 0.2s;font-size:13px; }
-    .cat-item:hover { background:rgba(255,255,255,0.04); }
-    .cat-item.active { background:rgba(255,255,255,0.06); }
-    .cat-dot { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
-    .cat-count { margin-left:auto;font-size:11px;color:var(--muted);background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:999px; }
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.toolbar{display:flex;align-items:center;justify-content:space-between;
+         padding:14px 24px;border-bottom:1px solid var(--border);flex-shrink:0}
+.tb-left{display:flex;align-items:center;gap:10px}
+.tb-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.5px}
+.tb-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;
+        width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+        color:var(--text);cursor:pointer;font-size:16px;transition:background .2s;line-height:1}
+.tb-btn:hover{background:rgba(255,255,255,.09)}
+.today-btn{padding:7px 16px;background:rgba(129,140,248,.1);border:1px solid rgba(129,140,248,.25);
+           border-radius:8px;color:var(--a1);font-size:12px;font-weight:600;
+           font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .2s}
+.today-btn:hover{background:rgba(129,140,248,.2)}
+.view-tabs{display:flex;gap:3px;background:rgba(255,255,255,.04);border-radius:9px;padding:3px}
+.vtab{padding:6px 14px;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;
+      font-family:'DM Sans',sans-serif;border-radius:7px;cursor:pointer;transition:all .2s}
+.vtab.active{background:var(--a1);color:#fff}
 
-    /* Yaklaşan etkinlikler */
-    .upcoming-item { padding:10px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:background 0.2s; }
-    .upcoming-item:hover { background:rgba(255,255,255,0.06); }
-    .upcoming-title { font-size:13px;font-weight:600;margin-bottom:3px; }
-    .upcoming-time { font-size:11px;color:var(--muted); }
-    .upcoming-bar { height:2px;border-radius:2px;margin-top:8px; }
+/* MONTH */
+.month-wrap{flex:1;overflow:auto;padding:16px 24px 24px}
+.month-grid-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:8px}
+.mgh{text-align:center;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.mcell{background:var(--s2);border:1px solid var(--border);border-radius:11px;min-height:95px;
+       padding:8px;cursor:pointer;transition:border-color .2s,background .2s}
+.mcell:hover{border-color:rgba(129,140,248,.3);background:rgba(129,140,248,.04)}
+.mcell.is-today{border-color:rgba(129,140,248,.5);background:rgba(129,140,248,.07)}
+.mcell.is-sel{border-color:var(--a1)}
+.mcell.other-m{opacity:.35}
+.mday-num{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:5px}
+.mcell.is-today .mday-num{background:linear-gradient(135deg,var(--a1),var(--a2));
+                           -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mev{font-size:10px;padding:2px 6px;border-radius:4px;margin-bottom:2px;
+     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.mmore{font-size:9px;color:var(--muted);margin-top:1px}
 
-    /* Main calendar */
-    .cal-main { flex:1;display:flex;flex-direction:column;overflow:hidden; }
+/* AGENDA */
+.agenda-wrap{flex:1;overflow:auto;padding:16px 24px 24px}
+.ag-section{margin-bottom:24px}
+.ag-date-hdr{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.ag-badge{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--a1),var(--a2));
+          display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;flex-shrink:0}
+.ag-badge.today-badge{box-shadow:0 0 0 3px rgba(129,140,248,.3)}
+.ag-date-label{font-family:'Syne',sans-serif;font-size:15px;font-weight:800}
+.ag-date-sub{font-size:11px;color:var(--a1)}
+.ag-ev{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;background:var(--s2);
+       border:1px solid var(--border);border-radius:11px;margin-bottom:7px;cursor:pointer;
+       transition:all .15s;border-left-width:3px}
+.ag-ev:hover{background:rgba(255,255,255,.04);transform:translateX(2px)}
+.ag-time{font-size:11px;color:var(--muted);min-width:46px;padding-top:2px;flex-shrink:0}
+.ag-ev-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.ag-ev-note{font-size:11px;color:var(--muted)}
+.ag-ev-dot{width:7px;height:7px;border-radius:50%;margin-left:auto;flex-shrink:0;margin-top:4px}
+.ag-add{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px dashed var(--border);
+        border-radius:9px;color:var(--muted);font-size:12px;cursor:pointer;transition:all .15s;
+        background:none;width:100%;font-family:'DM Sans',sans-serif}
+.ag-add:hover{border-color:var(--a1);color:var(--a1)}
+.ag-empty{color:var(--muted);font-size:14px;padding:60px;text-align:center;line-height:2}
 
-    /* Toolbar */
-    .cal-toolbar { display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);flex-shrink:0; }
-    .cal-title { font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.5px; }
-    .cal-nav { display:flex;align-items:center;gap:8px; }
-    .cal-nav-btn { background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--text);cursor:pointer;font-size:14px;transition:background 0.2s; }
-    .cal-nav-btn:hover { background:rgba(255,255,255,0.09); }
-    .today-btn { padding:7px 16px;background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.25);border-radius:8px;color:var(--accent);font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.2s; }
-    .today-btn:hover { background:rgba(129,140,248,0.2); }
-    .view-btns { display:flex;gap:4px;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px; }
-    .view-btn { padding:6px 14px;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;border-radius:8px;cursor:pointer;transition:all 0.2s; }
-    .view-btn.active { background:var(--accent);color:#fff; }
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);
+         z-index:1000;display:flex;align-items:center;justify-content:center;
+         opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--s1);border:1px solid rgba(255,255,255,.1);border-radius:20px;
+       padding:28px;width:420px;max-width:92vw;box-shadow:0 32px 80px rgba(0,0,0,.6);
+       transform:translateY(24px) scale(.97);transition:transform .25s}
+.overlay.open .modal{transform:none}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-hdr-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800}
+.modal-close{background:rgba(255,255,255,.06);border:none;color:var(--muted);font-size:16px;
+             cursor:pointer;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;
+             justify-content:center;transition:all .2s}
+.modal-close:hover{background:rgba(248,113,113,.15);color:#f87171}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.field-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.field-input{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:9px;
+             padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;
+             outline:none;transition:border-color .2s;width:100%}
+.field-input:focus{border-color:var(--a1)}
+.field-input::placeholder{color:var(--muted)}
+.cat-picker{display:flex;gap:8px;flex-wrap:wrap}
+.cp-opt{width:30px;height:30px;border-radius:8px;cursor:pointer;border:2px solid transparent;
+        transition:transform .15s,box-shadow .15s}
+.cp-opt.sel{transform:scale(1.18);box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+.modal-footer{display:flex;gap:8px;margin-top:20px}
+.mbtn{flex:1;padding:11px;border:none;border-radius:9px;font-family:'Syne',sans-serif;
+      font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.mbtn:hover{opacity:.85}
+.mbtn.primary{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+.mbtn.ghost{background:rgba(255,255,255,.06);color:var(--muted)}
+.mbtn.danger{background:rgba(248,113,113,.15);color:#f87171}
 
-    /* Month view */
-    .month-view { flex:1;overflow:auto;padding:16px 24px 24px; }
-    .month-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:8px; }
-    .month-header { text-align:center;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding-bottom:8px; }
-    .month-day { background:var(--surface2);border:1px solid var(--border);border-radius:12px;min-height:100px;padding:8px;cursor:pointer;transition:border-color 0.2s,background 0.2s;position:relative; }
-    .month-day:hover { border-color:rgba(129,140,248,0.3);background:rgba(129,140,248,0.04); }
-    .month-day.today { border-color:rgba(129,140,248,0.4);background:rgba(129,140,248,0.06); }
-    .month-day.selected { border-color:var(--accent);background:rgba(129,140,248,0.08); }
-    .month-day.other-month { opacity:0.4; }
-    .day-num { font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:6px; }
-    .month-day.today .day-num { background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-    .day-event { font-size:11px;padding:2px 7px;border-radius:5px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500; }
-    .day-more { font-size:10px;color:var(--muted);margin-top:2px; }
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+       background:var(--s1);border:1px solid rgba(129,140,248,.3);border-radius:10px;
+       padding:11px 20px;font-size:13px;color:var(--a1);opacity:0;z-index:9999;
+       transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-    /* Day/Agenda view */
-    .agenda-view { flex:1;overflow:auto;padding:16px 24px 24px; }
-    .agenda-day { margin-bottom:24px; }
-    .agenda-date { font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:10px; }
-    .agenda-date-badge { width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800; }
-    .agenda-date-badge.today { box-shadow:0 0 0 3px rgba(129,140,248,0.3); }
-    .agenda-event { display:flex;gap:12px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;border-left:3px solid; }
-    .agenda-event:hover { background:rgba(255,255,255,0.04);transform:translateX(2px); }
-    .agenda-event-time { font-size:12px;color:var(--muted);min-width:50px;padding-top:1px; }
-    .agenda-event-title { font-size:14px;font-weight:600;margin-bottom:2px; }
-    .agenda-event-note { font-size:12px;color:var(--muted); }
-    .agenda-empty { text-align:center;padding:24px;color:var(--muted);font-size:13px; }
+/* Reminder */
+.reminder-popup{position:fixed;top:76px;right:20px;background:var(--s1);border:1px solid rgba(129,140,248,.35);
+                border-radius:13px;padding:13px 17px;max-width:280px;z-index:9999;
+                box-shadow:0 8px 32px rgba(0,0,0,.5);transform:translateX(110%);transition:transform .4s}
+.reminder-popup.show{transform:translateX(0)}
+.rp-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:2px}
+.rp-sub{font-size:11px;color:var(--muted)}
 
-    /* Modal */
-    .modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s; }
-    .modal-overlay.show { opacity:1;pointer-events:all; }
-    .modal { background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:440px;max-width:90vw;box-shadow:0 24px 80px rgba(0,0,0,0.6);transform:translateY(20px) scale(0.97);transition:transform 0.25s; }
-    .modal-overlay.show .modal { transform:none; }
-    .modal-title { font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between; }
-    .modal-close { background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;transition:color 0.2s; }
-    .modal-close:hover { color:var(--text); }
-    .form-group { display:flex;flex-direction:column;gap:6px;margin-bottom:14px; }
-    .form-label { font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px; }
-    .form-input { background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s; }
-    .form-input:focus { border-color:var(--accent); }
-    .form-input::placeholder { color:var(--muted); }
-    .cat-select { display:flex;gap:8px;flex-wrap:wrap; }
-    .cat-opt { width:28px;height:28px;border-radius:8px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;border:2px solid transparent; }
-    .cat-opt.selected { transform:scale(1.15);box-shadow:0 0 0 3px rgba(255,255,255,0.2); }
-    .modal-actions { display:flex;gap:8px;margin-top:20px; }
-    .modal-btn { flex:1;padding:12px;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s; }
-    .modal-btn.primary { background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff; }
-    .modal-btn.secondary { background:rgba(255,255,255,0.06);color:var(--muted); }
-    .modal-btn.danger { background:rgba(248,113,113,0.15);color:#f87171; }
-    .modal-btn:hover { opacity:0.85; }
-
-    /* Hatırlatıcı bildirimi */
-    .reminder-toast { position:fixed;top:80px;right:24px;background:var(--surface);border:1px solid rgba(129,140,248,0.3);border-radius:14px;padding:14px 18px;max-width:300px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.4);transform:translateX(120%);transition:transform 0.4s; }
-    .reminder-toast.show { transform:translateX(0); }
-    .rt-title { font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px; }
-    .rt-time { font-size:11px;color:var(--muted); }
-
-    @media(max-width:768px) {
-      .sidebar { display:none; }
-      .month-grid { gap:4px; }
-      .month-day { min-height:70px; }
-    }
-  </style>
+@media(max-width:700px){.sidebar{display:none}.month-grid{gap:4px}.mcell{min-height:60px}}
+</style>
 </head>
 <body>
 
-<div class="bg-mesh"></div>
-<div class="grid-bg"></div>
-
 <nav>
-  <div class="nav-left">
-    <a href="dashboard.html" class="nav-logo">
-      <div class="nav-logo-icon">📅</div>
-      <span class="nav-logo-text">Highly Takvim</span>
-    </a>
-  </div>
-  <div class="nav-right">
-    <button class="add-btn" onclick="openAddModal()">+ Etkinlik Ekle</button>
-    <a href="dashboard.html" class="nav-user">
-      <div class="nav-avatar" id="navAvatar">?</div>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">H</div>
+    <span class="n-title">Highly Takvim</span>
+  </a>
+  <div class="n-right">
+    <button class="btn-add" id="btnAddNav">+ Etkinlik Ekle</button>
+    <a href="dashboard.html" class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
       <span id="navName">...</span>
     </a>
-    <a href="dashboard.html" class="nav-back">← Dashboard</a>
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
   </div>
 </nav>
 
-<div class="app-body">
-  <!-- Sidebar -->
+<div class="layout">
   <div class="sidebar">
-    <div class="sidebar-inner">
-      <!-- Mini Takvim -->
-      <div class="mini-nav">
-        <span class="mini-nav-title" id="miniTitle"></span>
-        <div style="display:flex;gap:4px;">
-          <button class="mini-nav-btn" onclick="miniPrev()">‹</button>
-          <button class="mini-nav-btn" onclick="miniNext()">›</button>
+    <div class="sb-inner">
+      <div class="sb-month-nav">
+        <span class="sb-month-name" id="sbMonthName"></span>
+        <div class="sb-nav-btns">
+          <button class="sb-nav-btn" id="sbPrev">‹</button>
+          <button class="sb-nav-btn" id="sbNext">›</button>
         </div>
       </div>
-      <table class="mini-cal" id="miniCal"></table>
-
-      <!-- Kategoriler -->
-      <div class="sidebar-section">
-        <div class="sidebar-label">Kategoriler</div>
-        <div class="cat-item active" onclick="filterCat('all')">
-          <div class="cat-dot" style="background:var(--accent)"></div>
-          <span>Tümü</span>
-          <span class="cat-count" id="catAll">0</span>
-        </div>
-        <div class="cat-item" onclick="filterCat('kişisel')">
-          <div class="cat-dot" style="background:var(--cat1)"></div>
-          <span>Kişisel</span>
-          <span class="cat-count" id="catK">0</span>
-        </div>
-        <div class="cat-item" onclick="filterCat('iş')">
-          <div class="cat-dot" style="background:var(--cat2)"></div>
-          <span>İş</span>
-          <span class="cat-count" id="catI">0</span>
-        </div>
-        <div class="cat-item" onclick="filterCat('önemli')">
-          <div class="cat-dot" style="background:var(--cat3)"></div>
-          <span>Önemli</span>
-          <span class="cat-count" id="catO">0</span>
-        </div>
-        <div class="cat-item" onclick="filterCat('acil')">
-          <div class="cat-dot" style="background:var(--cat4)"></div>
-          <span>Acil</span>
-          <span class="cat-count" id="catA">0</span>
-        </div>
-        <div class="cat-item" onclick="filterCat('sosyal')">
-          <div class="cat-dot" style="background:var(--cat5)"></div>
-          <span>Sosyal</span>
-          <span class="cat-count" id="catS">0</span>
-        </div>
-      </div>
-
-      <!-- Yaklaşan -->
-      <div class="sidebar-section">
-        <div class="sidebar-label">Yaklaşan</div>
-        <div id="upcomingList"></div>
-      </div>
+      <div class="mini-grid" id="miniGrid"></div>
+      <div class="sb-lbl">Kategoriler</div>
+      <div id="catList"></div>
+      <div class="sb-lbl" style="margin-top:16px">Yaklaşan</div>
+      <div id="upcomingList"></div>
     </div>
   </div>
 
-  <!-- Main -->
-  <div class="cal-main">
-    <div class="cal-toolbar">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <button class="cal-nav-btn" onclick="prevMonth()">‹</button>
-        <span class="cal-title" id="calTitle"></span>
-        <button class="cal-nav-btn" onclick="nextMonth()">›</button>
-        <button class="today-btn" onclick="goToday()">Bugün</button>
+  <div class="main">
+    <div class="toolbar">
+      <div class="tb-left">
+        <button class="tb-btn" id="btnPrev">‹</button>
+        <span class="tb-title" id="tbTitle"></span>
+        <button class="tb-btn" id="btnNext">›</button>
+        <button class="today-btn" id="btnToday">Bugün</button>
       </div>
-      <div class="view-btns">
-        <button class="view-btn active" id="btnMonth" onclick="setView('month')">Ay</button>
-        <button class="view-btn" id="btnAgenda" onclick="setView('agenda')">Ajanda</button>
+      <div class="view-tabs">
+        <button class="vtab active" id="vtabMonth">Ay</button>
+        <button class="vtab" id="vtabAgenda">Ajanda</button>
       </div>
     </div>
-
-    <div class="month-view" id="monthView"></div>
-    <div class="agenda-view" id="agendaView" style="display:none;"></div>
+    <div class="month-wrap" id="monthView">
+      <div class="month-grid-hdr" id="monthHdr"></div>
+      <div class="month-grid" id="monthGrid"></div>
+    </div>
+    <div class="agenda-wrap" id="agendaView" style="display:none">
+      <div id="agendaContent"></div>
+    </div>
   </div>
 </div>
 
-<!-- Etkinlik Modal -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-title">
-      <span id="modalTitleText">Etkinlik Ekle</span>
-      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modalBox">
+    <div class="modal-hdr">
+      <span class="modal-hdr-title" id="modalTitle">Etkinlik Ekle</span>
+      <button class="modal-close" id="btnClose">✕</button>
     </div>
-    <div class="form-group">
-      <div class="form-label">Başlık</div>
-      <input class="form-input" id="evTitle" placeholder="Etkinlik adı..."/>
+    <div class="field">
+      <div class="field-lbl">Başlık *</div>
+      <input class="field-input" id="fTitle" placeholder="Etkinlik adı..."/>
     </div>
-    <div class="form-group">
-      <div class="form-label">Tarih</div>
-      <input class="form-input" type="date" id="evDate"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field">
+        <div class="field-lbl">Tarih *</div>
+        <input class="field-input" id="fDate" type="date"/>
+      </div>
+      <div class="field">
+        <div class="field-lbl">Saat</div>
+        <input class="field-input" id="fTime" type="time"/>
+      </div>
     </div>
-    <div class="form-group">
-      <div class="form-label">Saat (opsiyonel)</div>
-      <input class="form-input" type="time" id="evTime"/>
+    <div class="field">
+      <div class="field-lbl">Not</div>
+      <input class="field-input" id="fNote" placeholder="Açıklama..."/>
     </div>
-    <div class="form-group">
-      <div class="form-label">Not</div>
-      <input class="form-input" id="evNote" placeholder="Açıklama veya not..."/>
-    </div>
-    <div class="form-group">
-      <div class="form-label">Hatırlatıcı</div>
-      <select class="form-input" id="evReminder">
+    <div class="field">
+      <div class="field-lbl">Hatırlatıcı</div>
+      <select class="field-input" id="fReminder">
         <option value="">Yok</option>
-        <option value="0">Etkinlik zamanında</option>
-        <option value="15">15 dakika önce</option>
-        <option value="30">30 dakika önce</option>
+        <option value="0">Zamanında</option>
+        <option value="15">15 dk önce</option>
+        <option value="30">30 dk önce</option>
         <option value="60">1 saat önce</option>
         <option value="1440">1 gün önce</option>
       </select>
     </div>
-    <div class="form-group">
-      <div class="form-label">Kategori</div>
-      <div class="cat-select">
-        <div class="cat-opt selected" style="background:var(--cat1)" data-cat="kişisel" onclick="selectCat(this)"></div>
-        <div class="cat-opt" style="background:var(--cat2)" data-cat="iş" onclick="selectCat(this)"></div>
-        <div class="cat-opt" style="background:var(--cat3)" data-cat="önemli" onclick="selectCat(this)"></div>
-        <div class="cat-opt" style="background:var(--cat4)" data-cat="acil" onclick="selectCat(this)"></div>
-        <div class="cat-opt" style="background:var(--cat5)" data-cat="sosyal" onclick="selectCat(this)"></div>
-      </div>
+    <div class="field">
+      <div class="field-lbl">Kategori</div>
+      <div class="cat-picker" id="catPicker"></div>
     </div>
-    <div class="modal-actions">
-      <button class="modal-btn secondary" onclick="closeModalDirect()">İptal</button>
-      <button class="modal-btn danger" id="deleteBtn" style="display:none" onclick="deleteEvent()">Sil</button>
-      <button class="modal-btn primary" onclick="saveEvent()">Kaydet</button>
+    <div class="modal-footer">
+      <button class="mbtn ghost" id="btnCancel">İptal</button>
+      <button class="mbtn danger" id="btnDelete" style="display:none">Sil</button>
+      <button class="mbtn primary" id="btnSave">Kaydet</button>
     </div>
   </div>
 </div>
 
-<!-- Hatırlatıcı toast -->
-<div class="reminder-toast" id="reminderToast">
-  <div class="rt-title" id="rtTitle">📅 Hatırlatıcı</div>
-  <div class="rt-time" id="rtTime"></div>
+<div class="toast" id="toast"></div>
+<div class="reminder-popup" id="reminderPopup">
+  <div class="rp-title" id="rpTitle"></div>
+  <div class="rp-sub" id="rpSub"></div>
 </div>
 
 <script>
-  // Giriş kontrolü
-  const saved = localStorage.getItem('highly_user');
-  if (!saved) { window.location.href = 'highly-id.html'; }
-  else {
-    const user = JSON.parse(saved);
-    document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
-    document.getElementById('navName').textContent = user.name.split(' ')[0];
+const CATS   = [
+  {id:'kisisel',label:'Kişisel', color:'#a78bfa'},
+  {id:'is',     label:'İş',      color:'#34d399'},
+  {id:'onemli', label:'Önemli',  color:'#f59e0b'},
+  {id:'acil',   label:'Acil',    color:'#f87171'},
+  {id:'sosyal', label:'Sosyal',  color:'#38bdf8'},
+];
+const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const DAYS7  = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+
+// Auth
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
+document.getElementById('navName').textContent   = user.name.split(' ')[0];
+
+// State
+const today    = new Date();
+const todayStr = fmtDate(today);
+let view = 'month', curYear = today.getFullYear(), curMonth = today.getMonth();
+let sbYear = curYear, sbMonth = curMonth;
+let selDate = todayStr, filterCat = 'all', editId = null, selCatId = CATS[0].id;
+
+// Storage
+function loadEvs()  { try{return JSON.parse(localStorage.getItem('highly_events')||'[]')}catch{return[]} }
+function saveEvs(a) { localStorage.setItem('highly_events',JSON.stringify(a)) }
+
+// Utils
+function fmtDate(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` }
+function dowMon(d) { return (d.getDay()+6)%7 }
+function catColor(id){ return (CATS.find(c=>c.id===id)||CATS[0]).color }
+function relDate(str){
+  const d=new Date(str+'T00:00:00'), diff=Math.round((d-new Date(today.toDateString()))/86400000);
+  return diff===0?'Bugün':diff===1?'Yarın':diff===-1?'Dün':`${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
+function showToast(msg){ const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500) }
+
+// ── Mini Calendar ─────────────────────────────────────────
+function renderMini(){
+  document.getElementById('sbMonthName').textContent=`${MONTHS[sbMonth]} ${sbYear}`;
+  const evs=loadEvs(), evDates=new Set(evs.map(e=>e.date));
+  const first=new Date(sbYear,sbMonth,1), last=new Date(sbYear,sbMonth+1,0).getDate(), start=dowMon(first);
+  let html=DAYS7.map(d=>`<div class="mini-hdr">${d}</div>`).join('');
+  for(let i=0,day=1-start;i<42;i++,day++){
+    if(i>=start+last&&day>last)break;
+    if(day<1||day>last){html+=`<div></div>`;continue;}
+    const ds=`${sbYear}-${String(sbMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const isT=ds===todayStr,isS=ds===selDate,hasE=evDates.has(ds);
+    html+=`<div><button class="mini-day${isT?' is-today':''}${isS&&!isT?' is-sel':''}${hasE?' has-ev':''}" data-date="${ds}">${day}</button></div>`;
   }
-
-  // State
-  const today   = new Date();
-  let curYear   = today.getFullYear();
-  let curMonth  = today.getMonth();
-  let miniYear  = curYear;
-  let miniMonth = curMonth;
-  let selDate   = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-  let view      = 'month';
-  let editId    = null;
-  let selCat    = 'all';
-  let activeCatEl = null;
-
-  const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-  const DAYS   = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
-  const CATS   = { kişisel:'#a78bfa', iş:'#34d399', önemli:'#f59e0b', acil:'#f87171', sosyal:'#38bdf8' };
-
-  // Events storage
-  function loadEvents() { try { return JSON.parse(localStorage.getItem('highly_events')||'[]'); } catch{return[];} }
-  function saveEvents(evs) { localStorage.setItem('highly_events', JSON.stringify(evs)); }
-
-  // Init
-  renderMiniCal();
-  renderMainCal();
-  renderUpcoming();
-  updateCounts();
-  checkReminders();
-  setInterval(checkReminders, 60000);
-
-  // ---- Render ----
-  function renderMiniCal() {
-    document.getElementById('miniTitle').textContent = `${MONTHS[miniMonth]} ${miniYear}`;
-    const events = loadEvents();
-    const eventDates = new Set(events.map(e => e.date));
-    const first = new Date(miniYear, miniMonth, 1);
-    const last  = new Date(miniYear, miniMonth+1, 0);
-    let startDow = (first.getDay()+6)%7;
-    let html = `<tr>${DAYS.map(d=>`<th>${d}</th>`).join('')}</tr>`;
-    let day = 1 - startDow;
-    for (let w=0;w<6;w++) {
-      html += '<tr>';
-      for (let d=0;d<7;d++,day++) {
-        if (day<1||day>last.getDate()) { html+=`<td><div class="mini-day other-month">${day<1?new Date(miniYear,miniMonth,day).getDate():day-last.getDate()}</div></td>`; }
-        else {
-          const dateStr = `${miniYear}-${String(miniMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-          const isToday = day===today.getDate()&&miniMonth===today.getMonth()&&miniYear===today.getFullYear();
-          const isSel   = dateStr===selDate;
-          const hasEv   = eventDates.has(dateStr);
-          html += `<td><div class="mini-day${isToday?' today':''}${isSel&&!isToday?' selected':''}${hasEv?' has-event':''}" onclick="selectDate('${dateStr}')">${day}</div></td>`;
-        }
-      }
-      html += '</tr>';
-      if (day>last.getDate()) break;
-    }
-    document.getElementById('miniCal').innerHTML = html;
-  }
-
-  function renderMainCal() {
-    document.getElementById('calTitle').textContent = `${MONTHS[curMonth]} ${curYear}`;
-    if (view==='month') renderMonth();
-    else renderAgenda();
-  }
-
-  function renderMonth() {
-    const events = loadEvents().filter(e => selCat==='all'||e.cat===selCat);
-    const first  = new Date(curYear, curMonth, 1);
-    const last   = new Date(curYear, curMonth+1, 0);
-    let startDow = (first.getDay()+6)%7;
-    let html = DAYS.map(d=>`<div class="month-header">${d}</div>`).join('');
-    let day = 1-startDow;
-    const totalCells = Math.ceil((startDow+last.getDate())/7)*7;
-    for (let i=0;i<totalCells;i++,day++) {
-      const isOther = day<1||day>last.getDate();
-      const realDay = isOther ? (day<1?new Date(curYear,curMonth,day).getDate():day-last.getDate()) : day;
-      const dateStr = isOther
-        ? (day<1 ? `${curYear}-${String(curMonth).padStart(2,'0')}-${String(realDay).padStart(2,'0')}` : `${curYear}-${String(curMonth+2).padStart(2,'0')}-${String(realDay).padStart(2,'0')}`)
-        : `${curYear}-${String(curMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-      const isToday = !isOther&&day===today.getDate()&&curMonth===today.getMonth()&&curYear===today.getFullYear();
-      const isSel   = dateStr===selDate;
-      const dayEvs  = events.filter(e=>e.date===dateStr);
-      const evHTML  = dayEvs.slice(0,3).map(e=>`<div class="day-event" style="background:${CATS[e.cat]}22;color:${CATS[e.cat]}">${e.time?e.time+' ':''} ${e.title}</div>`).join('');
-      const more    = dayEvs.length>3 ? `<div class="day-more">+${dayEvs.length-3} daha</div>` : '';
-      html += `<div class="month-day${isOther?' other-month':''}${isToday?' today':''}${isSel?' selected':''}" onclick="selectDate('${dateStr}')">
-        <div class="day-num">${realDay}</div>${evHTML}${more}</div>`;
-    }
-    document.getElementById('monthView').innerHTML = `<div class="month-grid">${html}</div>`;
-  }
-
-  function renderAgenda() {
-    const events = loadEvents().filter(e=>selCat==='all'||e.cat===selCat);
-    const grouped = {};
-    events.forEach(e=>{ if(!grouped[e.date]) grouped[e.date]=[]; grouped[e.date].push(e); });
-    const sorted = Object.keys(grouped).sort();
-    if (!sorted.length) { document.getElementById('agendaView').innerHTML=`<div style="text-align:center;padding:60px;color:var(--muted);font-size:14px;"><div style="font-size:48px;margin-bottom:16px">📅</div>Henüz etkinlik yok.<br>Sağ üstten ekleyebilirsin!</div>`; return; }
-    let html = '';
-    sorted.forEach(date => {
-      const d = new Date(date+'T00:00:00');
-      const isToday = date===`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-      html += `<div class="agenda-day">
-        <div class="agenda-date">
-          <div class="agenda-date-badge${isToday?' today'':''}">${d.getDate()}</div>
-          <div><div style="font-size:16px;font-weight:800">${DAYS[(d.getDay()+6)%7]}, ${d.getDate()} ${MONTHS[d.getMonth()]}</div>${isToday?'<div style="font-size:11px;color:var(--accent)">Bugün</div>':''}</div>
-        </div>`;
-      grouped[date].sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99')).forEach(ev => {
-        html += `<div class="agenda-event" style="border-left-color:${CATS[ev.cat]}" onclick="openEditModal('${ev.id}')">
-          <div class="agenda-event-time">${ev.time||'—'}</div>
-          <div><div class="agenda-event-title">${ev.title}</div>${ev.note?`<div class="agenda-event-note">${ev.note}</div>`:''}</div>
-          <div style="margin-left:auto;width:8px;height:8px;border-radius:50%;background:${CATS[ev.cat]};flex-shrink:0;margin-top:4px;"></div>
-        </div>`;
-      });
-      html += `<div class="agenda-event" style="border-left-color:transparent;background:transparent;border:1px dashed var(--border)" onclick="openAddModalDate('${date}')">
-        <div style="color:var(--muted);font-size:13px;">+ Etkinlik ekle</div>
-      </div></div>`;
+  const grid=document.getElementById('miniGrid');
+  grid.innerHTML=html;
+  grid.querySelectorAll('.mini-day[data-date]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      selDate=btn.dataset.date;
+      const d=new Date(selDate+'T00:00:00');
+      curYear=d.getFullYear();curMonth=d.getMonth();
+      renderAll();
+      if(view==='month')openAdd(selDate);
     });
-    document.getElementById('agendaView').innerHTML = html;
-  }
+  });
+}
 
-  function renderUpcoming() {
-    const events = loadEvents();
-    const now = new Date();
-    const upcoming = events.filter(e=>new Date(e.date+'T'+(e.time||'23:59'))>=now).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
-    const list = document.getElementById('upcomingList');
-    if (!upcoming.length) { list.innerHTML=`<div style="color:var(--muted);font-size:12px;padding:8px 0">Yaklaşan etkinlik yok</div>`; return; }
-    list.innerHTML = upcoming.map(e=>`
-      <div class="upcoming-item" onclick="openEditModal('${e.id}')">
-        <div class="upcoming-title">${e.title}</div>
-        <div class="upcoming-time">${formatDate(e.date)}${e.time?' · '+e.time:''}</div>
-        <div class="upcoming-bar" style="background:${CATS[e.cat]}"></div>
-      </div>`).join('');
-  }
+// ── Categories ────────────────────────────────────────────
+function renderCats(){
+  const evs=loadEvs();
+  let html=`<button class="cat-row${filterCat==='all'?' active':''}" data-cat="all"><div class="cat-dot" style="background:var(--a1)"></div>Tümü<span class="cat-cnt">${evs.length}</span></button>`;
+  CATS.forEach(c=>{
+    const n=evs.filter(e=>e.cat===c.id).length;
+    html+=`<button class="cat-row${filterCat===c.id?' active':''}" data-cat="${c.id}"><div class="cat-dot" style="background:${c.color}"></div>${c.label}<span class="cat-cnt">${n}</span></button>`;
+  });
+  const el=document.getElementById('catList');
+  el.innerHTML=html;
+  el.querySelectorAll('.cat-row').forEach(btn=>btn.addEventListener('click',()=>{filterCat=btn.dataset.cat;renderAll()}));
+}
 
-  function updateCounts() {
-    const events = loadEvents();
-    document.getElementById('catAll').textContent = events.length;
-    document.getElementById('catK').textContent = events.filter(e=>e.cat==='kişisel').length;
-    document.getElementById('catI').textContent = events.filter(e=>e.cat==='iş').length;
-    document.getElementById('catO').textContent = events.filter(e=>e.cat==='önemli').length;
-    document.getElementById('catA').textContent = events.filter(e=>e.cat==='acil').length;
-    document.getElementById('catS').textContent = events.filter(e=>e.cat==='sosyal').length;
-  }
+// ── Upcoming ──────────────────────────────────────────────
+function renderUpcoming(){
+  const evs=loadEvs().filter(e=>new Date(e.date+'T'+(e.time||'23:59'))>=today)
+    .sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
+  const el=document.getElementById('upcomingList');
+  if(!evs.length){el.innerHTML=`<div style="color:var(--muted);font-size:12px;padding:6px 0">Yaklaşan yok</div>`;return}
+  el.innerHTML=evs.map(e=>`<div class="up-item" data-id="${e.id}"><div class="up-title">${e.title}</div><div class="up-when">${relDate(e.date)}${e.time?' · '+e.time:''}</div><div class="up-bar" style="background:${catColor(e.cat)}"></div></div>`).join('');
+  el.querySelectorAll('.up-item').forEach(item=>item.addEventListener('click',()=>openEdit(item.dataset.id)));
+}
 
-  function formatDate(dateStr) {
-    const d = new Date(dateStr+'T00:00:00');
-    const diff = Math.round((d-new Date(today.toDateString()))/(1000*60*60*24));
-    if(diff===0) return 'Bugün';
-    if(diff===1) return 'Yarın';
-    if(diff===-1) return 'Dün';
-    return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+// ── Month View ────────────────────────────────────────────
+function renderMonth(){
+  document.getElementById('tbTitle').textContent=`${MONTHS[curMonth]} ${curYear}`;
+  document.getElementById('monthHdr').innerHTML=DAYS7.map(d=>`<div class="mgh">${d}</div>`).join('');
+  const evs=loadEvs().filter(e=>filterCat==='all'||e.cat===filterCat);
+  const first=new Date(curYear,curMonth,1), last=new Date(curYear,curMonth+1,0).getDate(), start=dowMon(first);
+  let html='';
+  const total=Math.ceil((start+last)/7)*7;
+  for(let i=0,day=1-start;i<total;i++,day++){
+    const isOther=day<1||day>last;
+    const realDay=isOther?(day<1?new Date(curYear,curMonth,day).getDate():day-last):day;
+    const ds=isOther?(day<1?`${curYear}-${String(curMonth).padStart(2,'0')}-${String(new Date(curYear,curMonth,day).getDate()).padStart(2,'0')}`:`${curYear}-${String(curMonth+2).padStart(2,'0')}-${String(day-last).padStart(2,'0')}`):
+      `${curYear}-${String(curMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const isT=ds===todayStr,isS=ds===selDate;
+    const dayEv=evs.filter(e=>e.date===ds).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+    const evHtml=dayEv.slice(0,3).map(e=>`<div class="mev" style="background:${catColor(e.cat)}22;color:${catColor(e.cat)}">${e.time?e.time+' ':''}${e.title}</div>`).join('');
+    const more=dayEv.length>3?`<div class="mmore">+${dayEv.length-3} daha</div>`:'';
+    html+=`<div class="mcell${isOther?' other-m':''}${isT?' is-today':''}${isS?' is-sel':''}" data-date="${ds}"><div class="mday-num">${realDay}</div>${evHtml}${more}</div>`;
   }
-
-  // ---- Navigation ----
-  function prevMonth() { curMonth--; if(curMonth<0){curMonth=11;curYear--;} renderMainCal(); }
-  function nextMonth() { curMonth++; if(curMonth>11){curMonth=0;curYear++;} renderMainCal(); }
-  function goToday()   { curYear=today.getFullYear();curMonth=today.getMonth();selDate=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;renderMainCal();renderMiniCal(); }
-  function miniPrev()  { miniMonth--;if(miniMonth<0){miniMonth=11;miniYear--;} renderMiniCal(); }
-  function miniNext()  { miniMonth++;if(miniMonth>11){miniMonth=0;miniYear++;} renderMiniCal(); }
-  function selectDate(d) { selDate=d;const dt=new Date(d+'T00:00:00');curYear=dt.getFullYear();curMonth=dt.getMonth();renderMainCal();renderMiniCal();if(view==='month') openAddModalDate(d); }
-  function setView(v)  { view=v;document.getElementById('btnMonth').classList.toggle('active',v==='month');document.getElementById('btnAgenda').classList.toggle('active',v==='agenda');document.getElementById('monthView').style.display=v==='month'?'block':'none';document.getElementById('agendaView').style.display=v==='agenda'?'block':'none';renderMainCal(); }
-  function filterCat(cat) { selCat=cat;document.querySelectorAll('.cat-item').forEach((el,i)=>el.classList.toggle('active',i===['all','kişisel','iş','önemli','acil','sosyal'].indexOf(cat)));renderMainCal(); }
-
-  // ---- Modal ----
-  function openAddModal() {
-    editId=null;
-    document.getElementById('modalTitleText').textContent='Etkinlik Ekle';
-    document.getElementById('evTitle').value='';
-    document.getElementById('evDate').value=selDate;
-    document.getElementById('evTime').value='';
-    document.getElementById('evNote').value='';
-    document.getElementById('evReminder').value='';
-    document.getElementById('deleteBtn').style.display='none';
-    document.querySelectorAll('.cat-opt').forEach((el,i)=>el.classList.toggle('selected',i===0));
-    document.getElementById('modalOverlay').classList.add('show');
-  }
-  function openAddModalDate(date) {
-    openAddModal();
-    document.getElementById('evDate').value=date;
-  }
-  function openEditModal(id) {
-    const ev = loadEvents().find(e=>e.id===id);
-    if(!ev) return;
-    editId=id;
-    document.getElementById('modalTitleText').textContent='Etkinliği Düzenle';
-    document.getElementById('evTitle').value=ev.title;
-    document.getElementById('evDate').value=ev.date;
-    document.getElementById('evTime').value=ev.time||'';
-    document.getElementById('evNote').value=ev.note||'';
-    document.getElementById('evReminder').value=ev.reminder||'';
-    document.getElementById('deleteBtn').style.display='block';
-    document.querySelectorAll('.cat-opt').forEach(el=>el.classList.toggle('selected',el.dataset.cat===ev.cat));
-    document.getElementById('modalOverlay').classList.add('show');
-  }
-  function closeModal(e) { if(e.target===document.getElementById('modalOverlay')) closeModalDirect(); }
-  function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('show'); editId=null; }
-  function selectCat(el) { document.querySelectorAll('.cat-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected'); }
-
-  function saveEvent() {
-    const title = document.getElementById('evTitle').value.trim();
-    const date  = document.getElementById('evDate').value;
-    if (!title||!date) return;
-    const cat  = document.querySelector('.cat-opt.selected')?.dataset.cat||'kişisel';
-    const time = document.getElementById('evTime').value;
-    const note = document.getElementById('evNote').value.trim();
-    const reminder = document.getElementById('evReminder').value;
-    const events = loadEvents();
-    if (editId) {
-      const idx = events.findIndex(e=>e.id===editId);
-      if(idx>-1) events[idx]={...events[idx],title,date,time,note,cat,reminder};
-    } else {
-      events.push({id:Date.now().toString(),title,date,time,note,cat,reminder,created:new Date().toISOString()});
-    }
-    saveEvents(events);
-    closeModalDirect();
-    renderMainCal();
-    renderMiniCal();
-    renderUpcoming();
-    updateCounts();
-  }
-
-  function deleteEvent() {
-    if(!editId) return;
-    const events = loadEvents().filter(e=>e.id!==editId);
-    saveEvents(events);
-    closeModalDirect();
-    renderMainCal();
-    renderMiniCal();
-    renderUpcoming();
-    updateCounts();
-  }
-
-  // ---- Hatırlatıcılar ----
-  function checkReminders() {
-    const events = loadEvents();
-    const now = new Date();
-    events.forEach(ev => {
-      if (!ev.time || ev.reminder===undefined || ev.reminder==='') return;
-      const evTime = new Date(`${ev.date}T${ev.time}`);
-      const remMins = parseInt(ev.reminder);
-      const remTime = new Date(evTime.getTime() - remMins*60000);
-      const diff = Math.abs(now - remTime);
-      if (diff < 60000) { // 1 dakika içinde
-        showReminderToast(ev.title, ev.time, ev.date);
-      }
+  document.getElementById('monthGrid').innerHTML=html;
+  document.getElementById('monthGrid').querySelectorAll('.mcell').forEach(cell=>{
+    cell.addEventListener('click',()=>{
+      selDate=cell.dataset.date;
+      const d=new Date(selDate+'T00:00:00');sbYear=d.getFullYear();sbMonth=d.getMonth();
+      renderMini();renderMonth();openAdd(selDate);
     });
-  }
+  });
+}
 
-  function showReminderToast(title, time, date) {
-    document.getElementById('rtTitle').textContent = `📅 ${title}`;
-    document.getElementById('rtTime').textContent = `${formatDate(date)} ${time}`;
-    const t = document.getElementById('reminderToast');
-    t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'), 6000);
-  }
+// ── Agenda View ───────────────────────────────────────────
+function renderAgenda(){
+  document.getElementById('tbTitle').textContent=`${MONTHS[curMonth]} ${curYear}`;
+  const evs=loadEvs().filter(e=>filterCat==='all'||e.cat===filterCat);
+  const grouped={};
+  evs.forEach(e=>{grouped[e.date]=grouped[e.date]||[];grouped[e.date].push(e)});
+  const sorted=Object.keys(grouped).sort();
+  if(!sorted.length){document.getElementById('agendaContent').innerHTML=`<div class="ag-empty">📅<br>Henüz etkinlik yok.<br>Sağ üstten ekleyebilirsin!</div>`;return}
+  let html='';
+  sorted.forEach(date=>{
+    const d=new Date(date+'T00:00:00'),isT=date===todayStr;
+    const dayEvs=grouped[date].sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+    html+=`<div class="ag-section"><div class="ag-date-hdr"><div class="ag-badge${isT?' today-badge':''}">${d.getDate()}</div><div><div class="ag-date-label">${DAYS7[dowMon(d)]}, ${d.getDate()} ${MONTHS[d.getMonth()]}</div>${isT?'<div class="ag-date-sub">Bugün</div>':''}</div></div>`;
+    dayEvs.forEach(e=>{html+=`<div class="ag-ev" style="border-left-color:${catColor(e.cat)}" data-id="${e.id}"><div class="ag-time">${e.time||'—'}</div><div style="flex:1;min-width:0"><div class="ag-ev-title">${e.title}</div>${e.note?`<div class="ag-ev-note">${e.note}</div>`:''}</div><div class="ag-ev-dot" style="background:${catColor(e.cat)}"></div></div>`});
+    html+=`<button class="ag-add" data-date="${date}">＋ Bu güne etkinlik ekle</button></div>`;
+  });
+  const content=document.getElementById('agendaContent');
+  content.innerHTML=html;
+  content.querySelectorAll('.ag-ev').forEach(el=>el.addEventListener('click',()=>openEdit(el.dataset.id)));
+  content.querySelectorAll('.ag-add').forEach(btn=>btn.addEventListener('click',()=>openAdd(btn.dataset.date)));
+}
+
+// ── Render All ────────────────────────────────────────────
+function renderAll(){
+  renderMini();renderCats();renderUpcoming();
+  if(view==='month')renderMonth();else renderAgenda();
+}
+
+// ── Modal ─────────────────────────────────────────────────
+function buildCatPicker(){
+  document.getElementById('catPicker').innerHTML=CATS.map(c=>`<div class="cp-opt${c.id===selCatId?' sel':''}" style="background:${c.color}" data-cat="${c.id}" title="${c.label}"></div>`).join('');
+  document.getElementById('catPicker').querySelectorAll('.cp-opt').forEach(opt=>{
+    opt.addEventListener('click',()=>{selCatId=opt.dataset.cat;document.querySelectorAll('.cp-opt').forEach(o=>o.classList.remove('sel'));opt.classList.add('sel')});
+  });
+}
+
+function openAdd(date){
+  editId=null;selCatId=CATS[0].id;
+  document.getElementById('modalTitle').textContent='Etkinlik Ekle';
+  document.getElementById('fTitle').value='';
+  document.getElementById('fDate').value=date||selDate;
+  document.getElementById('fTime').value='';
+  document.getElementById('fNote').value='';
+  document.getElementById('fReminder').value='';
+  document.getElementById('btnDelete').style.display='none';
+  buildCatPicker();
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('fTitle').focus(),300);
+}
+
+function openEdit(id){
+  const ev=loadEvs().find(e=>e.id===id);
+  if(!ev)return;
+  editId=id;selCatId=ev.cat||CATS[0].id;
+  document.getElementById('modalTitle').textContent='Etkinliği Düzenle';
+  document.getElementById('fTitle').value=ev.title;
+  document.getElementById('fDate').value=ev.date;
+  document.getElementById('fTime').value=ev.time||'';
+  document.getElementById('fNote').value=ev.note||'';
+  document.getElementById('fReminder').value=ev.reminder!==undefined?ev.reminder:'';
+  document.getElementById('btnDelete').style.display='block';
+  buildCatPicker();
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');editId=null}
+
+function saveEvent(){
+  const title=document.getElementById('fTitle').value.trim();
+  const date=document.getElementById('fDate').value;
+  if(!title){showToast('Başlık gerekli!');return}
+  if(!date){showToast('Tarih gerekli!');return}
+  const ev={id:editId||Date.now().toString(),title,date,time:document.getElementById('fTime').value,note:document.getElementById('fNote').value.trim(),cat:selCatId,reminder:document.getElementById('fReminder').value};
+  const evs=loadEvs();
+  if(editId){const idx=evs.findIndex(e=>e.id===editId);if(idx>-1)evs[idx]=ev}else{evs.push(ev)}
+  saveEvs(evs);closeModal();renderAll();showToast(editId?'✅ Güncellendi!':'✅ Etkinlik eklendi!');
+}
+
+function deleteEvent(){
+  if(!editId)return;
+  if(!confirm('Silmek istediğinden emin misin?'))return;
+  saveEvs(loadEvs().filter(e=>e.id!==editId));
+  closeModal();renderAll();showToast('🗑 Silindi');
+}
+
+// ── Reminders ─────────────────────────────────────────────
+function checkReminders(){
+  const now=new Date();
+  loadEvs().forEach(ev=>{
+    if(!ev.time||ev.reminder==='')return;
+    const evTime=new Date(`${ev.date}T${ev.time}`);
+    const remTime=new Date(evTime.getTime()-parseInt(ev.reminder||0)*60000);
+    if(Math.abs(now-remTime)<65000){
+      document.getElementById('rpTitle').textContent=`🔔 ${ev.title}`;
+      document.getElementById('rpSub').textContent=`${relDate(ev.date)} ${ev.time}`;
+      const p=document.getElementById('reminderPopup');p.classList.add('show');
+      setTimeout(()=>p.classList.remove('show'),6000);
+    }
+  });
+}
+
+// ── Event Listeners ───────────────────────────────────────
+document.getElementById('btnPrev').addEventListener('click',()=>{curMonth--;if(curMonth<0){curMonth=11;curYear--}sbMonth=curMonth;sbYear=curYear;renderAll()});
+document.getElementById('btnNext').addEventListener('click',()=>{curMonth++;if(curMonth>11){curMonth=0;curYear++}sbMonth=curMonth;sbYear=curYear;renderAll()});
+document.getElementById('btnToday').addEventListener('click',()=>{curYear=today.getFullYear();curMonth=today.getMonth();sbYear=curYear;sbMonth=curMonth;selDate=todayStr;renderAll()});
+document.getElementById('sbPrev').addEventListener('click',()=>{sbMonth--;if(sbMonth<0){sbMonth=11;sbYear--}renderMini()});
+document.getElementById('sbNext').addEventListener('click',()=>{sbMonth++;if(sbMonth>11){sbMonth=0;sbYear++}renderMini()});
+document.getElementById('btnAddNav').addEventListener('click',()=>openAdd(selDate));
+document.getElementById('vtabMonth').addEventListener('click',()=>{
+  view='month';
+  document.getElementById('vtabMonth').classList.add('active');
+  document.getElementById('vtabAgenda').classList.remove('active');
+  document.getElementById('monthView').style.display='block';
+  document.getElementById('agendaView').style.display='none';
+  renderMonth();
+});
+document.getElementById('vtabAgenda').addEventListener('click',()=>{
+  view='agenda';
+  document.getElementById('vtabAgenda').classList.add('active');
+  document.getElementById('vtabMonth').classList.remove('active');
+  document.getElementById('monthView').style.display='none';
+  document.getElementById('agendaView').style.display='block';
+  renderAgenda();
+});
+document.getElementById('btnClose').addEventListener('click',closeModal);
+document.getElementById('btnCancel').addEventListener('click',closeModal);
+document.getElementById('btnSave').addEventListener('click',saveEvent);
+document.getElementById('btnDelete').addEventListener('click',deleteEvent);
+document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal()});
+
+// ── Init ──────────────────────────────────────────────────
+renderAll();
+setInterval(checkReminders,60000);
 </script>
 </body>
 </html>
