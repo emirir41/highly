@@ -164,6 +164,34 @@
       animation: fadeUp 0.6s 0.2s ease both;
     }
 
+    /* Takvim widget */
+    .cal-widget {
+      background: linear-gradient(135deg, rgba(129,140,248,0.08), rgba(79,110,247,0.05));
+      border: 1px solid rgba(129,140,248,0.15);
+      border-radius:20px; padding:24px;
+      margin-bottom:28px;
+      animation: fadeUp 0.6s 0.18s ease both;
+    }
+    .cw-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:16px; }
+    .cw-label { font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#818cf8; }
+    .cw-link { font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.2s; }
+    .cw-link:hover { color:var(--accent2); }
+    .cw-body { display:flex;gap:20px;flex-wrap:wrap; }
+    .cw-today { flex:0 0 auto; }
+    .cw-today-date { font-family:'Syne',sans-serif;font-size:52px;font-weight:800;letter-spacing:-3px;line-height:1;background:linear-gradient(135deg,#818cf8,#4f6ef7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .cw-today-day { font-size:13px;color:var(--muted);margin-top:2px; }
+    .cw-divider { width:1px;background:var(--border); }
+    .cw-events { flex:1;min-width:0; }
+    .cw-events-title { font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px; }
+    .cw-event-item { display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);margin-bottom:6px;text-decoration:none;color:var(--text);transition:background 0.2s; }
+    .cw-event-item:hover { background:rgba(255,255,255,0.06); }
+    .cw-event-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+    .cw-event-name { font-size:13px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .cw-event-time { font-size:11px;color:var(--muted); }
+    .cw-empty { font-size:13px;color:var(--muted);padding:10px 0;font-style:italic; }
+    .cw-add { display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 14px;background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);border-radius:999px;color:#818cf8;font-size:12px;text-decoration:none;transition:background 0.2s; }
+    .cw-add:hover { background:rgba(129,140,248,0.2); }
+
     /* Hava kartı */
     .weather-card {
       background: linear-gradient(135deg, rgba(56,189,248,0.08), rgba(79,110,247,0.05));
@@ -289,6 +317,26 @@
     <div class="motivation-author" id="motivationAuthor"></div>
   </div>
 
+  <!-- Takvim Widget -->
+  <div class="cal-widget">
+    <div class="cw-header">
+      <div class="cw-label">📅 Takvim</div>
+      <a href="highly-takvim.html" class="cw-link">Tümünü gör →</a>
+    </div>
+    <div class="cw-body">
+      <div class="cw-today">
+        <div class="cw-today-date" id="cwDay"></div>
+        <div class="cw-today-day" id="cwDayName"></div>
+      </div>
+      <div class="cw-divider"></div>
+      <div class="cw-events">
+        <div class="cw-events-title">Bugünün Etkinlikleri</div>
+        <div id="cwEventsList"></div>
+        <a href="highly-takvim.html" class="cw-add">+ Etkinlik Ekle</a>
+      </div>
+    </div>
+  </div>
+
   <!-- Hava + Hızlı Erişim -->
   <div class="grid-2">
     <div class="weather-card">
@@ -331,6 +379,11 @@
           Detaylı Hava Durumu
           <span class="quick-link-arrow">→</span>
         </a>
+        <a href="highly-takvim.html" class="quick-link">
+          <div class="quick-link-icon" style="background:rgba(129,140,248,0.12);">📅</div>
+          Takvimine Bak
+          <span class="quick-link-arrow">→</span>
+        </a>
       </div>
     </div>
   </div>
@@ -366,6 +419,12 @@
       <div class="ac-icon">🪪</div>
       <div class="ac-name">Highly ID</div>
       <div class="ac-desc">Kimlik & hesap yönetimi</div>
+      <div class="ac-live">Canlı</div>
+    </a>
+    <a href="highly-takvim.html" class="app-card" style="--card-glow:radial-gradient(circle at 50% 0%,rgba(129,140,248,0.1),transparent 70%);">
+      <div class="ac-icon">📅</div>
+      <div class="ac-name">Highly Takvim</div>
+      <div class="ac-desc">Etkinlik & hatırlatıcı</div>
       <div class="ac-live">Canlı</div>
     </a>
   </div>
@@ -462,6 +521,33 @@
   } else {
     loadWeather(41.0082, 28.9784);
   }
+
+  // Takvim widget
+  function loadCalWidget() {
+    const now = new Date();
+    document.getElementById('cwDay').textContent = now.getDate();
+    const days = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+    const months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    document.getElementById('cwDayName').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]}`;
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const cats = { kişisel:'#a78bfa', iş:'#34d399', önemli:'#f59e0b', acil:'#f87171', sosyal:'#38bdf8' };
+    try {
+      const events = JSON.parse(localStorage.getItem('highly_events')||'[]');
+      const todayEvs = events.filter(e=>e.date===todayStr).sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+      const list = document.getElementById('cwEventsList');
+      if (!todayEvs.length) {
+        list.innerHTML = `<div class="cw-empty">Bugün etkinlik yok 🎉</div>`;
+      } else {
+        list.innerHTML = todayEvs.map(e=>`
+          <a href="highly-takvim.html" class="cw-event-item">
+            <div class="cw-event-dot" style="background:${cats[e.cat]||'#818cf8'}"></div>
+            <div class="cw-event-name">${e.title}</div>
+            <div class="cw-event-time">${e.time||''}</div>
+          </a>`).join('');
+      }
+    } catch { document.getElementById('cwEventsList').innerHTML=`<div class="cw-empty">Bugün etkinlik yok 🎉</div>`; }
+  }
+  loadCalWidget();
 
   function logout() {
     localStorage.removeItem('highly_user');
