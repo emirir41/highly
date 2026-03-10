@@ -154,7 +154,7 @@
   // Oturum kontrolü — sayfa açılınca
   window.addEventListener('load', () => {
     const saved = localStorage.getItem('highly_user');
-    if (saved) showBadge(JSON.parse(saved));
+    if (saved) window.location.href = 'dashboard.html';
   });
 
   function switchTab(tab) {
@@ -199,8 +199,8 @@
         showToast('E-posta veya şifre hatalı.','error');
       } else {
         localStorage.setItem('highly_user', JSON.stringify(data[0]));
-        showBadge(data[0]);
         showToast(`Hoş geldin, ${data[0].name.split(' ')[0]}! ✦`,'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
       }
     } catch { showToast('Bağlantı hatası.','error'); }
     setLoading('loginBtn', false, 'Giriş Yap →');
@@ -228,7 +228,7 @@
       if (data&&data[0]) {
         localStorage.setItem('highly_user', JSON.stringify(data[0]));
         showToast('Hesap oluşturuldu! 🎉','success');
-        setTimeout(() => showBadge(data[0]), 800);
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
       } else {
         showToast('Bir hata oluştu. Tekrar dene.','error');
       }
