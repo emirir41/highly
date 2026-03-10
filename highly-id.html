@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg: #07080f;
       --surface: #0e1020;
@@ -19,253 +18,80 @@
       --error: #f87171;
       --success: #34d399;
     }
-
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
     }
+    .bg-orb { position:fixed;border-radius:50%;filter:blur(80px);opacity:0.18;pointer-events:none;animation:drift 8s ease-in-out infinite alternate; }
+    .bg-orb.one { width:500px;height:500px;background:#4f6ef7;top:-100px;left:-100px;animation-duration:9s; }
+    .bg-orb.two { width:400px;height:400px;background:#a78bfa;bottom:-80px;right:-80px;animation-duration:11s;animation-delay:-3s; }
+    .bg-orb.three { width:250px;height:250px;background:#38bdf8;top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:7s; }
+    @keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,20px) scale(1.08)} }
+    .grid-lines { position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px; }
 
-    /* Background effects */
-    .bg-orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.18;
-      pointer-events: none;
-      animation: drift 8s ease-in-out infinite alternate;
-    }
-    .bg-orb.one { width: 500px; height: 500px; background: #4f6ef7; top: -100px; left: -100px; animation-duration: 9s; }
-    .bg-orb.two { width: 400px; height: 400px; background: #a78bfa; bottom: -80px; right: -80px; animation-duration: 11s; animation-delay: -3s; }
-    .bg-orb.three { width: 250px; height: 250px; background: #38bdf8; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 7s; }
-
-    @keyframes drift {
-      from { transform: translate(0,0) scale(1); }
-      to   { transform: translate(30px, 20px) scale(1.08); }
-    }
-
-    /* Grid lines */
-    .grid-lines {
-      position: fixed; inset: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-
-    /* Card */
     .card {
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 48px 44px;
-      width: 420px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 0 0 1px rgba(79,110,247,0.1), 0 40px 80px rgba(0,0,0,0.6);
-      animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+      position:relative;background:var(--surface);border:1px solid var(--border);
+      border-radius:24px;padding:48px 44px;width:420px;
+      backdrop-filter:blur(20px);
+      box-shadow:0 0 0 1px rgba(79,110,247,0.1),0 40px 80px rgba(0,0,0,0.6);
+      animation:slideUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
     }
+    @keyframes slideUp { from{opacity:0;transform:translateY(30px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
+    .logo-wrap { display:flex;align-items:center;gap:10px;margin-bottom:36px; }
+    .logo-icon { width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:#fff;box-shadow:0 4px 20px rgba(79,110,247,0.4); }
+    .logo-text { font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px; }
+    .logo-text span { color:var(--accent2); }
 
-    /* Logo */
-    .logo-wrap {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 36px;
-    }
-    .logo-icon {
-      width: 38px; height: 38px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 800;
-      font-family: 'Syne', sans-serif;
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(79,110,247,0.4);
-    }
-    .logo-text {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px; font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-    .logo-text span { color: var(--accent2); }
+    .tabs { display:flex;gap:4px;background:rgba(255,255,255,0.04);border-radius:12px;padding:4px;margin-bottom:32px; }
+    .tab { flex:1;padding:10px;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;border-radius:9px;cursor:pointer;transition:all 0.25s; }
+    .tab.active { background:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(79,110,247,0.35); }
 
-    /* Tabs */
-    .tabs {
-      display: flex; gap: 4px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 12px; padding: 4px;
-      margin-bottom: 32px;
-    }
-    .tab {
-      flex: 1; padding: 10px;
-      border: none; background: none;
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px; font-weight: 500;
-      border-radius: 9px;
-      cursor: pointer;
-      transition: all 0.25s;
-    }
-    .tab.active {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(79,110,247,0.35);
-    }
+    .form { display:none;flex-direction:column;gap:16px; }
+    .form.active { display:flex;animation:fadeIn 0.3s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
 
-    /* Forms */
-    .form { display: none; flex-direction: column; gap: 16px; }
-    .form.active { display: flex; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+    .field { display:flex;flex-direction:column;gap:7px; }
+    .field label { font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase; }
+    .field input { background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color 0.2s,box-shadow 0.2s; }
+    .field input:focus { border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,110,247,0.15); }
+    .field input::placeholder { color:var(--muted); }
 
-    .field { display: flex; flex-direction: column; gap: 7px; }
-    .field label {
-      font-size: 12px; font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-    .field input {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 13px 16px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .field input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(79,110,247,0.15);
-    }
-    .field input::placeholder { color: var(--muted); }
+    .strength-bar { display:flex;gap:4px;margin-top:6px; }
+    .strength-bar span { flex:1;height:3px;border-radius:4px;background:rgba(255,255,255,0.08);transition:background 0.3s; }
+    .strength-bar span.weak { background:var(--error); }
+    .strength-bar span.medium { background:#fbbf24; }
+    .strength-bar span.strong { background:var(--success); }
 
-    /* Password strength */
-    .strength-bar { display: flex; gap: 4px; margin-top: 6px; }
-    .strength-bar span {
-      flex: 1; height: 3px; border-radius: 4px;
-      background: rgba(255,255,255,0.08);
-      transition: background 0.3s;
-    }
-    .strength-bar span.weak   { background: var(--error); }
-    .strength-bar span.medium { background: #fbbf24; }
-    .strength-bar span.strong { background: var(--success); }
+    .checkbox-row { display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);cursor:pointer; }
+    .checkbox-row input[type="checkbox"] { accent-color:var(--accent);width:15px;height:15px; }
+    .checkbox-row a { color:var(--accent2);text-decoration:none; }
 
-    /* Checkbox */
-    .checkbox-row {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 13px; color: var(--muted); cursor: pointer;
-    }
-    .checkbox-row input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
-    .checkbox-row a { color: var(--accent2); text-decoration: none; }
+    .btn { width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;letter-spacing:0.3px;cursor:pointer;position:relative;overflow:hidden;transition:transform 0.15s,box-shadow 0.15s;margin-top:4px; }
+    .btn:hover { transform:translateY(-1px);box-shadow:0 8px 24px rgba(79,110,247,0.4); }
+    .btn:disabled { opacity:0.6;cursor:not-allowed;transform:none; }
+    .btn::after { content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,0.15),transparent); }
 
-    /* Button */
-    .btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none;
-      border-radius: 12px;
-      color: #fff;
-      font-family: 'Syne', sans-serif;
-      font-size: 15px; font-weight: 700;
-      letter-spacing: 0.3px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.15s, box-shadow 0.15s;
-      margin-top: 4px;
-    }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(79,110,247,0.4); }
-    .btn:active { transform: translateY(0); }
-    .btn::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(rgba(255,255,255,0.15), transparent);
-    }
+    .id-badge { display:none;flex-direction:column;align-items:center;text-align:center;gap:16px;animation:fadeIn 0.5s ease; }
+    .id-badge.show { display:flex; }
+    .avatar { width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:28px;font-weight:800;box-shadow:0 0 0 4px rgba(79,110,247,0.2); }
+    .id-name { font-family:'Syne',sans-serif;font-size:22px;font-weight:700; }
+    .id-email { font-size:13px;color:var(--muted); }
+    .id-chip { background:rgba(79,110,247,0.12);border:1px solid rgba(79,110,247,0.25);color:var(--accent2);font-size:11px;font-weight:600;letter-spacing:1px;padding:5px 14px;border-radius:999px;text-transform:uppercase; }
+    .home-btn { width:100%;padding:12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;text-align:center;margin-top:4px; }
+    .home-btn:hover { background:rgba(255,255,255,0.08);color:var(--text); }
 
-    /* Divider */
-    .divider {
-      display: flex; align-items: center; gap: 12px;
-      color: var(--muted); font-size: 12px; margin: 4px 0;
-    }
-    .divider::before, .divider::after {
-      content: ''; flex: 1;
-      height: 1px; background: var(--border);
-    }
+    .toast { position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1d2e;border:1px solid var(--border);border-radius:12px;padding:14px 24px;font-size:14px;opacity:0;transition:all 0.4s;pointer-events:none;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:100; }
+    .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:var(--success);color:var(--success); }
+    .toast.error { border-color:var(--error);color:var(--error); }
 
-    /* Social */
-    .social-btn {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      padding: 12px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text); font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .social-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
-
-    /* Toast */
-    .toast {
-      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
-      background: #1a1d2e;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 24px;
-      font-size: 14px;
-      opacity: 0;
-      transition: all 0.4s;
-      pointer-events: none;
-      white-space: nowrap;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      z-index: 100;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.success { border-color: var(--success); color: var(--success); }
-    .toast.error   { border-color: var(--error);   color: var(--error); }
-
-    /* Badge */
-    .id-badge {
-      display: none;
-      flex-direction: column; align-items: center;
-      text-align: center; gap: 16px;
-      animation: fadeIn 0.5s ease;
-    }
-    .id-badge.show { display: flex; }
-    .avatar {
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif;
-      font-size: 28px; font-weight: 800;
-      box-shadow: 0 0 0 4px rgba(79,110,247,0.2);
-    }
-    .id-name { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; }
-    .id-email { font-size: 13px; color: var(--muted); }
-    .id-chip {
-      background: rgba(79,110,247,0.12);
-      border: 1px solid rgba(79,110,247,0.25);
-      color: var(--accent2);
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 1px;
-      padding: 5px 14px; border-radius: 999px;
-      text-transform: uppercase;
-    }
+    .spinner { display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:8px;vertical-align:middle; }
+    @keyframes spin { to{transform:rotate(360deg)} }
   </style>
 </head>
 <body>
@@ -281,64 +107,39 @@
     <div class="logo-text">Highly <span>ID</span></div>
   </div>
 
-  <!-- Success State -->
   <div class="id-badge" id="badge">
     <div class="avatar" id="avatarLetter">?</div>
     <div>
-      <div class="id-name" id="badgeName">Ad Soyad</div>
-      <div class="id-email" id="badgeEmail">email@highly.com</div>
+      <div class="id-name" id="badgeName"></div>
+      <div class="id-email" id="badgeEmail"></div>
     </div>
     <div class="id-chip">✦ Doğrulandı</div>
-    <button class="btn" onclick="logout()" style="margin-top:8px;">Çıkış Yap</button>
+    <button class="btn" onclick="logout()">Çıkış Yap</button>
+    <a href="index.html" class="home-btn">← Ana Sayfaya Dön</a>
   </div>
 
-  <!-- Auth Forms -->
   <div id="authArea">
     <div class="tabs">
       <button class="tab active" onclick="switchTab('login')">Giriş Yap</button>
       <button class="tab" onclick="switchTab('register')">Kayıt Ol</button>
     </div>
 
-    <!-- Login Form -->
     <div class="form active" id="loginForm">
-      <div class="field">
-        <label>E-posta</label>
-        <input type="email" id="loginEmail" placeholder="ornek@highly.com" />
-      </div>
-      <div class="field">
-        <label>Şifre</label>
-        <input type="password" id="loginPass" placeholder="••••••••" />
-      </div>
-      <button class="btn" onclick="login()">Giriş Yap →</button>
-      <div class="divider">ya da</div>
-      <button class="social-btn" onclick="showToast('Google ile giriş yakında!', 'error')">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Google ile devam et
-      </button>
+      <div class="field"><label>E-posta</label><input type="email" id="loginEmail" placeholder="ornek@highly.com"/></div>
+      <div class="field"><label>Şifre</label><input type="password" id="loginPass" placeholder="••••••••"/></div>
+      <button class="btn" id="loginBtn" onclick="login()">Giriş Yap →</button>
     </div>
 
-    <!-- Register Form -->
     <div class="form" id="registerForm">
-      <div class="field">
-        <label>Ad Soyad</label>
-        <input type="text" id="regName" placeholder="Adın ve Soyadın" />
-      </div>
-      <div class="field">
-        <label>E-posta</label>
-        <input type="email" id="regEmail" placeholder="ornek@highly.com" />
-      </div>
+      <div class="field"><label>Ad Soyad</label><input type="text" id="regName" placeholder="Adın ve Soyadın"/></div>
+      <div class="field"><label>E-posta</label><input type="email" id="regEmail" placeholder="ornek@highly.com"/></div>
       <div class="field">
         <label>Şifre</label>
-        <input type="password" id="regPass" placeholder="••••••••" oninput="checkStrength(this.value)" />
-        <div class="strength-bar">
-          <span id="s1"></span><span id="s2"></span><span id="s3"></span><span id="s4"></span>
-        </div>
+        <input type="password" id="regPass" placeholder="••••••••" oninput="checkStrength(this.value)"/>
+        <div class="strength-bar"><span id="s1"></span><span id="s2"></span><span id="s3"></span><span id="s4"></span></div>
       </div>
-      <label class="checkbox-row">
-        <input type="checkbox" id="terms" />
-        <span><a href="#">Kullanım koşullarını</a> kabul ediyorum</span>
-      </label>
-      <button class="btn" onclick="register()">Hesap Oluştur →</button>
+      <label class="checkbox-row"><input type="checkbox" id="terms"/><span><a href="#">Kullanım koşullarını</a> kabul ediyorum</span></label>
+      <button class="btn" id="regBtn" onclick="register()">Hesap Oluştur →</button>
     </div>
   </div>
 </div>
@@ -346,56 +147,93 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // --- In-memory user store ---
-  const users = [];
+  const SUPABASE_URL = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0';
+  const H = { 'Content-Type':'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+
+  // Oturum kontrolü — sayfa açılınca
+  window.addEventListener('load', () => {
+    const saved = localStorage.getItem('highly_user');
+    if (saved) showBadge(JSON.parse(saved));
+  });
 
   function switchTab(tab) {
-    document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0 && tab==='login')||(i===1 && tab==='register')));
+    document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active',(i===0&&tab==='login')||(i===1&&tab==='register')));
     document.getElementById('loginForm').classList.toggle('active', tab==='login');
     document.getElementById('registerForm').classList.toggle('active', tab==='register');
   }
 
   function showToast(msg, type='success') {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = `toast ${type} show`;
-    setTimeout(() => t.classList.remove('show'), 3000);
+    t.textContent = msg; t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
   }
 
   function checkStrength(val) {
-    const bars = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3'), document.getElementById('s4')];
-    bars.forEach(b => b.className = '');
-    let score = 0;
-    if (val.length >= 6) score++;
-    if (val.length >= 10) score++;
-    if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
-    if (/[^A-Za-z0-9]/.test(val)) score++;
-    const cls = score <= 1 ? 'weak' : score <= 2 ? 'medium' : 'strong';
-    for (let i = 0; i < score; i++) bars[i].className = cls;
+    const bars = ['s1','s2','s3','s4'].map(id => document.getElementById(id));
+    bars.forEach(b => b.className='');
+    let s=0;
+    if(val.length>=6) s++;
+    if(val.length>=10) s++;
+    if(/[A-Z]/.test(val)&&/[0-9]/.test(val)) s++;
+    if(/[^A-Za-z0-9]/.test(val)) s++;
+    const cls = s<=1?'weak':s<=2?'medium':'strong';
+    for(let i=0;i<s;i++) bars[i].className=cls;
   }
 
-  function login() {
+  function setLoading(id, on, label) {
+    const b = document.getElementById(id);
+    b.disabled = on;
+    b.innerHTML = on ? '<span class="spinner"></span>Yükleniyor...' : label;
+  }
+
+  async function login() {
     const email = document.getElementById('loginEmail').value.trim();
     const pass  = document.getElementById('loginPass').value;
-    if (!email || !pass) return showToast('Lütfen tüm alanları doldurun.', 'error');
-    const user = users.find(u => u.email === email && u.pass === pass);
-    if (!user) return showToast('E-posta veya şifre hatalı.', 'error');
-    showBadge(user);
+    if (!email||!pass) return showToast('Lütfen tüm alanları doldurun.','error');
+    setLoading('loginBtn', true, 'Giriş Yap →');
+    try {
+      const res  = await fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&password=eq.${encodeURIComponent(pass)}&select=*`, { headers: H });
+      const data = await res.json();
+      if (!data.length) {
+        showToast('E-posta veya şifre hatalı.','error');
+      } else {
+        localStorage.setItem('highly_user', JSON.stringify(data[0]));
+        showBadge(data[0]);
+        showToast(`Hoş geldin, ${data[0].name.split(' ')[0]}! ✦`,'success');
+      }
+    } catch { showToast('Bağlantı hatası.','error'); }
+    setLoading('loginBtn', false, 'Giriş Yap →');
   }
 
-  function register() {
+  async function register() {
     const name  = document.getElementById('regName').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const pass  = document.getElementById('regPass').value;
     const terms = document.getElementById('terms').checked;
-    if (!name || !email || !pass) return showToast('Lütfen tüm alanları doldurun.', 'error');
-    if (!terms) return showToast('Kullanım koşullarını kabul edin.', 'error');
-    if (pass.length < 6) return showToast('Şifre en az 6 karakter olmalı.', 'error');
-    if (users.find(u => u.email === email)) return showToast('Bu e-posta zaten kayıtlı.', 'error');
-    const user = { name, email, pass };
-    users.push(user);
-    showToast('Hesap oluşturuldu! 🎉', 'success');
-    setTimeout(() => showBadge(user), 1000);
+    if (!name||!email||!pass) return showToast('Lütfen tüm alanları doldurun.','error');
+    if (!terms) return showToast('Kullanım koşullarını kabul edin.','error');
+    if (pass.length<6) return showToast('Şifre en az 6 karakter olmalı.','error');
+    setLoading('regBtn', true, 'Hesap Oluştur →');
+    try {
+      const check = await fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=id`, { headers: H });
+      const exist = await check.json();
+      if (exist.length) { showToast('Bu e-posta zaten kayıtlı.','error'); setLoading('regBtn',false,'Hesap Oluştur →'); return; }
+      const res  = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+        method:'POST',
+        headers:{ ...H, 'Prefer':'return=representation' },
+        body: JSON.stringify({ name, email, password: pass })
+      });
+      const data = await res.json();
+      if (data&&data[0]) {
+        localStorage.setItem('highly_user', JSON.stringify(data[0]));
+        showToast('Hesap oluşturuldu! 🎉','success');
+        setTimeout(() => showBadge(data[0]), 800);
+      } else {
+        showToast('Bir hata oluştu. Tekrar dene.','error');
+      }
+    } catch { showToast('Bağlantı hatası.','error'); }
+    setLoading('regBtn', false, 'Hesap Oluştur →');
   }
 
   function showBadge(user) {
@@ -404,16 +242,16 @@
     document.getElementById('avatarLetter').textContent = user.name[0].toUpperCase();
     document.getElementById('badgeName').textContent = user.name;
     document.getElementById('badgeEmail').textContent = user.email;
-    showToast(`Hoş geldin, ${user.name.split(' ')[0]}! ✦`, 'success');
   }
 
   function logout() {
+    localStorage.removeItem('highly_user');
     document.getElementById('badge').classList.remove('show');
     document.getElementById('authArea').style.display = 'block';
     document.getElementById('loginEmail').value = '';
     document.getElementById('loginPass').value = '';
     switchTab('login');
-    showToast('Çıkış yapıldı.', 'success');
+    showToast('Çıkış yapıldı.','success');
   }
 </script>
 </body>
