@@ -9,11 +9,8 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#6366f1;--a2:#4f46e5;--text:#e8e8ff;--muted:#4a4d6a}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse at 20% 20%,rgba(99,102,241,0.08) 0%,transparent 50%),
-             radial-gradient(ellipse at 80% 80%,rgba(167,139,250,0.06) 0%,transparent 50%)}
-nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
-    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 20% 20%,rgba(99,102,241,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(167,139,250,0.06) 0%,transparent 50%)}
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0}
 .n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
 .n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
 .n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
@@ -79,7 +76,7 @@ nav{position:relative;z-index:20;display:flex;align-items:center;justify-content
   <div class="welcome" id="welcome">
     <div class="welcome-icon">🤖</div>
     <h2>Highly AI'ya hoş geldin!</h2>
-    <p>Claude ile sohbet et, sorular sor, kod yaz, içerik üret. Sana yardımcı olmak için buradayım!</p>
+    <p>Sorular sor, kod yaz, içerik üret. Sana yardımcı olmak için buradayım!</p>
     <div class="suggestions">
       <button class="sug-btn">💡 Fikir üret</button>
       <button class="sug-btn">📝 Metin yaz</button>
@@ -95,7 +92,7 @@ nav{position:relative;z-index:20;display:flex;align-items:center;justify-content
     <textarea class="msg-input" id="msgInput" placeholder="Bir şey sor... (Enter ile gönder)" rows="1"></textarea>
     <button class="send-btn" id="sendBtn">↑</button>
   </div>
-  <div class="input-hint">Claude tarafından desteklenmektedir · Highly AI</div>
+  <div class="input-hint">Gemini tarafından desteklenmektedir · Highly AI</div>
 </div>
 
 <script>
@@ -105,7 +102,7 @@ const saved = localStorage.getItem('highly_user');
 if (!saved) location.href = 'highly-id.html';
 const user = JSON.parse(saved || '{"name":"?"}');
 document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
-document.getElementById('navName').textContent   = user.name.split(' ')[0];
+document.getElementById('navName').textContent = user.name.split(' ')[0];
 
 let history = [];
 const chatWrap = document.getElementById('chatWrap');
@@ -121,8 +118,11 @@ msgInput.addEventListener('input', () => {
   msgInput.style.height = 'auto';
   msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
 });
-msgInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+msgInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
 sendBtn.addEventListener('click', send);
+
 document.getElementById('clearBtn').addEventListener('click', () => {
   history = [];
   chatWrap.innerHTML = '';
@@ -135,8 +135,8 @@ function addMsg(role, text) {
   const div = document.createElement('div');
   div.className = `msg ${role}`;
   div.innerHTML = `
-    <div class="msg-avatar">${role==='user' ? user.name[0].toUpperCase() : '🤖'}</div>
-    <div class="msg-bubble">${role==='ai' ? fmt(text) : esc(text)}</div>`;
+    <div class="msg-avatar">${role === 'user' ? user.name[0].toUpperCase() : '🤖'}</div>
+    <div class="msg-bubble">${role === 'ai' ? fmt(text) : esc(text)}</div>`;
   chatWrap.appendChild(div);
   chatWrap.scrollTop = chatWrap.scrollHeight;
 }
@@ -152,13 +152,15 @@ function addTyping() {
 
 function fmt(t) {
   return esc(t)
-    .replace(/```[\w]*\n?([\s\S]*?)```/g,'<pre><code>$1</code></pre>')
-    .replace(/`([^`]+)`/g,'<code>$1</code>')
-    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
-    .replace(/\n/g,'<br>');
+    .replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
 }
-function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 
 async function send() {
   const text = msgInput.value.trim();
@@ -166,36 +168,38 @@ async function send() {
   msgInput.value = ''; msgInput.style.height = 'auto';
   sendBtn.disabled = true;
   addMsg('user', text);
-  history.push({ role:'user', content:text });
+  history.push({ role: 'user', content: text });
   addTyping();
+
   try {
-    const res  = await fetch(WORKER, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+    const res = await fetch(WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1024,
-        system: `Sen Highly ekosisteminin AI asistanısın. Kullanıcının adı ${user.name}. Türkçe konuş, yardımsever ve samimi ol.`,
-        messages: history
+        messages: history,
+        system: `Sen Highly ekosisteminin AI asistanısın. Kullanıcının adı ${user.name}. Türkçe konuş, yardımsever ve samimi ol.`
       })
     });
+
     const data = await res.json();
     document.getElementById('typing')?.remove();
+
     if (data.content?.[0]?.text) {
       const reply = data.content[0].text;
-      history.push({ role:'assistant', content:reply });
+      history.push({ role: 'assistant', content: reply });
       addMsg('ai', reply);
     } else {
-      addMsg('ai', '❌ Bir hata oluştu: ' + (data.error?.message || 'Tekrar dene!'));
+      addMsg('ai', '❌ Hata: ' + JSON.stringify(data));
     }
   } catch(e) {
     document.getElementById('typing')?.remove();
-    addMsg('ai', '❌ Bağlantı hatası! Lütfen tekrar dene.');
+    addMsg('ai', '❌ Bağlantı hatası: ' + e.message);
   } finally {
     sendBtn.disabled = false;
     msgInput.focus();
   }
 }
+
 msgInput.focus();
 </script>
 </body>
