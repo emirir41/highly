@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Pomodoro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--text:#e8e8ff;--muted:#4a4d6a;
+  --work:#f87171;--break:#34d399;--long:#38bdf8}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 50% 30%,rgba(248,113,113,0.07) 0%,transparent 55%)}
+
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--work),#ef4444);display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--work),#ef4444);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
+
+main{position:relative;z-index:2;max-width:560px;margin:0 auto;padding:48px 24px 80px;width:100%;display:flex;flex-direction:column;align-items:center}
+
+/* Mode tabs */
+.mode-tabs{display:flex;gap:6px;background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:5px;margin-bottom:48px}
+.mtab{padding:9px 20px;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.mtab.active{color:#000;font-weight:700}
+.mtab.work.active{background:var(--work)}
+.mtab.brk.active{background:var(--break)}
+.mtab.lng.active{background:var(--long)}
+
+/* Timer circle */
+.timer-wrap{position:relative;width:280px;height:280px;margin-bottom:40px}
+.timer-svg{width:100%;height:100%;transform:rotate(-90deg)}
+.timer-bg{fill:none;stroke:rgba(255,255,255,0.05);stroke-width:8}
+.timer-prog{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .4s}
+.timer-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.timer-time{font-family:'Syne',sans-serif;font-size:64px;font-weight:800;letter-spacing:-3px;line-height:1}
+.timer-label{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+
+/* Controls */
+.controls{display:flex;gap:14px;margin-bottom:48px;align-items:center}
+.ctrl-btn{width:56px;height:56px;border-radius:50%;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.ctrl-btn:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.play-btn{width:76px;height:76px;border-radius:50%;border:none;font-size:28px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.play-btn:hover{transform:scale(1.06)}
+.play-btn:active{transform:scale(.97)}
+
+/* Stats */
+.stats-row{display:flex;gap:20px;margin-bottom:40px}
+.stat-box{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:16px 24px;text-align:center;flex:1}
+.stat-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+
+/* Settings */
+.settings{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px 24px;width:100%}
+.settings-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.setting-row:last-child{margin-bottom:0}
+.setting-lbl{font-size:14px}
+.setting-input{width:70px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;text-align:center;outline:none;transition:border-color .2s}
+.setting-input:focus{border-color:var(--work)}
+
+/* Task */
+.task-wrap{width:100%;margin-bottom:28px}
+.task-input{width:100%;background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+.task-input:focus{border-color:var(--work)}
+.task-input::placeholder{color:var(--muted)}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:11px 20px;font-size:13px;color:var(--work);opacity:0;z-index:9999;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">⏱</div>
+    <span class="n-title">Highly Pomodoro</span>
+  </a>
+  <div class="n-right">
+    <a href="dashboard.html" class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
+      <span id="navName">...</span>
+    </a>
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
+  </div>
+</nav>
+
+<main>
+  <!-- Mode tabs -->
+  <div class="mode-tabs">
+    <button class="mtab work active" data-mode="work">🍅 Çalışma</button>
+    <button class="mtab brk" data-mode="break">☕ Kısa Mola</button>
+    <button class="mtab lng" data-mode="long">🌙 Uzun Mola</button>
+  </div>
+
+  <!-- Görev -->
+  <div class="task-wrap">
+    <input class="task-input" id="taskInput" placeholder="Ne üzerinde çalışıyorsun? (opsiyonel)"/>
+  </div>
+
+  <!-- Timer -->
+  <div class="timer-wrap">
+    <svg class="timer-svg" viewBox="0 0 280 280">
+      <circle class="timer-bg" cx="140" cy="140" r="126"/>
+      <circle class="timer-prog" id="timerProg" cx="140" cy="140" r="126" stroke="#f87171"
+              stroke-dasharray="791.7" stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-center">
+      <div class="timer-time" id="timerDisplay">25:00</div>
+      <div class="timer-label" id="timerLabel">ÇALIŞMA</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="ctrl-btn" id="resetBtn" title="Sıfırla">↺</button>
+    <button class="play-btn" id="playBtn" style="background:linear-gradient(135deg,#f87171,#ef4444)">▶</button>
+    <button class="ctrl-btn" id="skipBtn" title="Atla">⏭</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-val" id="statPomodoro">0</div>
+      <div class="stat-lbl">🍅 Pomodoro</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="statFocus">0</div>
+      <div class="stat-lbl">⏱ Odaklanma (dk)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="statStreak">0</div>
+      <div class="stat-lbl">🔥 Seri</div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="settings">
+    <div class="settings-title">⚙ Ayarlar</div>
+    <div class="setting-row">
+      <span class="setting-lbl">🍅 Çalışma süresi (dk)</span>
+      <input class="setting-input" id="setWork" type="number" min="1" max="60" value="25"/>
+    </div>
+    <div class="setting-row">
+      <span class="setting-lbl">☕ Kısa mola (dk)</span>
+      <input class="setting-input" id="setBreak" type="number" min="1" max="30" value="5"/>
+    </div>
+    <div class="setting-row">
+      <span class="setting-lbl">🌙 Uzun mola (dk)</span>
+      <input class="setting-input" id="setLong" type="number" min="1" max="60" value="15"/>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Auth
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
+document.getElementById('navName').textContent = user.name.split(' ')[0];
+
+// State
+const MODES = {
+  work:  { label:'ÇALIŞMA', color:'#f87171', grad:'linear-gradient(135deg,#f87171,#ef4444)' },
+  break: { label:'KISA MOLA', color:'#34d399', grad:'linear-gradient(135deg,#34d399,#059669)' },
+  long:  { label:'UZUN MOLA', color:'#38bdf8', grad:'linear-gradient(135deg,#38bdf8,#0284c7)' },
+};
+let mode      = 'work';
+let running   = false;
+let interval  = null;
+let total     = 25 * 60;
+let remaining = total;
+let pomodoros = parseInt(localStorage.getItem('hp_pomodoros') || '0');
+let focusMins = parseInt(localStorage.getItem('hp_focus') || '0');
+let streak    = parseInt(localStorage.getItem('hp_streak') || '0');
+
+const CIRCUM = 2 * Math.PI * 126; // 791.7
+const prog   = document.getElementById('timerProg');
+const display= document.getElementById('timerDisplay');
+const label  = document.getElementById('timerLabel');
+const playBtn= document.getElementById('playBtn');
+
+function getMins(m) {
+  if (m === 'work')  return parseInt(document.getElementById('setWork').value)  || 25;
+  if (m === 'break') return parseInt(document.getElementById('setBreak').value) || 5;
+  if (m === 'long')  return parseInt(document.getElementById('setLong').value)  || 15;
+}
+
+function setMode(m) {
+  mode = m;
+  stop();
+  total = getMins(m) * 60;
+  remaining = total;
+  updateDisplay();
+  updateCircle();
+  label.textContent = MODES[m].label;
+  prog.style.stroke = MODES[m].color;
+  playBtn.style.background = MODES[m].grad;
+  document.querySelectorAll('.mtab').forEach(t => t.classList.toggle('active', t.dataset.mode === m));
+  document.body.style.setProperty('--work', MODES[m].color);
+}
+
+function updateDisplay() {
+  const m = Math.floor(remaining / 60), s = remaining % 60;
+  display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.title = `${display.textContent} — Highly Pomodoro`;
+}
+
+function updateCircle() {
+  const pct = remaining / total;
+  prog.style.strokeDashoffset = CIRCUM * (1 - pct);
+}
+
+function updateStats() {
+  document.getElementById('statPomodoro').textContent = pomodoros;
+  document.getElementById('statFocus').textContent    = focusMins;
+  document.getElementById('statStreak').textContent   = streak;
+}
+
+function play() {
+  running = true;
+  playBtn.textContent = '⏸';
+  interval = setInterval(() => {
+    remaining--;
+    updateDisplay();
+    updateCircle();
+    if (remaining <= 0) finish();
+  }, 1000);
+}
+
+function stop() {
+  running = false;
+  clearInterval(interval);
+  playBtn.textContent = '▶';
+}
+
+function finish() {
+  stop();
+  if (mode === 'work') {
+    pomodoros++;
+    focusMins += getMins('work');
+    streak++;
+    localStorage.setItem('hp_pomodoros', pomodoros);
+    localStorage.setItem('hp_focus', focusMins);
+    localStorage.setItem('hp_streak', streak);
+    updateStats();
+    showToast('🍅 Pomodoro tamamlandı! Mola hakkın var.');
+    // Bildirim
+    if (Notification.permission === 'granted') {
+      new Notification('🍅 Pomodoro bitti!', { body: 'Mola zamanı!' });
+    }
+    // 4 pomodoro = uzun mola
+    setMode(pomodoros % 4 === 0 ? 'long' : 'break');
+  } else {
+    showToast('☕ Mola bitti! Çalışma zamanı.');
+    if (Notification.permission === 'granted') {
+      new Notification('⏱ Mola bitti!', { body: 'Çalışma zamanı!' });
+    }
+    setMode('work');
+  }
+  // Otomatik başlat
+  setTimeout(() => play(), 1500);
+}
+
+// Bildirim izni
+if (Notification && Notification.permission === 'default') {
+  Notification.requestPermission();
+}
+
+// Buton listeners
+playBtn.addEventListener('click', () => { running ? stop() : play(); });
+document.getElementById('resetBtn').addEventListener('click', () => { stop(); remaining = total; updateDisplay(); updateCircle(); });
+document.getElementById('skipBtn').addEventListener('click', () => { stop(); finish(); });
+
+// Mode tabs
+document.querySelectorAll('.mtab').forEach(tab => {
+  tab.addEventListener('click', () => setMode(tab.dataset.mode));
+});
+
+// Settings change
+['setWork','setBreak','setLong'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => {
+    if (!running) setMode(mode);
+  });
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Init
+updateStats();
+updateDisplay();
+updateCircle();
+prog.style.stroke = MODES[mode].color;
+prog.style.strokeDasharray = CIRCUM;
+</script>
+</body>
+</html>
