@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Not Defteri</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#f59e0b;--a2:#d97706;--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 15% 25%,rgba(245,158,11,0.06) 0%,transparent 50%),
+             radial-gradient(ellipse at 85% 75%,rgba(217,119,6,0.04) 0%,transparent 50%)}
+
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:#000}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
+.btn-new{display:flex;align-items:center;gap:7px;padding:8px 18px;background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:999px;color:#000;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s;box-shadow:0 4px 14px rgba(245,158,11,.25)}
+.btn-new:hover{opacity:.85}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden;position:relative;z-index:2}
+
+/* SIDEBAR */
+.sidebar{width:280px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sb-top{padding:16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-search{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:9px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.sb-search:focus{border-color:var(--a1)}
+.sb-search::placeholder{color:var(--muted)}
+.sb-list{flex:1;overflow-y:auto;padding:8px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.note-item{padding:12px 13px;border-radius:11px;cursor:pointer;transition:all .15s;border:1px solid transparent;margin-bottom:4px;position:relative}
+.note-item:hover{background:rgba(255,255,255,.04);border-color:var(--border)}
+.note-item.active{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.25)}
+.ni-title{font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ni-preview{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px}
+.ni-meta{display:flex;align-items:center;justify-content:space-between}
+.ni-date{font-size:10px;color:var(--muted)}
+.ni-tag{font-size:9px;padding:2px 7px;border-radius:999px;font-weight:600}
+.ni-del{position:absolute;right:10px;top:10px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;opacity:0;transition:all .2s;padding:3px}
+.note-item:hover .ni-del{opacity:1}
+.ni-del:hover{color:#f87171}
+.sb-empty{text-align:center;padding:40px 16px;color:var(--muted);font-size:13px}
+.sb-count{padding:8px 16px;font-size:10px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)}
+
+/* EDITOR */
+.editor-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.editor-toolbar{display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.tb-title-input{flex:1;background:none;border:none;color:var(--text);font-family:'Syne',sans-serif;font-size:18px;font-weight:800;outline:none;min-width:0}
+.tb-title-input::placeholder{color:var(--muted)}
+.tb-sep{width:1px;height:20px;background:var(--border)}
+.tbtn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:6px 10px;border-radius:7px;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.tbtn:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.tbtn.active{background:rgba(245,158,11,.1);color:var(--a1)}
+.tag-select{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;cursor:pointer}
+.tag-select option{background:#0b0d1c}
+.save-indicator{font-size:11px;color:var(--muted);margin-left:auto;flex-shrink:0}
+
+.editor-area{flex:1;overflow-y:auto;padding:24px 32px}
+.note-textarea{width:100%;height:100%;min-height:400px;background:none;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.8;outline:none;resize:none}
+.note-textarea::placeholder{color:var(--muted)}
+
+/* Empty state */
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);text-align:center;padding:40px}
+.empty-state-icon{font-size:64px;margin-bottom:20px;opacity:.5}
+.empty-state h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.empty-state p{font-size:14px;line-height:1.6}
+
+/* Tags colors */
+.tag-kisisel{background:rgba(167,139,250,.15);color:#a78bfa}
+.tag-is{background:rgba(52,211,153,.15);color:#34d399}
+.tag-fikir{background:rgba(245,158,11,.15);color:#f59e0b}
+.tag-onemli{background:rgba(248,113,113,.15);color:#f87171}
+.tag-genel{background:rgba(148,163,184,.1);color:#94a3b8}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:11px 20px;font-size:13px;color:var(--a1);opacity:0;z-index:9999;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:640px){.sidebar{width:100%;height:220px;border-right:none;border-bottom:1px solid var(--border)}.layout{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">📝</div>
+    <span class="n-title">Highly Not Defteri</span>
+  </a>
+  <div class="n-right">
+    <button class="btn-new" id="btnNew">+ Yeni Not</button>
+    <a href="dashboard.html" class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
+      <span id="navName">...</span>
+    </a>
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sb-top">
+      <input class="sb-search" id="searchInput" placeholder="Notlarda ara..."/>
+    </div>
+    <div class="sb-count" id="noteCount">0 not</div>
+    <div class="sb-list" id="noteList"></div>
+  </div>
+
+  <!-- Editor -->
+  <div class="editor-wrap" id="editorWrap">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-state-icon">📝</div>
+      <h2>Notların burada</h2>
+      <p>Sol panelden bir not seç<br>ya da yeni not oluştur.</p>
+    </div>
+
+    <div id="editorPanel" style="display:none;flex:1;display:none;flex-direction:column;overflow:hidden">
+      <div class="editor-toolbar">
+        <input class="tb-title-input" id="noteTitle" placeholder="Not başlığı..."/>
+        <div class="tb-sep"></div>
+        <select class="tag-select" id="noteTag">
+          <option value="genel">📌 Genel</option>
+          <option value="kisisel">👤 Kişisel</option>
+          <option value="is">💼 İş</option>
+          <option value="fikir">💡 Fikir</option>
+          <option value="onemli">⭐ Önemli</option>
+        </select>
+        <div class="tb-sep"></div>
+        <button class="tbtn" id="btnBold"><b>B</b></button>
+        <button class="tbtn" id="btnItalic"><i>I</i></button>
+        <button class="tbtn" id="btnBullet">• Liste</button>
+        <button class="tbtn" id="btnCopy">📋 Kopyala</button>
+        <span class="save-indicator" id="saveIndicator">✓ Kaydedildi</span>
+      </div>
+      <div class="editor-area">
+        <textarea class="note-textarea" id="noteContent" placeholder="Notunu buraya yaz...&#10;&#10;İpuçları:&#10;• Ctrl+S → Kaydet&#10;• Ctrl+B → Kalın&#10;• Ctrl+I → İtalik"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Auth
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
+document.getElementById('navName').textContent = user.name.split(' ')[0];
+
+// Storage
+function loadNotes() { try { return JSON.parse(localStorage.getItem('highly_notes') || '[]'); } catch { return []; } }
+function saveNotes(n) { localStorage.setItem('highly_notes', JSON.stringify(n)); }
+
+// State
+let activeId  = null;
+let saveTimer = null;
+let searchQ   = '';
+
+const TAG_LABELS = { genel:'Genel', kisisel:'Kişisel', is:'İş', fikir:'Fikir', onemli:'Önemli' };
+
+// Elements
+const noteList    = document.getElementById('noteList');
+const noteCount   = document.getElementById('noteCount');
+const emptyState  = document.getElementById('emptyState');
+const editorPanel = document.getElementById('editorPanel');
+const noteTitle   = document.getElementById('noteTitle');
+const noteContent = document.getElementById('noteContent');
+const noteTag     = document.getElementById('noteTag');
+const saveInd     = document.getElementById('saveIndicator');
+
+function renderList() {
+  const notes = loadNotes();
+  const q     = searchQ.toLowerCase();
+  const filtered = q ? notes.filter(n => n.title.toLowerCase().includes(q) || n.content.toLowerCase().includes(q)) : notes;
+  noteCount.textContent = `${notes.length} not`;
+  if (!filtered.length) {
+    noteList.innerHTML = `<div class="sb-empty">${q ? '🔍 Sonuç bulunamadı' : '📝 Henüz not yok'}</div>`;
+    return;
+  }
+  noteList.innerHTML = filtered
+    .sort((a,b) => b.updatedAt - a.updatedAt)
+    .map(n => `
+      <div class="note-item${n.id===activeId?' active':''}" data-id="${n.id}">
+        <div class="ni-title">${n.title || 'Başlıksız not'}</div>
+        <div class="ni-preview">${n.content.replace(/\n/g,' ').slice(0,60) || 'İçerik yok...'}</div>
+        <div class="ni-meta">
+          <span class="ni-date">${relTime(n.updatedAt)}</span>
+          <span class="ni-tag tag-${n.tag}">${TAG_LABELS[n.tag]||'Genel'}</span>
+        </div>
+        <button class="ni-del" data-id="${n.id}" title="Sil">🗑</button>
+      </div>`).join('');
+
+  noteList.querySelectorAll('.note-item').forEach(item => {
+    item.addEventListener('click', e => {
+      if (e.target.closest('.ni-del')) return;
+      openNote(item.dataset.id);
+    });
+  });
+  noteList.querySelectorAll('.ni-del').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); deleteNote(btn.dataset.id); });
+  });
+}
+
+function openNote(id) {
+  const notes = loadNotes();
+  const note  = notes.find(n => n.id === id);
+  if (!note) return;
+  activeId = id;
+  noteTitle.value   = note.title;
+  noteContent.value = note.content;
+  noteTag.value     = note.tag || 'genel';
+  emptyState.style.display  = 'none';
+  editorPanel.style.display = 'flex';
+  renderList();
+  noteContent.focus();
+}
+
+function newNote() {
+  const note = { id: Date.now().toString(), title: '', content: '', tag: 'genel', createdAt: Date.now(), updatedAt: Date.now() };
+  const notes = loadNotes();
+  notes.unshift(note);
+  saveNotes(notes);
+  openNote(note.id);
+  renderList();
+  noteTitle.focus();
+}
+
+function deleteNote(id) {
+  if (!confirm('Bu notu silmek istediğinden emin misin?')) return;
+  const notes = loadNotes().filter(n => n.id !== id);
+  saveNotes(notes);
+  if (activeId === id) {
+    activeId = null;
+    emptyState.style.display  = 'flex';
+    editorPanel.style.display = 'none';
+  }
+  renderList();
+  showToast('🗑 Not silindi');
+}
+
+function autoSave() {
+  if (!activeId) return;
+  clearTimeout(saveTimer);
+  saveInd.textContent = '⏳ Kaydediliyor...';
+  saveTimer = setTimeout(() => {
+    const notes = loadNotes();
+    const idx   = notes.findIndex(n => n.id === activeId);
+    if (idx > -1) {
+      notes[idx].title     = noteTitle.value;
+      notes[idx].content   = noteContent.value;
+      notes[idx].tag       = noteTag.value;
+      notes[idx].updatedAt = Date.now();
+      saveNotes(notes);
+      renderList();
+      saveInd.textContent = '✓ Kaydedildi';
+    }
+  }, 800);
+}
+
+function relTime(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 60000)    return 'Az önce';
+  if (diff < 3600000)  return `${Math.floor(diff/60000)} dk önce`;
+  if (diff < 86400000) return `${Math.floor(diff/3600000)} saat önce`;
+  return new Date(ts).toLocaleDateString('tr');
+}
+
+// Listeners
+document.getElementById('btnNew').addEventListener('click', newNote);
+noteTitle.addEventListener('input', autoSave);
+noteContent.addEventListener('input', autoSave);
+noteTag.addEventListener('change', autoSave);
+document.getElementById('searchInput').addEventListener('input', e => { searchQ = e.target.value; renderList(); });
+
+// Format buttons
+document.getElementById('btnBold').addEventListener('click', () => wrapText('**', '**'));
+document.getElementById('btnItalic').addEventListener('click', () => wrapText('_', '_'));
+document.getElementById('btnBullet').addEventListener('click', () => {
+  const ta = noteContent;
+  const start = ta.selectionStart, lines = ta.value.substring(0, start).split('\n');
+  const pos = ta.value.lastIndexOf('\n', start-1) + 1;
+  ta.value = ta.value.substring(0, pos) + '• ' + ta.value.substring(pos);
+  ta.selectionStart = ta.selectionEnd = start + 2;
+  autoSave();
+});
+document.getElementById('btnCopy').addEventListener('click', () => {
+  if (!noteContent.value) return;
+  navigator.clipboard.writeText(noteContent.value);
+  showToast('📋 Not kopyalandı!');
+});
+
+function wrapText(before, after) {
+  const ta    = noteContent;
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel   = ta.value.substring(start, end) || 'metin';
+  ta.value    = ta.value.substring(0, start) + before + sel + after + ta.value.substring(end);
+  ta.selectionStart = start + before.length;
+  ta.selectionEnd   = start + before.length + sel.length;
+  ta.focus();
+  autoSave();
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 's') { e.preventDefault(); autoSave(); showToast('✓ Kaydedildi!'); }
+  if (e.ctrlKey && e.key === 'b') { e.preventDefault(); wrapText('**','**'); }
+  if (e.ctrlKey && e.key === 'i') { e.preventDefault(); wrapText('_','_'); }
+  if (e.ctrlKey && e.key === 'n') { e.preventDefault(); newNote(); }
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Init
+renderList();
+// Son notu aç
+const notes = loadNotes();
+if (notes.length) openNote(notes.sort((a,b)=>b.updatedAt-a.updatedAt)[0].id);
+</script>
+</body>
+</html>

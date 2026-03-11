@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Bütçe</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--inc:#34d399;--exp:#f87171;--a1:#34d399;--a2:#059669;--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 20% 20%,rgba(52,211,153,0.06) 0%,transparent 50%),
+             radial-gradient(ellipse at 80% 80%,rgba(248,113,113,0.05) 0%,transparent 50%)}
+
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--inc),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--inc),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:#000}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
+.btn-add{padding:8px 18px;background:linear-gradient(135deg,var(--inc),var(--a2));border:none;border-radius:999px;color:#000;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s;box-shadow:0 4px 14px rgba(52,211,153,.25)}
+.btn-add:hover{opacity:.85}
+
+main{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:36px 24px 80px;width:100%}
+
+/* Summary cards */
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+.sum-card{border-radius:16px;padding:22px 24px;border:1px solid var(--border)}
+.sum-card.balance{background:linear-gradient(135deg,rgba(129,140,248,.1),rgba(79,110,247,.07));border-color:rgba(129,140,248,.2)}
+.sum-card.income{background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(5,150,105,.05));border-color:rgba(52,211,153,.2)}
+.sum-card.expense{background:linear-gradient(135deg,rgba(248,113,113,.08),rgba(239,68,68,.05));border-color:rgba(248,113,113,.2)}
+.sum-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.sum-val{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1}
+.sum-val.pos{color:#34d399}
+.sum-val.neg{color:#f87171}
+.sum-val.bal{color:#818cf8}
+.sum-sub{font-size:11px;color:var(--muted);margin-top:5px}
+
+/* Bar chart */
+.chart-section{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:24px}
+.chart-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.chart-bars{display:flex;gap:8px;align-items:flex-end;height:100px}
+.bar-group{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.bar-pair{display:flex;gap:3px;align-items:flex-end;width:100%;justify-content:center}
+.bar{min-width:12px;border-radius:4px 4px 0 0;transition:height .4s ease;cursor:pointer}
+.bar:hover{opacity:.8}
+.bar.inc-bar{background:var(--inc)}
+.bar.exp-bar{background:var(--exp)}
+.bar-lbl{font-size:9px;color:var(--muted);text-align:center}
+.chart-legend{display:flex;gap:16px;margin-top:12px}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.leg-dot{width:8px;height:8px;border-radius:2px}
+
+/* Filter / tabs */
+.filter-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.filter-tabs{display:flex;gap:4px;background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:3px}
+.ftab{padding:7px 16px;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;border-radius:7px;cursor:pointer;transition:all .2s}
+.ftab.active{background:var(--s2);color:var(--text)}
+.month-sel{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;cursor:pointer}
+.month-sel option{background:#0b0d1c}
+.cat-filter{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;cursor:pointer}
+.cat-filter option{background:#0b0d1c}
+
+/* Transactions */
+.tx-list{display:flex;flex-direction:column;gap:8px}
+.tx-item{display:flex;align-items:center;gap:14px;background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:all .15s}
+.tx-item:hover{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.03)}
+.tx-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tx-info{flex:1;min-width:0}
+.tx-name{font-size:14px;font-weight:600;margin-bottom:2px}
+.tx-cat{font-size:11px;color:var(--muted)}
+.tx-date{font-size:11px;color:var(--muted);text-align:right;flex-shrink:0}
+.tx-amount{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;flex-shrink:0;min-width:90px;text-align:right}
+.tx-amount.inc{color:var(--inc)}
+.tx-amount.exp{color:var(--exp)}
+.tx-del{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:4px;border-radius:6px;transition:all .2s;opacity:0}
+.tx-item:hover .tx-del{opacity:1}
+.tx-del:hover{color:#f87171;background:rgba(248,113,113,.1)}
+.tx-empty{text-align:center;padding:48px;color:var(--muted);font-size:14px}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--s1);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:28px;width:420px;max-width:92vw;box-shadow:0 32px 80px rgba(0,0,0,.6);transform:translateY(24px) scale(.97);transition:transform .25s}
+.overlay.open .modal{transform:none}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800}
+.modal-close{background:rgba(255,255,255,.06);border:none;color:var(--muted);font-size:16px;cursor:pointer;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:rgba(248,113,113,.15);color:#f87171}
+
+/* Type toggle */
+.type-toggle{display:flex;gap:6px;margin-bottom:16px}
+.type-btn{flex:1;padding:10px;border:1px solid var(--border);background:none;border-radius:10px;color:var(--muted);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.type-btn.inc.active{background:rgba(52,211,153,.15);border-color:var(--inc);color:var(--inc)}
+.type-btn.exp.active{background:rgba(248,113,113,.15);border-color:var(--exp);color:var(--exp)}
+
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.field-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.field-input{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;width:100%}
+.field-input:focus{border-color:var(--inc)}
+.field-input::placeholder{color:var(--muted)}
+.modal-save{width:100%;padding:12px;background:linear-gradient(135deg,var(--inc),var(--a2));border:none;border-radius:10px;color:#000;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:opacity .2s;margin-top:6px}
+.modal-save:hover{opacity:.9}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1px solid rgba(52,211,153,.3);border-radius:10px;padding:11px 20px;font-size:13px;color:var(--inc);opacity:0;z-index:9999;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:640px){.summary-grid{grid-template-columns:1fr}.chart-bars{height:70px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">💰</div>
+    <span class="n-title">Highly Bütçe</span>
+  </a>
+  <div class="n-right">
+    <button class="btn-add" id="btnAdd">+ İşlem Ekle</button>
+    <a href="dashboard.html" class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
+      <span id="navName">...</span>
+    </a>
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
+  </div>
+</nav>
+
+<main>
+  <!-- Summary -->
+  <div class="summary-grid">
+    <div class="sum-card balance">
+      <div class="sum-lbl">💳 Toplam Bakiye</div>
+      <div class="sum-val bal" id="sumBalance">₺0</div>
+      <div class="sum-sub" id="sumBalanceSub">Tüm zamanlar</div>
+    </div>
+    <div class="sum-card income">
+      <div class="sum-lbl">📈 Bu Ay Gelir</div>
+      <div class="sum-val pos" id="sumIncome">₺0</div>
+      <div class="sum-sub" id="sumIncomeSub">0 işlem</div>
+    </div>
+    <div class="sum-card expense">
+      <div class="sum-lbl">📉 Bu Ay Gider</div>
+      <div class="sum-val neg" id="sumExpense">₺0</div>
+      <div class="sum-sub" id="sumExpenseSub">0 işlem</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-section">
+    <div class="chart-title">
+      Son 6 Ay
+      <div class="chart-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:var(--inc)"></div>Gelir</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--exp)"></div>Gider</div>
+      </div>
+    </div>
+    <div class="chart-bars" id="chartBars"></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-row">
+    <div class="filter-tabs">
+      <button class="ftab active" data-filter="all">Tümü</button>
+      <button class="ftab" data-filter="income">Gelir</button>
+      <button class="ftab" data-filter="expense">Gider</button>
+    </div>
+    <select class="month-sel" id="monthFilter">
+      <option value="all">Tüm Aylar</option>
+    </select>
+    <select class="cat-filter" id="catFilter">
+      <option value="all">Tüm Kategoriler</option>
+    </select>
+  </div>
+
+  <!-- Transactions -->
+  <div class="tx-list" id="txList"></div>
+</main>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title">İşlem Ekle</span>
+      <button class="modal-close" id="btnClose">✕</button>
+    </div>
+    <div class="type-toggle">
+      <button class="type-btn inc active" data-type="income">📈 Gelir</button>
+      <button class="type-btn exp" data-type="expense">📉 Gider</button>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Açıklama *</div>
+      <input class="field-input" id="fDesc" placeholder="Maaş, kira, market..."/>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Tutar (₺) *</div>
+      <input class="field-input" id="fAmount" type="number" min="0" placeholder="0.00"/>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Kategori</div>
+      <select class="field-input" id="fCat">
+        <option value="Maaş">💼 Maaş</option>
+        <option value="Freelance">💻 Freelance</option>
+        <option value="Yatırım">📊 Yatırım</option>
+        <option value="Diğer Gelir">💰 Diğer Gelir</option>
+        <option value="Market">🛒 Market</option>
+        <option value="Kira">🏠 Kira</option>
+        <option value="Fatura">📄 Fatura</option>
+        <option value="Ulaşım">🚗 Ulaşım</option>
+        <option value="Yemek">🍔 Yemek</option>
+        <option value="Eğlence">🎬 Eğlence</option>
+        <option value="Sağlık">🏥 Sağlık</option>
+        <option value="Giyim">👕 Giyim</option>
+        <option value="Diğer Gider">💸 Diğer Gider</option>
+      </select>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Tarih</div>
+      <input class="field-input" id="fDate" type="date"/>
+    </div>
+    <button class="modal-save" id="btnSave">Kaydet</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Auth
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
+document.getElementById('navName').textContent = user.name.split(' ')[0];
+
+// Storage
+function loadTx()  { try { return JSON.parse(localStorage.getItem('highly_budget') || '[]'); } catch { return []; } }
+function saveTx(a) { localStorage.setItem('highly_budget', JSON.stringify(a)); }
+
+// State
+let typeMode   = 'income';
+let filterType = 'all';
+let filterMonth= 'all';
+let filterCat  = 'all';
+
+const MONTHS = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+const CAT_ICONS = {
+  'Maaş':'💼','Freelance':'💻','Yatırım':'📊','Diğer Gelir':'💰',
+  'Market':'🛒','Kira':'🏠','Fatura':'📄','Ulaşım':'🚗',
+  'Yemek':'🍔','Eğlence':'🎬','Sağlık':'🏥','Giyim':'👕','Diğer Gider':'💸'
+};
+
+function fmt(n) { return '₺' + n.toLocaleString('tr-TR', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+// Summary
+function renderSummary() {
+  const txs = loadTx();
+  const now  = new Date();
+  const thisMonth = txs.filter(t => {
+    const d = new Date(t.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const totalBalance = txs.reduce((s,t) => t.type==='income' ? s+t.amount : s-t.amount, 0);
+  const monthInc     = thisMonth.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const monthExp     = thisMonth.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+
+  document.getElementById('sumBalance').textContent    = fmt(totalBalance);
+  document.getElementById('sumIncome').textContent     = fmt(monthInc);
+  document.getElementById('sumExpense').textContent    = fmt(monthExp);
+  document.getElementById('sumIncomeSub').textContent  = `${thisMonth.filter(t=>t.type==='income').length} işlem`;
+  document.getElementById('sumExpenseSub').textContent = `${thisMonth.filter(t=>t.type==='expense').length} işlem`;
+}
+
+// Chart
+function renderChart() {
+  const txs = loadTx();
+  const now  = new Date();
+  let html = '';
+  const maxVal = Math.max(1, ...Array.from({length:6}, (_,i) => {
+    const m = new Date(now.getFullYear(), now.getMonth()-5+i, 1);
+    const mTxs = txs.filter(t => { const d=new Date(t.date); return d.getMonth()===m.getMonth()&&d.getFullYear()===m.getFullYear(); });
+    return Math.max(mTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0), mTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0));
+  }));
+
+  for (let i=0;i<6;i++) {
+    const m    = new Date(now.getFullYear(), now.getMonth()-5+i, 1);
+    const mTxs = txs.filter(t => { const d=new Date(t.date); return d.getMonth()===m.getMonth()&&d.getFullYear()===m.getFullYear(); });
+    const inc  = mTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const exp  = mTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const ih   = Math.max(4, Math.round((inc/maxVal)*90));
+    const eh   = Math.max(4, Math.round((exp/maxVal)*90));
+    html += `<div class="bar-group">
+      <div class="bar-pair">
+        <div class="bar inc-bar" style="height:${inc?ih:4}px" title="Gelir: ${fmt(inc)}"></div>
+        <div class="bar exp-bar" style="height:${exp?eh:4}px" title="Gider: ${fmt(exp)}"></div>
+      </div>
+      <div class="bar-lbl">${MONTHS[m.getMonth()]}</div>
+    </div>`;
+  }
+  document.getElementById('chartBars').innerHTML = html;
+}
+
+// Filters
+function populateFilters() {
+  const txs  = loadTx();
+  const months = [...new Set(txs.map(t => t.date.slice(0,7)))].sort().reverse();
+  const cats   = [...new Set(txs.map(t => t.category))];
+  const mSel = document.getElementById('monthFilter');
+  const cSel = document.getElementById('catFilter');
+  mSel.innerHTML = `<option value="all">Tüm Aylar</option>` + months.map(m => {
+    const d = new Date(m+'-01'); return `<option value="${m}">${MONTHS[d.getMonth()]} ${d.getFullYear()}</option>`;
+  }).join('');
+  cSel.innerHTML = `<option value="all">Tüm Kategoriler</option>` + cats.map(c => `<option value="${c}">${CAT_ICONS[c]||'•'} ${c}</option>`).join('');
+  mSel.value = filterMonth;
+  cSel.value = filterCat;
+}
+
+// Transactions list
+function renderTx() {
+  let txs = loadTx();
+  if (filterType !== 'all') txs = txs.filter(t => t.type === filterType);
+  if (filterMonth !== 'all') txs = txs.filter(t => t.date.startsWith(filterMonth));
+  if (filterCat !== 'all') txs = txs.filter(t => t.category === filterCat);
+  txs.sort((a,b) => new Date(b.date) - new Date(a.date));
+  const el = document.getElementById('txList');
+  if (!txs.length) { el.innerHTML = `<div class="tx-empty">💸 İşlem bulunamadı</div>`; return; }
+  el.innerHTML = txs.map(t => `
+    <div class="tx-item">
+      <div class="tx-icon" style="background:${t.type==='income'?'rgba(52,211,153,.12)':'rgba(248,113,113,.12)'}">${CAT_ICONS[t.category]||'💳'}</div>
+      <div class="tx-info">
+        <div class="tx-name">${t.desc}</div>
+        <div class="tx-cat">${t.category}</div>
+      </div>
+      <div class="tx-date">${new Date(t.date).toLocaleDateString('tr')}</div>
+      <div class="tx-amount ${t.type==='income'?'inc':'exp'}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
+      <button class="tx-del" data-id="${t.id}">🗑</button>
+    </div>`).join('');
+  el.querySelectorAll('.tx-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      saveTx(loadTx().filter(t => t.id !== btn.dataset.id));
+      renderAll();
+      showToast('🗑 Silindi');
+    });
+  });
+}
+
+function renderAll() { renderSummary(); renderChart(); populateFilters(); renderTx(); }
+
+// Modal
+function openModal() {
+  document.getElementById('fDesc').value   = '';
+  document.getElementById('fAmount').value = '';
+  document.getElementById('fDate').value   = new Date().toISOString().slice(0,10);
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(() => document.getElementById('fDesc').focus(), 300);
+}
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+
+document.getElementById('btnAdd').addEventListener('click', openModal);
+document.getElementById('btnClose').addEventListener('click', closeModal);
+document.getElementById('overlay').addEventListener('click', e => { if(e.target===document.getElementById('overlay'))closeModal(); });
+
+// Type toggle
+document.querySelectorAll('.type-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    typeMode = btn.dataset.type;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+document.getElementById('btnSave').addEventListener('click', () => {
+  const desc   = document.getElementById('fDesc').value.trim();
+  const amount = parseFloat(document.getElementById('fAmount').value);
+  const date   = document.getElementById('fDate').value;
+  const cat    = document.getElementById('fCat').value;
+  if (!desc)        { showToast('Açıklama gir!'); return; }
+  if (!amount || amount <= 0) { showToast('Geçerli tutar gir!'); return; }
+  if (!date)        { showToast('Tarih seç!'); return; }
+  const txs = loadTx();
+  txs.push({ id: Date.now().toString(), type: typeMode, desc, amount, category: cat, date });
+  saveTx(txs);
+  closeModal();
+  renderAll();
+  showToast(typeMode === 'income' ? '📈 Gelir eklendi!' : '📉 Gider eklendi!');
+});
+
+// Filters
+document.querySelectorAll('.ftab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    filterType = tab.dataset.filter;
+    document.querySelectorAll('.ftab').forEach(t => t.classList.toggle('active', t===tab));
+    renderTx();
+  });
+});
+document.getElementById('monthFilter').addEventListener('change', e => { filterMonth = e.target.value; renderTx(); });
+document.getElementById('catFilter').addEventListener('change', e => { filterCat = e.target.value; renderTx(); });
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Init
+renderAll();
+</script>
+</body>
+</html>
