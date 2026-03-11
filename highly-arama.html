@@ -1,365 +1,282 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Highly Arama</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #06060f;
-      --surface: #0c0c1e;
-      --surface2: #0f0f22;
-      --border: rgba(255,255,255,0.07);
-      --accent: #a78bfa;
-      --accent2: #4f6ef7;
-      --text: #e8e8ff;
-      --muted: #52527a;
-    }
-    body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Arama</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#6366f1;--a2:#4f46e5;--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 50% 20%,rgba(99,102,241,0.08) 0%,transparent 50%)}
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
 
-    .bg-glow { position:fixed;pointer-events:none;border-radius:50%;filter:blur(100px);opacity:0.1;z-index:0; }
-    .bg-glow.a { width:600px;height:600px;background:#a78bfa;top:-200px;left:-100px; }
-    .bg-glow.b { width:400px;height:400px;background:#4f6ef7;bottom:-100px;right:-100px; }
+main{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:40px 24px 80px}
 
-    /* Nav */
-    nav {
-      position:sticky;top:0;z-index:100;
-      display:flex;align-items:center;gap:12px;
-      padding:12px 28px;
-      background:rgba(6,6,15,0.92);
-      border-bottom:1px solid var(--border);
-      backdrop-filter:blur(20px);
-    }
-    .nav-logo { display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text);flex-shrink:0; }
-    .nav-logo-icon { width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff; }
-    .nav-logo-text { font-family:'Syne',sans-serif;font-weight:800;font-size:17px; }
+/* Search box */
+.search-wrap{margin-bottom:28px}
+.search-box{display:flex;align-items:center;gap:10px;background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:14px 18px;transition:border-color .2s;margin-bottom:14px}
+.search-box:focus-within{border-color:rgba(99,102,241,.4)}
+.search-icon{font-size:18px;flex-shrink:0;color:var(--muted)}
+.search-input{flex:1;background:none;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;outline:none}
+.search-input::placeholder{color:var(--muted)}
+.search-btn{padding:9px 22px;background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:10px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+.search-btn:hover{opacity:.85}
+.search-btn:disabled{opacity:.5;cursor:not-allowed}
 
-    .nav-search-wrap { flex:1;max-width:640px;position:relative; }
-    .nav-search { width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:10px 48px 10px 18px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s; }
-    .nav-search:focus { border-color:var(--accent);box-shadow:0 0 0 3px rgba(167,139,250,0.12); }
-    .nav-search::placeholder { color:var(--muted); }
-    .nav-search-btn { position:absolute;right:6px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:transform 0.15s,box-shadow 0.15s; }
-    .nav-search-btn:hover { transform:translateY(-50%) scale(1.08);box-shadow:0 4px 12px rgba(167,139,250,0.4); }
+/* Tabs */
+.tabs{display:flex;gap:6px;background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content}
+.tab{padding:8px 18px;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;border-radius:9px;cursor:pointer;transition:all .2s}
+.tab.active{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
 
-    .nav-right { display:flex;align-items:center;gap:10px;margin-left:auto; }
-    .nav-user { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px; }
-    .nav-avatar { width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px; }
-    .nav-back { color:var(--muted);text-decoration:none;font-size:13px;transition:color 0.2s; }
-    .nav-back:hover { color:var(--text); }
+/* Results */
+.results{margin-top:28px}
+.results-meta{font-size:12px;color:var(--muted);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 
-    /* Hero */
-    .hero { position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 60px);padding:40px 24px;text-align:center;transition:all 0.4s; }
-    .hero.hidden { display:none; }
+/* Web results */
+.web-result{padding:18px 0;border-bottom:1px solid var(--border)}
+.web-result:last-child{border-bottom:none}
+.wr-source{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.wr-favicon{width:16px;height:16px;border-radius:3px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.wr-domain{font-size:12px;color:var(--muted)}
+.wr-title{font-size:16px;font-weight:600;color:#a78bfa;text-decoration:none;display:block;margin-bottom:5px;line-height:1.4;transition:color .2s}
+.wr-title:hover{color:#c4b5fd}
+.wr-snippet{font-size:13px;color:var(--muted);line-height:1.6}
+.wr-snippet em{color:var(--text);font-style:normal;font-weight:500}
 
-    .hero-badge { display:inline-flex;align-items:center;gap:8px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:999px;padding:6px 16px;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:28px; }
-    .hero h1 { font-family:'Syne',sans-serif;font-size:clamp(48px,8vw,88px);font-weight:800;letter-spacing:-3px;line-height:1;margin-bottom:16px; }
-    .hero h1 span { background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-    .hero p { color:var(--muted);font-size:16px;font-weight:300;margin-bottom:40px; }
+/* News results */
+.news-result{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}
+.news-result:last-child{border-bottom:none}
+.nr-img{width:80px;height:60px;border-radius:10px;background:var(--s2);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px}
+.nr-img img{width:100%;height:100%;object-fit:cover}
+.nr-info{flex:1;min-width:0}
+.nr-title{font-size:14px;font-weight:600;color:#a78bfa;text-decoration:none;display:block;margin-bottom:5px;line-height:1.4;transition:color .2s}
+.nr-title:hover{color:#c4b5fd}
+.nr-meta{font-size:11px;color:var(--muted);margin-bottom:4px}
+.nr-snippet{font-size:12px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-    .hero-search-wrap { position:relative;width:100%;max-width:580px; }
-    .hero-search { width:100%;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 60px 18px 22px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;box-shadow:0 20px 60px rgba(0,0,0,0.4); }
-    .hero-search:focus { border-color:var(--accent);box-shadow:0 0 0 4px rgba(167,139,250,0.12),0 20px 60px rgba(0,0,0,0.4); }
-    .hero-search::placeholder { color:var(--muted); }
-    .hero-search-btn { position:absolute;right:10px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:transform 0.15s,box-shadow 0.15s; }
-    .hero-search-btn:hover { transform:translateY(-50%) scale(1.06);box-shadow:0 6px 20px rgba(167,139,250,0.5); }
+/* Image results */
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.img-item{aspect-ratio:4/3;border-radius:10px;overflow:hidden;cursor:pointer;background:var(--s2);transition:transform .2s}
+.img-item:hover{transform:scale(1.03)}
+.img-item img{width:100%;height:100%;object-fit:cover}
 
-    .hero-tips { display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;justify-content:center; }
-    .tip-chip { background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;transition:all 0.2s; }
-    .tip-chip:hover { background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.3);color:var(--accent); }
+/* Empty / Loading */
+.state-center{text-align:center;padding:60px 20px;color:var(--muted)}
+.state-icon{font-size:48px;margin-bottom:16px;opacity:.5}
+.state-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
+.state-sub{font-size:13px;line-height:1.6}
+.loading-dots{display:flex;justify-content:center;gap:6px;margin-top:20px}
+.loading-dots span{width:8px;height:8px;border-radius:50%;background:var(--a1);animation:ld .7s ease-in-out infinite}
+.loading-dots span:nth-child(2){animation-delay:.15s}
+.loading-dots span:nth-child(3){animation-delay:.3s}
+@keyframes ld{0%,60%,100%{transform:scale(.6);opacity:.4}30%{transform:scale(1);opacity:1}}
 
-    .privacy-row { display:flex;gap:20px;margin-top:36px;flex-wrap:wrap;justify-content:center; }
-    .privacy-item { display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted); }
-    .privacy-item span { color:var(--accent); }
-
-    /* Results */
-    .results-page { position:relative;z-index:2;max-width:780px;margin:0 auto;padding:28px 24px 80px;display:none; }
-    .results-page.show { display:block; }
-
-    .result-tabs { display:flex;gap:4px;margin-bottom:20px; }
-    .rtab { padding:8px 18px;border-radius:999px;background:transparent;border:none;color:var(--muted);font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s; }
-    .rtab.active { background:rgba(167,139,250,0.12);color:var(--accent); }
-
-    .result-info { font-size:12px;color:var(--muted);margin-bottom:20px; }
-
-    /* Answer box */
-    .answer-box { background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(79,110,247,0.06));border:1px solid rgba(167,139,250,0.2);border-radius:16px;padding:20px 24px;margin-bottom:24px;animation:fadeUp 0.3s ease; }
-    .answer-label { font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px; }
-    .answer-text { font-size:15px;line-height:1.6; }
-
-    /* Result card */
-    .result-card { padding:18px 0;border-bottom:1px solid var(--border);animation:fadeUp 0.3s ease both; }
-    .result-card:last-child { border-bottom:none; }
-    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
-
-    .result-url { display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:5px; }
-    .result-favicon { width:16px;height:16px;border-radius:4px;background:rgba(167,139,250,0.15);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;overflow:hidden; }
-    .result-favicon img { width:100%;height:100%;object-fit:cover;border-radius:4px; }
-    .result-title { font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--accent);margin-bottom:5px;cursor:pointer;transition:color 0.2s;text-decoration:none;display:block; }
-    .result-title:hover { color:#c4b5fd;text-decoration:underline; }
-    .result-snippet { font-size:14px;color:#9ca3af;line-height:1.6; }
-    .result-snippet em { color:var(--text);font-style:normal;font-weight:500; }
-
-    /* Loading */
-    .loading-wrap { text-align:center;padding:60px;display:none; }
-    .loading-wrap.show { display:block; }
-    .dot-loader { display:flex;gap:8px;justify-content:center;margin-bottom:16px; }
-    .dot { width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotBounce 1.2s ease infinite; }
-    .dot:nth-child(2){animation-delay:0.2s} .dot:nth-child(3){animation-delay:0.4s}
-    @keyframes dotBounce{0%,80%,100%{transform:scale(0.7);opacity:0.4}40%{transform:scale(1);opacity:1}}
-
-    .no-results { text-align:center;padding:60px 24px;display:none; }
-    .no-results.show { display:block; }
-
-    /* Image results */
-    .image-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:8px; }
-    .image-item { border-radius:12px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:transform 0.2s,border-color 0.2s;aspect-ratio:16/9;background:var(--surface2); }
-    .image-item:hover { transform:scale(1.02);border-color:rgba(167,139,250,0.3); }
-    .image-item img { width:100%;height:100%;object-fit:cover; }
-
-    /* News */
-    .news-card { display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border);animation:fadeUp 0.3s ease both; }
-    .news-card:last-child { border-bottom:none; }
-    .news-img { width:90px;height:64px;border-radius:10px;object-fit:cover;background:var(--surface2);flex-shrink:0; }
-    .news-title { font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--accent);text-decoration:none;display:block;margin-bottom:4px;line-height:1.3; }
-    .news-title:hover { color:#c4b5fd; }
-    .news-source { font-size:11px;color:var(--muted); }
-    .news-snippet { font-size:13px;color:#9ca3af;margin-top:4px;line-height:1.4; }
-  </style>
+/* Related */
+.related{margin-top:28px}
+.related-title{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-weight:700}
+.related-chips{display:flex;flex-wrap:wrap;gap:8px}
+.related-chip{padding:7px 14px;background:var(--s1);border:1px solid var(--border);border-radius:999px;font-size:12px;cursor:pointer;transition:all .2s}
+.related-chip:hover{border-color:rgba(99,102,241,.3);color:#a78bfa;background:rgba(99,102,241,.06)}
+</style>
 </head>
 <body>
-
-<div class="bg-glow a"></div>
-<div class="bg-glow b"></div>
-
-<!-- Nav -->
-<nav id="nav" style="display:none;">
-  <a href="dashboard.html" class="nav-logo">
-    <div class="nav-logo-icon">H</div>
-    <span class="nav-logo-text">Highly</span>
+<nav>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">🔍</div>
+    <span class="n-title">Highly Arama</span>
   </a>
-  <div class="nav-search-wrap">
-    <input class="nav-search" id="navSearch" type="text" placeholder="Ara..."/>
-    <button class="nav-search-btn" onclick="doSearch('nav')">🔍</button>
-  </div>
-  <div class="nav-right">
-    <a href="dashboard.html" class="nav-user">
-      <div class="nav-avatar" id="navAvatar">?</div>
+  <div class="n-right">
+    <a href="dashboard.html" class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
       <span id="navName">...</span>
     </a>
-    <a href="dashboard.html" class="nav-back">← Dashboard</a>
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
   </div>
 </nav>
 
-<!-- Hero -->
-<div class="hero" id="hero">
-  <div class="hero-badge">✦ Reklamsız Arama</div>
-  <h1>Highly<br><span>Arama</span></h1>
-  <p>Hızlı, temiz ve gizlilik odaklı. Seni takip etmiyoruz.</p>
-
-  <div class="hero-search-wrap">
-    <input class="hero-search" id="heroSearch" type="text" placeholder="Neyi merak ediyorsun?"/>
-    <button class="hero-search-btn" onclick="doSearch('hero')">🔍</button>
+<main>
+  <div class="search-wrap">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" placeholder="Ne aramak istiyorsun?" autofocus/>
+      <button class="search-btn" id="searchBtn">Ara</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-type="search">🌐 Web</button>
+      <button class="tab" data-type="news">📰 Haberler</button>
+      <button class="tab" data-type="images">🖼 Görseller</button>
+    </div>
   </div>
 
-  <div class="hero-tips">
-    <div class="tip-chip" onclick="quickSearch('hava durumu İstanbul')">🌤 Hava durumu İstanbul</div>
-    <div class="tip-chip" onclick="quickSearch('Python nasıl öğrenilir')">💻 Python öğren</div>
-    <div class="tip-chip" onclick="quickSearch('en iyi filmler 2024')">🎬 En iyi filmler</div>
-    <div class="tip-chip" onclick="quickSearch('Türkiye nüfusu 2024')">🇹🇷 Türkiye nüfusu</div>
+  <div id="resultsArea">
+    <div class="state-center">
+      <div class="state-icon">🔍</div>
+      <div class="state-title">Highly Arama</div>
+      <div class="state-sub">Web'de, haberlerde ve görsellerde ara.<br>Cloudflare Worker ile güvenli.</div>
+    </div>
   </div>
-
-  <div class="privacy-row">
-    <div class="privacy-item"><span>🚫</span> Reklam yok</div>
-    <div class="privacy-item"><span>🔒</span> Takip yok</div>
-    <div class="privacy-item"><span>⚡</span> Hızlı sonuçlar</div>
-    <div class="privacy-item"><span>🆓</span> Ücretsiz</div>
-  </div>
-</div>
-
-<!-- Results -->
-<div class="results-page" id="resultsPage">
-  <div class="result-tabs">
-    <button class="rtab active" id="tabWeb" onclick="switchResultTab('web')">🌐 Web</button>
-    <button class="rtab" id="tabImage" onclick="switchResultTab('image')">🖼 Görseller</button>
-    <button class="rtab" id="tabNews" onclick="switchResultTab('news')">📰 Haberler</button>
-  </div>
-  <div class="result-info" id="resultInfo"></div>
-  <div class="loading-wrap" id="loadingWrap">
-    <div class="dot-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-    <p style="color:var(--muted);font-size:13px;">Sonuçlar yükleniyor...</p>
-  </div>
-  <div class="no-results" id="noResults">
-    <div style="font-size:48px;margin-bottom:16px">🔍</div>
-    <h3 style="font-family:Syne,sans-serif;margin-bottom:8px">Sonuç bulunamadı</h3>
-    <p style="color:var(--muted);font-size:14px">Farklı anahtar kelimeler deneyin.</p>
-  </div>
-  <div id="resultsList"></div>
-</div>
+</main>
 
 <script>
-  // ⚠️ Buraya Serper API key'ini yapıştır
-  const SERPER_KEY = 'BURAYA_SERPER_KEY';
+const WORKER = 'https://highly-ai-proxy.emrir41.workers.dev/search';
 
-  // Giriş kontrolü & kullanıcı bilgisi
-  const saved = localStorage.getItem('highly_user');
-  if (!saved) {
-    window.location.href = 'highly-id.html';
-  } else {
-    const user = JSON.parse(saved);
-    document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
-    document.getElementById('navName').textContent = user.name.split(' ')[0];
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
+document.getElementById('navName').textContent   = user.name.split(' ')[0];
+
+let activeType = 'search';
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeType = tab.dataset.type;
+    const q = document.getElementById('searchInput').value.trim();
+    if (q) doSearch(q, activeType);
+  });
+});
+
+document.getElementById('searchBtn').addEventListener('click', () => {
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) doSearch(q, activeType);
+});
+
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const q = e.target.value.trim();
+    if (q) doSearch(q, activeType);
   }
+});
 
-  let currentQuery = '';
-  let currentTab = 'web';
-  let allResults = {};
+function showLoading() {
+  document.getElementById('resultsArea').innerHTML = `
+    <div class="state-center">
+      <div class="state-icon">🔍</div>
+      <div class="state-title">Aranıyor...</div>
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>`;
+}
 
-  document.getElementById('heroSearch').addEventListener('keydown', e => { if(e.key==='Enter') doSearch('hero'); });
-  document.getElementById('navSearch').addEventListener('keydown',  e => { if(e.key==='Enter') doSearch('nav'); });
+async function doSearch(q, type) {
+  showLoading();
+  document.getElementById('searchBtn').disabled = true;
+  try {
+    const body = { q };
+    if (type === 'images') body.type = 'images';
+    if (type === 'news')   body.type = 'news';
 
-  function quickSearch(q) { document.getElementById('heroSearch').value = q; doSearch('hero'); }
-
-  async function doSearch(from) {
-    const input = from==='hero' ? document.getElementById('heroSearch') : document.getElementById('navSearch');
-    const q = input.value.trim();
-    if (!q) return;
-    currentQuery = q;
-    showResultsView(q);
-    await fetchAll(q);
-  }
-
-  function showResultsView(q) {
-    document.getElementById('hero').classList.add('hidden');
-    document.getElementById('nav').style.display = 'flex';
-    document.getElementById('navSearch').value = q;
-    document.getElementById('resultsPage').classList.add('show');
-    document.getElementById('loadingWrap').classList.add('show');
-    document.getElementById('resultsList').innerHTML = '';
-    document.getElementById('noResults').classList.remove('show');
-    document.getElementById('resultInfo').textContent = '';
-  }
-
-  async function fetchAll(q) {
-    const t0 = Date.now();
-    try {
-      // Web + Haberler + Görseller aynı anda
-      const [webRes, imageRes, newsRes] = await Promise.all([
-        fetch('https://google.serper.dev/search', {
-          method:'POST',
-          headers:{ 'X-API-KEY': SERPER_KEY, 'Content-Type':'application/json' },
-          body: JSON.stringify({ q, gl:'tr', hl:'tr', num:10 })
-        }),
-        fetch('https://google.serper.dev/images', {
-          method:'POST',
-          headers:{ 'X-API-KEY': SERPER_KEY, 'Content-Type':'application/json' },
-          body: JSON.stringify({ q, gl:'tr', hl:'tr', num:12 })
-        }),
-        fetch('https://google.serper.dev/news', {
-          method:'POST',
-          headers:{ 'X-API-KEY': SERPER_KEY, 'Content-Type':'application/json' },
-          body: JSON.stringify({ q, gl:'tr', hl:'tr', num:8 })
-        })
-      ]);
-
-      allResults.web   = await webRes.json();
-      allResults.image = await imageRes.json();
-      allResults.news  = await newsRes.json();
-
-      const elapsed = ((Date.now()-t0)/1000).toFixed(2);
-      const total = (allResults.web.organic||[]).length;
-
-      document.getElementById('loadingWrap').classList.remove('show');
-      document.getElementById('resultInfo').textContent = `"${q}" için yaklaşık ${total}+ sonuç (${elapsed} saniye)`;
-
-      renderTab(currentTab);
-
-    } catch(e) {
-      document.getElementById('loadingWrap').classList.remove('show');
-      document.getElementById('noResults').classList.add('show');
-    }
-  }
-
-  function switchResultTab(tab) {
-    currentTab = tab;
-    ['web','image','news'].forEach(t => {
-      document.getElementById(`tab${t.charAt(0).toUpperCase()+t.slice(1)}`).classList.toggle('active', t===tab);
+    const res  = await fetch(WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     });
-    document.getElementById('resultsList').innerHTML = '';
-    if (Object.keys(allResults).length) renderTab(tab);
+    const data = await res.json();
+
+    if (type === 'search') renderWeb(data, q);
+    else if (type === 'news') renderNews(data, q);
+    else if (type === 'images') renderImages(data, q);
+  } catch(e) {
+    document.getElementById('resultsArea').innerHTML = `
+      <div class="state-center">
+        <div class="state-icon">❌</div>
+        <div class="state-title">Hata oluştu</div>
+        <div class="state-sub">Worker'a bağlanılamadı.<br>Serper API key'i kontrol et.</div>
+      </div>`;
+  } finally {
+    document.getElementById('searchBtn').disabled = false;
+  }
+}
+
+function renderWeb(data, q) {
+  const results = data.organic || [];
+  const related = data.relatedSearches || [];
+  if (!results.length) { showEmpty(); return; }
+
+  let html = `<div class="results-meta">~${data.searchInformation?.totalResults || results.length} sonuç</div>`;
+  results.forEach(r => {
+    const domain = r.link ? new URL(r.link).hostname.replace('www.','') : '';
+    html += `
+      <div class="web-result">
+        <div class="wr-source">
+          <div class="wr-favicon">🌐</div>
+          <span class="wr-domain">${domain}</span>
+        </div>
+        <a href="${r.link}" target="_blank" class="wr-title">${r.title || ''}</a>
+        <div class="wr-snippet">${r.snippet || ''}</div>
+      </div>`;
+  });
+
+  if (related.length) {
+    html += `<div class="related"><div class="related-title">İlgili aramalar</div><div class="related-chips">`;
+    related.slice(0,8).forEach(r => {
+      html += `<div class="related-chip" onclick="relSearch('${r.query}')">${r.query}</div>`;
+    });
+    html += `</div></div>`;
   }
 
-  function renderTab(tab) {
-    const list = document.getElementById('resultsList');
-    const q = currentQuery;
-    const qWords = q.toLowerCase().split(' ').filter(w=>w.length>2);
+  document.getElementById('resultsArea').innerHTML = `<div class="results">${html}</div>`;
+}
 
-    if (tab==='web') {
-      const data = allResults.web;
-      if (!data) return;
+function renderNews(data, q) {
+  const results = data.news || [];
+  if (!results.length) { showEmpty(); return; }
 
-      let html = '';
+  let html = `<div class="results-meta">${results.length} haber bulundu</div>`;
+  results.forEach(r => {
+    html += `
+      <div class="news-result">
+        <div class="nr-img">${r.imageUrl ? `<img src="${r.imageUrl}" alt="" onerror="this.parentElement.textContent='📰'"/>` : '📰'}</div>
+        <div class="nr-info">
+          <a href="${r.link}" target="_blank" class="nr-title">${r.title || ''}</a>
+          <div class="nr-meta">${r.source || ''} · ${r.date || ''}</div>
+          <div class="nr-snippet">${r.snippet || ''}</div>
+        </div>
+      </div>`;
+  });
 
-      // Answer box (hızlı cevap)
-      if (data.answerBox) {
-        const ab = data.answerBox;
-        html += `<div class="answer-box">
-          <div class="answer-label">⚡ Hızlı Cevap</div>
-          <div class="answer-text">${ab.answer || ab.snippet || ab.title || ''}</div>
-        </div>`;
-      }
+  document.getElementById('resultsArea').innerHTML = `<div class="results">${html}</div>`;
+}
 
-      // Knowledge graph
-      if (data.knowledgeGraph && data.knowledgeGraph.description) {
-        html += `<div class="answer-box" style="background:linear-gradient(135deg,rgba(56,189,248,0.08),rgba(79,110,247,0.06));border-color:rgba(56,189,248,0.2)">
-          <div class="answer-label" style="color:#38bdf8">📚 ${data.knowledgeGraph.title||''}</div>
-          <div class="answer-text">${data.knowledgeGraph.description}</div>
-        </div>`;
-      }
+function renderImages(data, q) {
+  const results = data.images || [];
+  if (!results.length) { showEmpty(); return; }
 
-      // Organic results
-      const organic = data.organic || [];
-      if (!organic.length && !html) { document.getElementById('noResults').classList.add('show'); return; }
+  let html = `<div class="results-meta">${results.length} görsel bulundu</div><div class="img-grid">`;
+  results.forEach(r => {
+    html += `<div class="img-item"><img src="${r.imageUrl || r.thumbnailUrl}" alt="${r.title||''}" loading="lazy" onerror="this.parentElement.style.display='none'" onclick="window.open('${r.link}','_blank')"/></div>`;
+  });
+  html += `</div>`;
 
-      html += organic.map((r,i) => {
-        let snippet = r.snippet || '';
-        qWords.forEach(w => { snippet = snippet.replace(new RegExp(`(${w})`, 'gi'), '<em>$1</em>'); });
-        const domain = (() => { try { return new URL(r.link).hostname; } catch { return r.displayLink || ''; } })();
-        return `<div class="result-card" style="animation-delay:${i*0.04}s">
-          <div class="result-url">
-            <div class="result-favicon"><img src="https://www.google.com/s2/favicons?domain=${domain}" onerror="this.style.display='none'"/></div>
-            <span>${r.displayLink || domain}</span>
-          </div>
-          <a class="result-title" href="${r.link}" target="_blank" rel="noopener">${r.title}</a>
-          <div class="result-snippet">${snippet}</div>
-        </div>`;
-      }).join('');
+  document.getElementById('resultsArea').innerHTML = `<div class="results">${html}</div>`;
+}
 
-      list.innerHTML = html;
+function showEmpty() {
+  document.getElementById('resultsArea').innerHTML = `
+    <div class="state-center">
+      <div class="state-icon">🤷</div>
+      <div class="state-title">Sonuç bulunamadı</div>
+      <div class="state-sub">Farklı bir arama terimi dene.</div>
+    </div>`;
+}
 
-    } else if (tab==='image') {
-      const images = (allResults.image && allResults.image.images) || [];
-      if (!images.length) { list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted)">Görsel bulunamadı</div>`; return; }
-      list.innerHTML = `<div class="image-grid">${images.map(img => `
-        <div class="image-item" onclick="window.open('${img.link}','_blank')">
-          <img src="${img.imageUrl}" alt="${img.title}" loading="lazy" onerror="this.parentElement.style.display='none'"/>
-        </div>`).join('')}</div>`;
-
-    } else if (tab==='news') {
-      const news = (allResults.news && allResults.news.news) || [];
-      if (!news.length) { list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted)">Haber bulunamadı</div>`; return; }
-      list.innerHTML = news.map((n,i) => `
-        <div class="news-card" style="animation-delay:${i*0.04}s">
-          ${n.imageUrl ? `<img class="news-img" src="${n.imageUrl}" alt="" loading="lazy" onerror="this.style.display='none'"/>` : ''}
-          <div>
-            <a class="news-title" href="${n.link}" target="_blank" rel="noopener">${n.title}</a>
-            <div class="news-source">${n.source} · ${n.date||''}</div>
-            <div class="news-snippet">${n.snippet||''}</div>
-          </div>
-        </div>`).join('');
-    }
-  }
+function relSearch(q) {
+  document.getElementById('searchInput').value = q;
+  doSearch(q, activeType);
+}
 </script>
 </body>
 </html>
