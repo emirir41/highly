@@ -1,558 +1,247 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Highly — Ana Sayfa</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #050610;
-      --surface: #0b0d1e;
-      --surface2: #0e1025;
-      --border: rgba(255,255,255,0.07);
-      --accent: #4f6ef7;
-      --accent2: #a78bfa;
-      --accent3: #38bdf8;
-      --accent4: #f59e0b;
-      --text: #eeeeff;
-      --muted: #5a5d7a;
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* BG */
-    .bg-mesh {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse at 15% 15%, rgba(79,110,247,0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 85% 85%, rgba(167,139,250,0.07) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(56,189,248,0.04) 0%, transparent 60%);
-    }
-    .grid-lines {
-      position: fixed; inset: 0; pointer-events: none; z-index: 1;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-      background-size: 70px 70px;
-    }
-
-    /* Nav */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 40px;
-      background: rgba(5,6,16,0.85);
-      backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
-    .nav-logo-icon {
-      width:32px; height:32px; border-radius:9px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display:flex; align-items:center; justify-content:center;
-      font-family:'Syne',sans-serif; font-weight:800; font-size:15px; color:#fff;
-    }
-    .nav-logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; }
-    .nav-right { display:flex; align-items:center; gap:14px; }
-    .nav-user {
-      display:flex; align-items:center; gap:9px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius:999px; padding:6px 14px 6px 8px;
-      cursor:pointer; transition:background 0.2s;
-      text-decoration:none; color:var(--text);
-    }
-    .nav-user:hover { background:rgba(255,255,255,0.08); }
-    .nav-avatar {
-      width:26px; height:26px; border-radius:50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display:flex; align-items:center; justify-content:center;
-      font-family:'Syne',sans-serif; font-weight:800; font-size:12px;
-    }
-    .nav-username { font-size:13px; font-weight:500; }
-    .logout-btn {
-      background:transparent; border:1px solid var(--border);
-      border-radius:999px; padding:7px 16px;
-      color:var(--muted); font-size:12px; font-weight:500;
-      font-family:'DM Sans',sans-serif;
-      cursor:pointer; transition:all 0.2s;
-    }
-    .logout-btn:hover { border-color:rgba(248,113,113,0.4); color:#f87171; }
-
-    /* Main */
-    main {
-      position: relative; z-index: 2;
-      max-width: 1100px; margin: 0 auto;
-      padding: 48px 32px 80px;
-    }
-
-    /* Welcome */
-    .welcome-row {
-      display:flex; align-items:flex-end; justify-content:space-between;
-      flex-wrap:wrap; gap:16px; margin-bottom:40px;
-      animation: fadeUp 0.6s ease both;
-    }
-    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
-
-    .welcome-text {}
-    .welcome-greeting {
-      font-size:13px; font-weight:600; letter-spacing:2px;
-      text-transform:uppercase; color:var(--accent); margin-bottom:8px;
-    }
-    .welcome-name {
-      font-family:'Syne',sans-serif;
-      font-size:clamp(32px,5vw,52px);
-      font-weight:800; letter-spacing:-2px; line-height:1;
-    }
-    .welcome-name span {
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-      background-clip:text;
-    }
-    .welcome-date { font-size:14px; color:var(--muted); margin-top:8px; font-weight:300; }
-
-    /* Clock */
-    .clock-wrap {
-      text-align:right;
-    }
-    .clock {
-      font-family:'Syne',sans-serif;
-      font-size:clamp(40px,6vw,68px);
-      font-weight:800; letter-spacing:-3px; line-height:1;
-      background: linear-gradient(135deg, var(--text), rgba(238,238,255,0.5));
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-      background-clip:text;
-    }
-    .clock-sub { font-size:12px; color:var(--muted); margin-top:4px; letter-spacing:1px; text-transform:uppercase; }
-
-    /* Motivasyon */
-    .motivation-card {
-      background: linear-gradient(135deg, rgba(79,110,247,0.1), rgba(167,139,250,0.08));
-      border: 1px solid rgba(79,110,247,0.2);
-      border-radius:20px; padding:24px 28px;
-      margin-bottom:28px;
-      animation: fadeUp 0.6s 0.1s ease both;
-      position:relative; overflow:hidden;
-    }
-    .motivation-card::before {
-      content:'❝';
-      position:absolute; right:20px; top:10px;
-      font-size:60px; color:rgba(79,110,247,0.1);
-      font-family:Georgia,serif; line-height:1;
-    }
-    .motivation-label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
-    .motivation-text { font-size:16px; font-weight:300; line-height:1.6; color:var(--text); font-style:italic; }
-    .motivation-author { font-size:12px; color:var(--muted); margin-top:8px; }
-
-    /* Grid */
-    .grid-2 {
-      display:grid; grid-template-columns:1fr 1fr;
-      gap:20px; margin-bottom:28px;
-      animation: fadeUp 0.6s 0.15s ease both;
-    }
-    .grid-3 {
-      display:grid; grid-template-columns:repeat(3,1fr);
-      gap:16px; margin-bottom:28px;
-      animation: fadeUp 0.6s 0.2s ease both;
-    }
-
-    /* Takvim widget */
-    .cal-widget {
-      background: linear-gradient(135deg, rgba(129,140,248,0.08), rgba(79,110,247,0.05));
-      border: 1px solid rgba(129,140,248,0.15);
-      border-radius:20px; padding:24px;
-      margin-bottom:28px;
-      animation: fadeUp 0.6s 0.18s ease both;
-    }
-    .cw-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:16px; }
-    .cw-label { font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#818cf8; }
-    .cw-link { font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.2s; }
-    .cw-link:hover { color:var(--accent2); }
-    .cw-body { display:flex;gap:20px;flex-wrap:wrap; }
-    .cw-today { flex:0 0 auto; }
-    .cw-today-date { font-family:'Syne',sans-serif;font-size:52px;font-weight:800;letter-spacing:-3px;line-height:1;background:linear-gradient(135deg,#818cf8,#4f6ef7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-    .cw-today-day { font-size:13px;color:var(--muted);margin-top:2px; }
-    .cw-divider { width:1px;background:var(--border); }
-    .cw-events { flex:1;min-width:0; }
-    .cw-events-title { font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px; }
-    .cw-event-item { display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);margin-bottom:6px;text-decoration:none;color:var(--text);transition:background 0.2s; }
-    .cw-event-item:hover { background:rgba(255,255,255,0.06); }
-    .cw-event-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
-    .cw-event-name { font-size:13px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-    .cw-event-time { font-size:11px;color:var(--muted); }
-    .cw-empty { font-size:13px;color:var(--muted);padding:10px 0;font-style:italic; }
-    .cw-add { display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 14px;background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);border-radius:999px;color:#818cf8;font-size:12px;text-decoration:none;transition:background 0.2s; }
-    .cw-add:hover { background:rgba(129,140,248,0.2); }
-
-    /* Hava kartı */
-    .weather-card {
-      background: linear-gradient(135deg, rgba(56,189,248,0.08), rgba(79,110,247,0.05));
-      border: 1px solid rgba(56,189,248,0.15);
-      border-radius:20px; padding:28px;
-      position:relative; overflow:hidden;
-    }
-    .weather-card::after {
-      content:''; position:absolute;
-      top:-30px; right:-30px; width:120px; height:120px;
-      background:radial-gradient(circle, rgba(56,189,248,0.1), transparent 70%);
-      border-radius:50%;
-    }
-    .wc-label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--accent3); margin-bottom:16px; }
-    .wc-main { display:flex; align-items:center; gap:16px; }
-    .wc-icon { font-size:48px; line-height:1; }
-    .wc-temp { font-family:'Syne',sans-serif; font-size:44px; font-weight:800; letter-spacing:-2px; line-height:1; }
-    .wc-unit { font-size:18px; color:var(--muted); }
-    .wc-city { font-size:13px; color:var(--muted); margin-top:8px; }
-    .wc-desc { font-size:14px; color:var(--text); text-transform:capitalize; }
-    .wc-stats { display:flex; gap:16px; margin-top:16px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.06); }
-    .wc-stat { font-size:12px; color:var(--muted); }
-    .wc-stat span { color:var(--text); font-weight:600; display:block; font-size:14px; }
-
-    /* Hızlı erişim */
-    .quick-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius:20px; padding:28px;
-    }
-    .qc-label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
-    .quick-links { display:flex; flex-direction:column; gap:8px; }
-    .quick-link {
-      display:flex; align-items:center; gap:12px;
-      padding:10px 14px; border-radius:12px;
-      background:rgba(255,255,255,0.03);
-      border:1px solid transparent;
-      text-decoration:none; color:var(--text);
-      font-size:14px; font-weight:500;
-      transition:all 0.2s;
-    }
-    .quick-link:hover { background:rgba(255,255,255,0.07); border-color:var(--border); transform:translateX(4px); }
-    .quick-link-icon { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
-    .quick-link-arrow { margin-left:auto; color:var(--muted); font-size:12px; }
-
-    /* App kartları */
-    .app-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius:16px; padding:20px;
-      text-decoration:none; color:var(--text);
-      display:block; transition:all 0.25s;
-      position:relative; overflow:hidden;
-    }
-    .app-card::before {
-      content:''; position:absolute; inset:0;
-      background:var(--card-glow,transparent);
-      opacity:0; transition:opacity 0.3s; border-radius:16px;
-    }
-    .app-card:hover { transform:translateY(-3px); border-color:rgba(255,255,255,0.12); box-shadow:0 12px 40px rgba(0,0,0,0.3); }
-    .app-card:hover::before { opacity:1; }
-    .ac-icon { font-size:26px; margin-bottom:12px; }
-    .ac-name { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; margin-bottom:4px; }
-    .ac-desc { font-size:12px; color:var(--muted); line-height:1.4; }
-    .ac-live { display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:600; color:#34d399; margin-top:10px; }
-    .ac-live::before { content:''; width:5px; height:5px; background:#34d399; border-radius:50%; animation:livePulse 2s infinite; }
-    @keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-    /* Section title */
-    .section-title {
-      font-family:'Syne',sans-serif; font-size:11px; font-weight:700;
-      letter-spacing:2px; text-transform:uppercase;
-      color:var(--muted); margin-bottom:14px;
-    }
-
-    @media(max-width:768px) {
-      nav { padding:14px 20px; }
-      main { padding:32px 16px 60px; }
-      .grid-2 { grid-template-columns:1fr; }
-      .grid-3 { grid-template-columns:repeat(2,1fr); }
-      .welcome-row { flex-direction:column; align-items:flex-start; }
-      .clock-wrap { text-align:left; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 15% 20%,rgba(99,102,241,0.08) 0%,transparent 50%),
+             radial-gradient(ellipse at 85% 80%,rgba(52,211,153,0.05) 0%,transparent 50%)}
+nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 28px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.n-logomark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#4f46e5);
+            display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff}
+.n-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:18px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:6px 14px 6px 6px;font-size:13px}
+.n-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#4f46e5);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px}
+.n-logout{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;padding:6px 12px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.n-logout:hover{border-color:rgba(248,113,113,.4);color:#f87171}
+main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-index:2}
+.greeting{margin-bottom:36px}
+.greeting-time{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.greeting-name{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.5px}
+.greeting-name span{background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.greeting-sub{font-size:14px;color:var(--muted);margin-top:6px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px}
+.stat-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+.sc-icon{font-size:22px;margin-bottom:10px}
+.sc-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:3px}
+.sc-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.section-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.quick-grid{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px}
+.quick-btn{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--s1);border:1px solid var(--border);border-radius:999px;text-decoration:none;color:var(--text);font-size:13px;font-weight:500;transition:all .2s;white-space:nowrap}
+.quick-btn:hover{background:var(--s2);border-color:rgba(255,255,255,.14);transform:translateY(-1px)}
+.apps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:40px}
+.app-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:22px;text-decoration:none;color:var(--text);transition:all .22s;position:relative;overflow:hidden;display:block}
+.app-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.13);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.ac-icon-wrap{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.ac-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:5px}
+.ac-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.ac-badge{position:absolute;top:14px;right:14px;font-size:9px;padding:3px 8px;border-radius:999px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.badge-new{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.25)}
+.badge-soon{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.widget{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px 22px}
+.widget-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.cal-today{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.cal-date-big{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;line-height:1;color:#6366f1}
+.cal-day{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+.cal-month{font-size:13px;color:var(--muted)}
+.cal-event{display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,.03);border-radius:9px;border-left:3px solid;margin-bottom:7px}
+.cal-event-time{font-size:11px;color:var(--muted);min-width:36px}
+.cal-event-name{font-size:13px;font-weight:500}
+.cal-empty{font-size:13px;color:var(--muted);text-align:center;padding:16px 0}
+.widget-link{display:block;text-align:center;margin-top:12px;font-size:12px;text-decoration:none;transition:opacity .2s}
+.widget-link:hover{opacity:.7}
+.pom-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.pom-stat{background:rgba(255,255,255,.03);border-radius:10px;padding:12px;text-align:center}
+.pom-stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
+.pom-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+@media(max-width:768px){.stats-row{grid-template-columns:repeat(2,1fr)}.bottom-row{grid-template-columns:1fr}.apps-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.apps-grid{grid-template-columns:1fr}.greeting-name{font-size:24px}}
+</style>
 </head>
 <body>
-
-<div class="bg-mesh"></div>
-<div class="grid-lines"></div>
-
 <nav>
-  <a href="index.html" class="nav-logo">
-    <div class="nav-logo-icon">H</div>
-    <span class="nav-logo-text">Highly</span>
+  <a href="index.html" class="n-logo">
+    <div class="n-logomark">H</div>
+    <span class="n-brand">Highly</span>
   </a>
-  <div class="nav-right">
-    <a href="highly-id.html" class="nav-user">
-      <div class="nav-avatar" id="navAvatar">?</div>
-      <span class="nav-username" id="navUsername">Kullanıcı</span>
-    </a>
-    <button class="logout-btn" onclick="logout()">Çıkış</button>
+  <div class="n-right">
+    <div class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
+      <span id="navName">...</span>
+    </div>
+    <button class="n-logout" id="logoutBtn">Çıkış</button>
   </div>
 </nav>
 
 <main>
-  <!-- Welcome + Clock -->
-  <div class="welcome-row">
-    <div class="welcome-text">
-      <div class="welcome-greeting" id="greeting">Merhaba</div>
-      <div class="welcome-name">Hoş geldin, <span id="userName">...</span> 👋</div>
-      <div class="welcome-date" id="dateText">—</div>
-    </div>
-    <div class="clock-wrap">
-      <div class="clock" id="clock">00:00</div>
-      <div class="clock-sub" id="clockSub">Yükleniyor...</div>
-    </div>
+  <div class="greeting">
+    <div class="greeting-time" id="greetTime">GÜNAYDIN</div>
+    <div class="greeting-name">Merhaba, <span id="greetName">...</span> 👋</div>
+    <div class="greeting-sub" id="greetDate">—</div>
   </div>
 
-  <!-- Motivasyon -->
-  <div class="motivation-card">
-    <div class="motivation-label">✦ Günün Sözü</div>
-    <div class="motivation-text" id="motivationText">Yükleniyor...</div>
-    <div class="motivation-author" id="motivationAuthor"></div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="sc-icon">🍅</div><div class="sc-val" id="statPom">0</div><div class="sc-lbl">Pomodoro</div></div>
+    <div class="stat-card"><div class="sc-icon">⏱</div><div class="sc-val" id="statFocus">0</div><div class="sc-lbl">Odaklanma (dk)</div></div>
+    <div class="stat-card"><div class="sc-icon">📝</div><div class="sc-val" id="statNotes">0</div><div class="sc-lbl">Not</div></div>
+    <div class="stat-card"><div class="sc-icon">📅</div><div class="sc-val" id="statEvents">0</div><div class="sc-lbl">Etkinlik</div></div>
   </div>
 
-  <!-- Takvim Widget -->
-  <div class="cal-widget">
-    <div class="cw-header">
-      <div class="cw-label">📅 Takvim</div>
-      <a href="highly-takvim.html" class="cw-link">Tümünü gör →</a>
-    </div>
-    <div class="cw-body">
-      <div class="cw-today">
-        <div class="cw-today-date" id="cwDay"></div>
-        <div class="cw-today-day" id="cwDayName"></div>
-      </div>
-      <div class="cw-divider"></div>
-      <div class="cw-events">
-        <div class="cw-events-title">Bugünün Etkinlikleri</div>
-        <div id="cwEventsList"></div>
-        <a href="highly-takvim.html" class="cw-add">+ Etkinlik Ekle</a>
-      </div>
-    </div>
+  <div class="section-title">Hızlı Erişim</div>
+  <div class="quick-grid">
+    <a href="highly-hava.html"     class="quick-btn">🌤 Hava</a>
+    <a href="highly-harita.html"   class="quick-btn">🗺 Harita</a>
+    <a href="highly-takvim.html"   class="quick-btn">📅 Takvim</a>
+    <a href="highly-pomodoro.html" class="quick-btn">⏱ Pomodoro</a>
+    <a href="highly-notlar.html"   class="quick-btn">📝 Not Al</a>
+    <a href="highly-cevirmen.html" class="quick-btn">🌐 Çevir</a>
+    <a href="highly-muzik.html"    class="quick-btn">🎵 Müzik</a>
+    <a href="highly-butce.html"    class="quick-btn">💰 Bütçe</a>
+    <a href="highly-arama.html"    class="quick-btn">🔍 Ara</a>
   </div>
 
-  <!-- Hava + Hızlı Erişim -->
-  <div class="grid-2">
-    <div class="weather-card">
-      <div class="wc-label">📍 Hava Durumu</div>
-      <div class="wc-main">
-        <div class="wc-icon" id="wIcon">⏳</div>
+  <div class="section-title">Tüm Uygulamalar</div>
+  <div class="apps-grid">
+    <a href="highly-hava.html" class="app-card">
+      <div class="ac-icon-wrap" style="background:rgba(56,189,248,.12)">🌤</div>
+      <div class="ac-name">Hava Durumu</div>
+      <div class="ac-desc">Anlık, saatlik ve 5 günlük tahmin</div>
+    </a>
+    <a href="highly-harita.html" class="app-card">
+      <div class="ac-icon-wrap" style="background:rgba(52,211,153,.12)">🗺</div>
+      <div class="ac-name">Harita</div>
+      <div class="ac-desc">Yol tarifi, mesafe ve süre</div>
+    </a>
+    <a href="highly-arama.html" class="app-card">
+      <div class="ac-icon-wrap" style="background:rgba(99,102,241,.12)">🔍</div>
+      <div class="ac-name">Arama</div>
+      <div class="ac-desc">Web, görsel ve haber araması</div>
+    </a>
+    <a href="highly-takvim.html" class="app-card">
+      <div class="ac-icon-wrap" style="background:rgba(167,139,250,.12)">📅</div>
+      <div class="ac-name">Takvim</div>
+      <div class="ac-desc">Etkinlik ekle, hatırlatıcı kur</div>
+    </a>
+    <a href="highly-cevirmen.html" class="app-card">
+      <span class="ac-badge badge-new">YENİ</span>
+      <div class="ac-icon-wrap" style="background:rgba(52,211,153,.12)">🌐</div>
+      <div class="ac-name">Çevirmen</div>
+      <div class="ac-desc">13 dil, otomatik algılama</div>
+    </a>
+    <a href="highly-notlar.html" class="app-card">
+      <span class="ac-badge badge-new">YENİ</span>
+      <div class="ac-icon-wrap" style="background:rgba(245,158,11,.12)">📝</div>
+      <div class="ac-name">Not Defteri</div>
+      <div class="ac-desc">Notlar, kategoriler, otomatik kayıt</div>
+    </a>
+    <a href="highly-pomodoro.html" class="app-card">
+      <span class="ac-badge badge-new">YENİ</span>
+      <div class="ac-icon-wrap" style="background:rgba(248,113,113,.12)">⏱</div>
+      <div class="ac-name">Pomodoro</div>
+      <div class="ac-desc">Odaklanma zamanlayıcı, istatistik</div>
+    </a>
+    <a href="highly-butce.html" class="app-card">
+      <span class="ac-badge badge-new">YENİ</span>
+      <div class="ac-icon-wrap" style="background:rgba(52,211,153,.12)">💰</div>
+      <div class="ac-name">Bütçe Takibi</div>
+      <div class="ac-desc">Gelir/gider takibi, grafikler</div>
+    </a>
+    <a href="highly-muzik.html" class="app-card">
+      <span class="ac-badge badge-new">YENİ</span>
+      <div class="ac-icon-wrap" style="background:rgba(167,139,250,.12)">🎵</div>
+      <div class="ac-name">Müzik Çalar</div>
+      <div class="ac-desc">MP3/WAV/FLAC yükle ve çal</div>
+    </a>
+    <a href="highly-ai.html" class="app-card" style="opacity:.55;pointer-events:none">
+      <span class="ac-badge badge-soon">YAKINDA</span>
+      <div class="ac-icon-wrap" style="background:rgba(99,102,241,.12)">🤖</div>
+      <div class="ac-name">Highly AI</div>
+      <div class="ac-desc">Claude ile sohbet et</div>
+    </a>
+  </div>
+
+  <div class="bottom-row">
+    <div class="widget">
+      <div class="widget-title">📅 Bugün</div>
+      <div class="cal-today">
+        <div class="cal-date-big" id="calDay">—</div>
         <div>
-          <div class="wc-temp" id="wTemp"><span style="font-size:24px;color:var(--muted)">—</span></div>
-          <div class="wc-desc" id="wDesc">Konum alınıyor...</div>
+          <div class="cal-day" id="calDayName">—</div>
+          <div class="cal-month" id="calMonthYear">—</div>
         </div>
       </div>
-      <div class="wc-city" id="wCity"></div>
-      <div class="wc-stats">
-        <div class="wc-stat"><span id="wHumidity">—</span>Nem</div>
-        <div class="wc-stat"><span id="wWind">—</span>Rüzgar</div>
-        <div class="wc-stat"><span id="wFeels">—</span>Hissedilen</div>
-      </div>
+      <div id="calEvents"></div>
+      <a href="highly-takvim.html" class="widget-link" style="color:#6366f1">Takvime git →</a>
     </div>
-
-    <div class="quick-card">
-      <div class="qc-label">⚡ Hızlı Erişim</div>
-      <div class="quick-links">
-        <a href="highly-ai.html" class="quick-link">
-          <div class="quick-link-icon" style="background:rgba(245,158,11,0.12);">✦</div>
-          Highly AI ile Sohbet Et
-          <span class="quick-link-arrow">→</span>
-        </a>
-        <a href="highly-arama.html" class="quick-link">
-          <div class="quick-link-icon" style="background:rgba(167,139,250,0.12);">🔍</div>
-          Bir Şey Ara
-          <span class="quick-link-arrow">→</span>
-        </a>
-        <a href="highly-harita.html" class="quick-link">
-          <div class="quick-link-icon" style="background:rgba(52,211,153,0.12);">🗺️</div>
-          Haritada Konum Bul
-          <span class="quick-link-arrow">→</span>
-        </a>
-        <a href="highly-hava.html" class="quick-link">
-          <div class="quick-link-icon" style="background:rgba(56,189,248,0.12);">🌤</div>
-          Detaylı Hava Durumu
-          <span class="quick-link-arrow">→</span>
-        </a>
-        <a href="highly-takvim.html" class="quick-link">
-          <div class="quick-link-icon" style="background:rgba(129,140,248,0.12);">📅</div>
-          Takvimine Bak
-          <span class="quick-link-arrow">→</span>
-        </a>
+    <div class="widget">
+      <div class="widget-title">🍅 Pomodoro İstatistik</div>
+      <div class="pom-stats">
+        <div class="pom-stat"><div class="pom-stat-val" id="pomPom">0</div><div class="pom-stat-lbl">🍅 Pomodoro</div></div>
+        <div class="pom-stat"><div class="pom-stat-val" id="pomFocus">0</div><div class="pom-stat-lbl">⏱ Dakika</div></div>
+        <div class="pom-stat"><div class="pom-stat-val" id="pomStreak">0</div><div class="pom-stat-lbl">🔥 Seri</div></div>
+        <div class="pom-stat"><div class="pom-stat-val" id="pomHours">0</div><div class="pom-stat-lbl">🕐 Saat</div></div>
       </div>
+      <a href="highly-pomodoro.html" class="widget-link" style="color:#f87171">Pomodoro'ya git →</a>
     </div>
-  </div>
-
-  <!-- Tüm Uygulamalar -->
-  <div class="section-title">Tüm Uygulamalar</div>
-  <div class="grid-3">
-    <a href="highly-ai.html" class="app-card" style="--card-glow:radial-gradient(circle at 50% 0%,rgba(245,158,11,0.1),transparent 70%);">
-      <div class="ac-icon">✦</div>
-      <div class="ac-name">Highly AI</div>
-      <div class="ac-desc">Yapay zeka asistanın</div>
-      <div class="ac-live">Canlı</div>
-    </a>
-    <a href="highly-hava.html" class="app-card" style="--card-glow:radial-gradient(circle at 50% 0%,rgba(56,189,248,0.1),transparent 70%);">
-      <div class="ac-icon">🌤</div>
-      <div class="ac-name">Highly Hava</div>
-      <div class="ac-desc">Hava durumu tahminleri</div>
-      <div class="ac-live">Canlı</div>
-    </a>
-    <a href="highly-harita.html" class="app-card" style="--card-glow:radial-gradient(circle at 50% 0%,rgba(52,211,153,0.1),transparent 70%);">
-      <div class="ac-icon">🗺️</div>
-      <div class="ac-name">Highly Harita</div>
-      <div class="ac-desc">Ücretsiz harita servisi</div>
-      <div class="ac-live">Canlı</div>
-    </a>
-    <a href="highly-arama.html" class="app-card" style="--card-glow:radial-gradient(circle at 50% 0%,rgba(167,139,250,0.1),transparent 70%);">
-      <div class="ac-icon">🔍</div>
-      <div class="ac-name">Highly Arama</div>
-      <div class="ac-desc">Reklamsız arama motoru</div>
-      <div class="ac-live">Canlı</div>
-    </a>
-    <a href="highly-id.html" class="app-card" style="--card-glow:radial-gradient(circle at 50% 0%,rgba(79,110,247,0.1),transparent 70%);">
-      <div class="ac-icon">🪪</div>
-      <div class="ac-name">Highly ID</div>
-      <div class="ac-desc">Kimlik & hesap yönetimi</div>
-      <div class="ac-live">Canlı</div>
-    </a>
-    <a href="highly-takvim.html" class="app-card" style="--card-glow:radial-gradient(circle at 50% 0%,rgba(129,140,248,0.1),transparent 70%);">
-      <div class="ac-icon">📅</div>
-      <div class="ac-name">Highly Takvim</div>
-      <div class="ac-desc">Etkinlik & hatırlatıcı</div>
-      <div class="ac-live">Canlı</div>
-    </a>
   </div>
 </main>
 
 <script>
-  const WEATHER_KEY = 'bd5e378503939ddaee76f12ad7a97608';
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
+document.getElementById('navName').textContent   = user.name.split(' ')[0];
+document.getElementById('greetName').textContent = user.name.split(' ')[0];
 
-  // Giriş kontrolü — yapılmamışsa ID'ye yönlendir
-  const saved = localStorage.getItem('highly_user');
-  if (!saved) {
-    window.location.href = 'highly-id.html';
-  } else {
-    const user = JSON.parse(saved);
-    // İsim
-    const firstName = user.name.split(' ')[0];
-    document.getElementById('userName').textContent = firstName;
-    document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
-    document.getElementById('navUsername').textContent = firstName;
-  }
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  if (confirm('Çıkış yapmak istiyor musun?')) { localStorage.removeItem('highly_user'); location.href = 'index.html'; }
+});
 
-  // Saat & Tarih
-  function updateClock() {
-    const now  = new Date();
-    const h    = String(now.getHours()).padStart(2,'0');
-    const m    = String(now.getMinutes()).padStart(2,'0');
-    const s    = String(now.getSeconds()).padStart(2,'0');
-    document.getElementById('clock').textContent = `${h}:${m}`;
-    document.getElementById('clockSub').textContent = `${s} saniye`;
+const DAYS   = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const now    = new Date();
+const h      = now.getHours();
+document.getElementById('greetTime').textContent    = h<6?'İYİ GECELER':h<12?'GÜNAYDIN':h<18?'İYİ GÜNLER':'İYİ AKŞAMLAR';
+document.getElementById('greetDate').textContent    = `${DAYS[now.getDay()]}, ${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+document.getElementById('calDay').textContent       = now.getDate();
+document.getElementById('calDayName').textContent   = DAYS[now.getDay()];
+document.getElementById('calMonthYear').textContent = `${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
 
-    // Selamlama
-    const hr = now.getHours();
-    const greet = hr<6?'İyi geceler 🌙':hr<12?'Günaydın ☀️':hr<17?'İyi günler 👋':hr<21?'İyi akşamlar 🌆':'İyi geceler 🌙';
-    document.getElementById('greeting').textContent = greet;
+// Stats
+const notes  = JSON.parse(localStorage.getItem('highly_notes')  || '[]');
+const events = JSON.parse(localStorage.getItem('highly_events') || '[]');
+const pom    = parseInt(localStorage.getItem('hp_pomodoros') || '0');
+const focus  = parseInt(localStorage.getItem('hp_focus')     || '0');
+const streak = parseInt(localStorage.getItem('hp_streak')    || '0');
+document.getElementById('statPom').textContent   = pom;
+document.getElementById('statFocus').textContent = focus;
+document.getElementById('statNotes').textContent = notes.length;
+document.getElementById('statEvents').textContent= events.length;
+document.getElementById('pomPom').textContent    = pom;
+document.getElementById('pomFocus').textContent  = focus;
+document.getElementById('pomStreak').textContent = streak;
+document.getElementById('pomHours').textContent  = (focus/60).toFixed(1);
 
-    // Tarih
-    const days   = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
-    const months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-    document.getElementById('dateText').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  // Motivasyon sözleri
-  const quotes = [
-    { text: "Başarı, her gün tekrarlanan küçük çabaların toplamıdır.", author: "Robert Collier" },
-    { text: "Hayal edebiliyorsan, yapabilirsin.", author: "Walt Disney" },
-    { text: "En büyük zafer, hiç düşmemek değil; her düşüşte kalkmaktır.", author: "Nelson Mandela" },
-    { text: "Yarın ne yapacağını değil, bugün ne yapabileceğini düşün.", author: "Anonim" },
-    { text: "Başlamak, başarının yarısıdır.", author: "Türk Atasözü" },
-    { text: "Zorluklar, seni daha güçlü yapan fırsatlardır.", author: "Anonim" },
-    { text: "Kod yaz, dünyayı değiştir.", author: "Highly ✦" },
-    { text: "Her büyük yazılım, tek bir satır kodla başladı.", author: "Anonim" },
-  ];
-  const q = quotes[new Date().getDay() % quotes.length];
-  document.getElementById('motivationText').textContent = q.text;
-  document.getElementById('motivationAuthor').textContent = `— ${q.author}`;
-
-  // Hava durumu — konumdan otomatik
-  function weatherIcon(id, icon) {
-    if(id>=200&&id<300) return '⛈️';
-    if(id>=300&&id<400) return '🌦️';
-    if(id>=500&&id<600) return '🌧️';
-    if(id>=600&&id<700) return '❄️';
-    if(id>=700&&id<800) return '🌫️';
-    if(id===800) return icon.includes('d')?'☀️':'🌙';
-    if(id===801) return '🌤️';
-    if(id<=804) return '☁️';
-    return '🌡️';
-  }
-
-  async function loadWeather(lat, lon) {
-    try {
-      const res  = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_KEY}&units=metric&lang=tr`);
-      const data = await res.json();
-      if(data.cod !== 200) return;
-      document.getElementById('wIcon').textContent = weatherIcon(data.weather[0].id, data.weather[0].icon);
-      document.getElementById('wTemp').innerHTML = `${Math.round(data.main.temp)}<span style="font-size:20px;color:var(--muted)">°C</span>`;
-      document.getElementById('wDesc').textContent = data.weather[0].description;
-      document.getElementById('wCity').textContent = `📍 ${data.name}`;
-      document.getElementById('wHumidity').textContent = `${data.main.humidity}%`;
-      document.getElementById('wWind').textContent = `${Math.round(data.wind.speed*3.6)} km/h`;
-      document.getElementById('wFeels').textContent = `${Math.round(data.main.feels_like)}°C`;
-    } catch(e) {
-      document.getElementById('wDesc').textContent = 'Hava verisi alınamadı';
-    }
-  }
-
-  if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      pos => loadWeather(pos.coords.latitude, pos.coords.longitude),
-      ()  => loadWeather(41.0082, 28.9784) // İstanbul fallback
-    );
-  } else {
-    loadWeather(41.0082, 28.9784);
-  }
-
-  // Takvim widget
-  function loadCalWidget() {
-    const now = new Date();
-    document.getElementById('cwDay').textContent = now.getDate();
-    const days = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
-    const months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-    document.getElementById('cwDayName').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]}`;
-    const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-    const cats = { kişisel:'#a78bfa', iş:'#34d399', önemli:'#f59e0b', acil:'#f87171', sosyal:'#38bdf8' };
-    try {
-      const events = JSON.parse(localStorage.getItem('highly_events')||'[]');
-      const todayEvs = events.filter(e=>e.date===todayStr).sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
-      const list = document.getElementById('cwEventsList');
-      if (!todayEvs.length) {
-        list.innerHTML = `<div class="cw-empty">Bugün etkinlik yok 🎉</div>`;
-      } else {
-        list.innerHTML = todayEvs.map(e=>`
-          <a href="highly-takvim.html" class="cw-event-item">
-            <div class="cw-event-dot" style="background:${cats[e.cat]||'#818cf8'}"></div>
-            <div class="cw-event-name">${e.title}</div>
-            <div class="cw-event-time">${e.time||''}</div>
-          </a>`).join('');
-      }
-    } catch { document.getElementById('cwEventsList').innerHTML=`<div class="cw-empty">Bugün etkinlik yok 🎉</div>`; }
-  }
-  loadCalWidget();
-
-  function logout() {
-    localStorage.removeItem('highly_user');
-    window.location.href = 'highly-id.html';
-  }
+// Takvim widget
+const today  = now.toISOString().split('T')[0];
+const todays = events.filter(e=>e.date===today).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+const COLORS = {kisisel:'#a78bfa',is:'#34d399',onemli:'#f59e0b',acil:'#f87171',sosyal:'#38bdf8'};
+const calEl  = document.getElementById('calEvents');
+calEl.innerHTML = todays.length
+  ? todays.slice(0,4).map(e=>`<div class="cal-event" style="border-color:${COLORS[e.category]||'#6366f1'}"><span class="cal-event-time">${e.time||'—'}</span><span class="cal-event-name">${e.title}</span></div>`).join('')
+  : `<div class="cal-empty">Bugün etkinlik yok 🎉</div>`;
 </script>
 </body>
 </html>
