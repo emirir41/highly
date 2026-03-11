@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Çevirmen</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#34d399;--a2:#059669;--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 10% 20%,rgba(52,211,153,0.07) 0%,transparent 50%),
+             radial-gradient(ellipse at 90% 80%,rgba(5,150,105,0.05) 0%,transparent 50%)}
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:#000}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
+main{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:40px 24px 80px;width:100%}
+.lang-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.lang-sel{flex:1;min-width:140px;background:var(--s1);border:1px solid var(--border);border-radius:12px;
+          padding:12px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;
+          outline:none;cursor:pointer;transition:border-color .2s}
+.lang-sel:focus{border-color:var(--a1)}
+.lang-sel option{background:#0b0d1c}
+.swap-btn{width:44px;height:44px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);
+          border-radius:12px;color:var(--a1);font-size:20px;cursor:pointer;transition:all .2s;
+          display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:monospace}
+.swap-btn:hover{background:rgba(52,211,153,0.2)}
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.panel{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.panel-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.panel-ta{flex:1;background:none;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.7;outline:none;resize:none;min-height:200px;width:100%}
+.panel-ta::placeholder{color:var(--muted)}
+.panel-foot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:12px}
+.char-c{font-size:11px;color:var(--muted)}
+.panel-btns{display:flex;gap:6px}
+.pbtn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 9px;border-radius:7px;transition:all .2s;font-family:'DM Sans',sans-serif}
+.pbtn:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.translate-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:14px;color:#000;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:opacity .2s,transform .15s;box-shadow:0 8px 24px rgba(52,211,153,0.2)}
+.translate-btn:hover{opacity:.9;transform:translateY(-1px)}
+.translate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.detected{display:none;font-size:11px;color:var(--a1);background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:999px;padding:3px 10px;margin-top:4px;width:fit-content}
+.detected.show{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;animation:spin .7s linear infinite}
+.hist-hdr{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:36px 0 14px;display:flex;align-items:center;justify-content:space-between}
+.hist-clr{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s}
+.hist-clr:hover{color:#f87171}
+.hist-item{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;transition:all .2s;margin-bottom:8px}
+.hist-item:hover{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.04)}
+.hist-langs{font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:.5px}
+.hist-from{font-size:14px;font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-to{font-size:13px;color:var(--a1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty-hist{color:var(--muted);font-size:13px;padding:8px 0}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1px solid rgba(52,211,153,.3);border-radius:10px;padding:11px 20px;font-size:13px;color:var(--a1);opacity:0;z-index:9999;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:640px){.panels{grid-template-columns:1fr}.lang-bar{flex-direction:column}.swap-btn{width:100%}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">🌐</div>
+    <span class="n-title">Highly Çevirmen</span>
+  </a>
+  <div class="n-right">
+    <a href="dashboard.html" class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
+      <span id="navName">...</span>
+    </a>
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
+  </div>
+</nav>
+
+<main>
+  <div class="lang-bar">
+    <select class="lang-sel" id="srcLang">
+      <option value="auto">🔍 Otomatik Algıla</option>
+      <option value="tr">🇹🇷 Türkçe</option>
+      <option value="en">🇬🇧 İngilizce</option>
+      <option value="de">🇩🇪 Almanca</option>
+      <option value="fr">🇫🇷 Fransızca</option>
+      <option value="ru">🇷🇺 Rusça</option>
+      <option value="ar">🇸🇦 Arapça</option>
+      <option value="zh">🇨🇳 Çince</option>
+      <option value="es">🇪🇸 İspanyolca</option>
+      <option value="it">🇮🇹 İtalyanca</option>
+      <option value="ja">🇯🇵 Japonca</option>
+      <option value="ko">🇰🇷 Korece</option>
+      <option value="pt">🇵🇹 Portekizce</option>
+    </select>
+    <button class="swap-btn" id="swapLang">⇄</button>
+    <select class="lang-sel" id="tgtLang">
+      <option value="tr">🇹🇷 Türkçe</option>
+      <option value="en" selected>🇬🇧 İngilizce</option>
+      <option value="de">🇩🇪 Almanca</option>
+      <option value="fr">🇫🇷 Fransızca</option>
+      <option value="ru">🇷🇺 Rusça</option>
+      <option value="ar">🇸🇦 Arapça</option>
+      <option value="zh">🇨🇳 Çince</option>
+      <option value="es">🇪🇸 İspanyolca</option>
+      <option value="it">🇮🇹 İtalyanca</option>
+      <option value="ja">🇯🇵 Japonca</option>
+      <option value="ko">🇰🇷 Korece</option>
+      <option value="pt">🇵🇹 Portekizce</option>
+    </select>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-lbl">Kaynak Metin</div>
+      <textarea class="panel-ta" id="srcText" placeholder="Çevirmek istediğin metni yaz... (Ctrl+Enter ile çevir)"></textarea>
+      <div class="detected" id="detectedBadge">🔍 <span id="detectedName"></span> algılandı</div>
+      <div class="panel-foot">
+        <span class="char-c" id="charCount">0 karakter</span>
+        <div class="panel-btns">
+          <button class="pbtn" id="clearBtn">✕ Temizle</button>
+          <button class="pbtn" id="copyInput">📋 Kopyala</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-lbl">Çeviri</div>
+      <textarea class="panel-ta" id="tgtText" placeholder="Çeviri burada görünecek..." disabled></textarea>
+      <div class="panel-foot">
+        <span class="char-c" id="resultCount">—</span>
+        <div class="panel-btns">
+          <button class="pbtn" id="copyOutput">📋 Kopyala</button>
+          <button class="pbtn" id="swapText" title="Çeviriyi kaynağa taşı">⇄ Taşı</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="translate-btn" id="translateBtn">🌐 Çevir</button>
+
+  <div class="hist-hdr">
+    Son Çeviriler
+    <button class="hist-clr" id="clearHist">Temizle</button>
+  </div>
+  <div id="histList"></div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Auth
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
+document.getElementById('navName').textContent = user.name.split(' ')[0];
+
+const NAMES = {auto:'Otomatik',tr:'Türkçe',en:'İngilizce',de:'Almanca',fr:'Fransızca',ru:'Rusça',ar:'Arapça',zh:'Çince',es:'İspanyolca',it:'İtalyanca',ja:'Japonca',ko:'Korece',pt:'Portekizce'};
+
+const srcText   = document.getElementById('srcText');
+const tgtText   = document.getElementById('tgtText');
+const srcLang   = document.getElementById('srcLang');
+const tgtLang   = document.getElementById('tgtLang');
+const charCount = document.getElementById('charCount');
+const resCount  = document.getElementById('resultCount');
+const tBtn      = document.getElementById('translateBtn');
+const detected  = document.getElementById('detectedBadge');
+const detName   = document.getElementById('detectedName');
+
+srcText.addEventListener('input', () => { charCount.textContent = `${srcText.value.length} karakter`; });
+srcText.addEventListener('keydown', e => { if (e.ctrlKey && e.key === 'Enter') doTranslate(); });
+
+document.getElementById('swapLang').addEventListener('click', () => {
+  if (srcLang.value === 'auto') { showToast('Önce kaynak dil seç!'); return; }
+  const s = srcLang.value, t = tgtLang.value;
+  srcLang.value = t; tgtLang.value = s;
+  const st = srcText.value, tt = tgtText.value;
+  srcText.value = tt; tgtText.value = st;
+  charCount.textContent = `${srcText.value.length} karakter`;
+  resCount.textContent = tgtText.value ? `${tgtText.value.length} karakter` : '—';
+});
+
+document.getElementById('swapText').addEventListener('click', () => {
+  if (!tgtText.value) return;
+  srcText.value = tgtText.value;
+  tgtText.value = '';
+  charCount.textContent = `${srcText.value.length} karakter`;
+  resCount.textContent = '—';
+  const prev = srcLang.value === 'auto' ? tgtLang.value : srcLang.value;
+  srcLang.value = tgtLang.value;
+  tgtLang.value = prev;
+  detected.classList.remove('show');
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  srcText.value = ''; tgtText.value = '';
+  charCount.textContent = '0 karakter'; resCount.textContent = '—';
+  detected.classList.remove('show');
+});
+
+document.getElementById('copyInput').addEventListener('click', () => {
+  if (!srcText.value) return;
+  navigator.clipboard.writeText(srcText.value);
+  showToast('📋 Kopyalandı!');
+});
+
+document.getElementById('copyOutput').addEventListener('click', () => {
+  if (!tgtText.value) return;
+  navigator.clipboard.writeText(tgtText.value);
+  showToast('📋 Çeviri kopyalandı!');
+});
+
+tBtn.addEventListener('click', doTranslate);
+
+async function doTranslate() {
+  const text = srcText.value.trim();
+  if (!text) { showToast('Metin gir!'); srcText.focus(); return; }
+  const src = srcLang.value, tgt = tgtLang.value;
+  if (src !== 'auto' && src === tgt) { showToast('Kaynak ve hedef dil aynı!'); return; }
+
+  tBtn.disabled = true;
+  tBtn.textContent = '⏳ Çevriliyor...';
+  tgtText.value = '';
+  resCount.textContent = '—';
+  detected.classList.remove('show');
+
+  try {
+    const pair = src === 'auto' ? `autodetect|${tgt}` : `${src}|${tgt}`;
+    const res  = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`);
+    const data = await res.json();
+
+    if (data.responseStatus !== 200 && data.responseStatus !== '200') throw new Error();
+
+    const result = data.responseData.translatedText;
+    tgtText.value = result;
+    resCount.textContent = `${result.length} karakter`;
+
+    if (src === 'auto' && data.responseData.detectedLanguage) {
+      detName.textContent = NAMES[data.responseData.detectedLanguage] || data.responseData.detectedLanguage;
+      detected.classList.add('show');
+    }
+
+    addHistory(text, result, src === 'auto' ? (data.responseData.detectedLanguage || 'auto') : src, tgt);
+    renderHist();
+  } catch {
+    showToast('❌ Çeviri başarısız, tekrar dene!');
+  } finally {
+    tBtn.disabled = false;
+    tBtn.textContent = '🌐 Çevir';
+  }
+}
+
+// History
+function loadHist() { try { return JSON.parse(localStorage.getItem('highly_trans') || '[]'); } catch { return []; } }
+function addHistory(from, to, srcL, tgtL) {
+  const h = loadHist();
+  h.unshift({ from, to, srcL, tgtL });
+  localStorage.setItem('highly_trans', JSON.stringify(h.slice(0, 20)));
+}
+function renderHist() {
+  const h = loadHist(), el = document.getElementById('histList');
+  if (!h.length) { el.innerHTML = `<div class="empty-hist">Henüz çeviri yok</div>`; return; }
+  el.innerHTML = h.map((item, i) => `
+    <div class="hist-item" data-i="${i}">
+      <div class="hist-langs">${NAMES[item.srcL]||item.srcL} → ${NAMES[item.tgtL]||item.tgtL}</div>
+      <div class="hist-from">${item.from}</div>
+      <div class="hist-to">${item.to}</div>
+    </div>`).join('');
+  el.querySelectorAll('.hist-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const d = loadHist()[item.dataset.i];
+      srcText.value = d.from; tgtText.value = d.to;
+      if (d.srcL !== 'auto') srcLang.value = d.srcL;
+      tgtLang.value = d.tgtL;
+      charCount.textContent = `${d.from.length} karakter`;
+      resCount.textContent  = `${d.to.length} karakter`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+document.getElementById('clearHist').addEventListener('click', () => {
+  localStorage.removeItem('highly_trans');
+  renderHist();
+  showToast('Geçmiş temizlendi');
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+renderHist();
+srcText.focus();
+</script>
+</body>
+</html>
