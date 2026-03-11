@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Profil</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#6366f1;--a2:#4f46e5;--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 30% 20%,rgba(99,102,241,0.08) 0%,transparent 50%),
+             radial-gradient(ellipse at 70% 80%,rgba(167,139,250,0.05) 0%,transparent 50%)}
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
+
+main{position:relative;z-index:2;max-width:620px;margin:0 auto;padding:40px 24px 80px}
+
+/* Profile card */
+.profile-card{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:20px;text-align:center}
+.avatar-wrap{position:relative;display:inline-block;margin-bottom:20px}
+.avatar-big{width:100px;height:100px;border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:52px;margin:0 auto;box-shadow:0 8px 32px rgba(0,0,0,.4);transition:all .3s;cursor:pointer;position:relative}
+.avatar-big:hover::after{content:'✏️';position:absolute;inset:0;background:rgba(0,0,0,.5);border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.profile-name{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px}
+.profile-email{font-size:13px;color:var(--muted);margin-bottom:16px}
+.profile-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:999px;font-size:12px;color:#a78bfa}
+
+/* Sections */
+.section{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px}
+.sec-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px}
+
+/* Avatar customizer */
+.avatar-preview{width:80px;height:80px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 20px;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:all .3s}
+
+.picker-label{font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:600}
+.bg-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.bg-option{width:36px;height:36px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0}
+.bg-option:hover{transform:scale(1.1)}
+.bg-option.selected{border-color:#fff;box-shadow:0 0 0 3px rgba(99,102,241,.5)}
+
+.emoji-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.emoji-option{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.05);border:2px solid transparent;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.emoji-option:hover{background:rgba(255,255,255,.1);transform:scale(1.1)}
+.emoji-option.selected{border-color:#6366f1;background:rgba(99,102,241,.15)}
+
+/* Form */
+.form-group{margin-bottom:16px}
+.form-label{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:7px;display:block;letter-spacing:.5px;text-transform:uppercase}
+.form-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:rgba(99,102,241,.4)}
+.form-input:disabled{opacity:.5;cursor:not-allowed}
+
+/* Buttons */
+.btn-save{width:100%;padding:13px;background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:12px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(99,102,241,.25);margin-top:4px}
+.btn-save:hover{opacity:.9;transform:translateY(-1px)}
+.btn-danger{width:100%;padding:11px;background:none;border:1px solid rgba(248,113,113,.3);border-radius:12px;color:#f87171;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn-danger:hover{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.5)}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat-item{background:var(--s2);border-radius:12px;padding:14px;text-align:center}
+.stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:3px}
+.stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+/* Password section */
+.pw-toggle{background:none;border:none;color:var(--a1);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;margin-bottom:14px;display:block}
+.pw-fields{display:none}
+.pw-fields.show{display:block}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1px solid rgba(99,102,241,.3);border-radius:10px;padding:11px 20px;font-size:13px;color:#a78bfa;opacity:0;z-index:9999;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">👤</div>
+    <span class="n-title">Profilim</span>
+  </a>
+  <div class="n-right">
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
+  </div>
+</nav>
+
+<main>
+  <!-- Profil kartı -->
+  <div class="profile-card">
+    <div class="avatar-big" id="avatarBig"></div>
+    <div class="profile-name" id="profileName">...</div>
+    <div class="profile-email" id="profileEmail">...</div>
+    <div class="profile-badge">✨ Highly Üyesi</div>
+  </div>
+
+  <!-- İstatistikler -->
+  <div class="section">
+    <div class="sec-title">📊 İstatistikler</div>
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-val" id="sNotes">0</div><div class="stat-lbl">📝 Not</div></div>
+      <div class="stat-item"><div class="stat-val" id="sPom">0</div><div class="stat-lbl">🍅 Pomodoro</div></div>
+      <div class="stat-item"><div class="stat-val" id="sEvents">0</div><div class="stat-lbl">📅 Etkinlik</div></div>
+    </div>
+  </div>
+
+  <!-- Avatar özelleştir -->
+  <div class="section">
+    <div class="sec-title">🎨 Avatar Özelleştir</div>
+    <div class="avatar-preview" id="avatarPreview"></div>
+
+    <div class="picker-label">Arkaplan Rengi</div>
+    <div class="bg-grid" id="bgGrid"></div>
+
+    <div class="picker-label">Emoji</div>
+    <div class="emoji-grid" id="emojiGrid"></div>
+
+    <button class="btn-save" id="saveAvatar">✓ Avatarı Kaydet</button>
+  </div>
+
+  <!-- Bilgileri düzenle -->
+  <div class="section">
+    <div class="sec-title">✏️ Bilgileri Düzenle</div>
+    <div class="form-group">
+      <label class="form-label">Ad Soyad</label>
+      <input class="form-input" id="editName" type="text" placeholder="Adın"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">E-posta</label>
+      <input class="form-input" id="editEmail" type="email" disabled/>
+    </div>
+    <button class="btn-save" id="saveName">✓ Kaydet</button>
+  </div>
+
+  <!-- Şifre değiştir -->
+  <div class="section">
+    <div class="sec-title">🔐 Şifre Değiştir</div>
+    <button class="pw-toggle" id="pwToggle">+ Şifre değiştir</button>
+    <div class="pw-fields" id="pwFields">
+      <div class="form-group">
+        <label class="form-label">Mevcut Şifre</label>
+        <input class="form-input" id="pwCurrent" type="password" placeholder="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Yeni Şifre</label>
+        <input class="form-input" id="pwNew" type="password" placeholder="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Yeni Şifre Tekrar</label>
+        <input class="form-input" id="pwConfirm" type="password" placeholder="••••••••"/>
+      </div>
+      <button class="btn-save" id="savePw">✓ Şifreyi Değiştir</button>
+    </div>
+  </div>
+
+  <!-- Çıkış / Hesap sil -->
+  <div class="section">
+    <div class="sec-title">⚠️ Hesap</div>
+    <button class="btn-danger" id="logoutBtn">🚪 Çıkış Yap</button>
+    <button class="btn-danger" id="deleteBtn" style="border-color:rgba(248,113,113,.5);margin-top:8px">🗑 Hesabı Sil</button>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0';
+
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{}');
+
+// Avatar seçenekleri
+const BG_COLORS = [
+  '#6366f1','#8b5cf6','#a855f7','#ec4899','#f43f5e',
+  '#ef4444','#f97316','#f59e0b','#eab308','#84cc16',
+  '#22c55e','#10b981','#14b8a6','#06b6d4','#3b82f6',
+  '#1e293b','#334155','#475569'
+];
+const EMOJIS = [
+  '😀','😎','🤩','🥳','😄','🤗','😊','🙂',
+  '🐶','🐱','🦊','🐼','🐨','🦁','🐯','🐻',
+  '🚀','⚡','🔥','💎','👑','🌟','✨','🎯',
+  '🎮','🎵','🎨','📚','💻','🌈','🍀','❤️'
+];
+
+let selBg    = user.avatarBg    || '#6366f1';
+let selEmoji = user.avatarEmoji || '😎';
+
+// Init
+document.getElementById('profileName').textContent  = user.name  || '?';
+document.getElementById('profileEmail').textContent = user.email || '?';
+document.getElementById('editName').value  = user.name  || '';
+document.getElementById('editEmail').value = user.email || '';
+
+// Stats
+document.getElementById('sNotes').textContent  = JSON.parse(localStorage.getItem('highly_notes')  || '[]').length;
+document.getElementById('sPom').textContent    = localStorage.getItem('hp_pomodoros') || '0';
+document.getElementById('sEvents').textContent = JSON.parse(localStorage.getItem('highly_events') || '[]').length;
+
+function renderAvatar(el, bg, emoji, size) {
+  el.style.background = bg;
+  el.textContent = emoji;
+  if (size) { el.style.width = size; el.style.height = size; el.style.fontSize = parseInt(size)*0.5+'px'; }
+}
+
+// Render big avatar
+renderAvatar(document.getElementById('avatarBig'), selBg, selEmoji);
+renderAvatar(document.getElementById('avatarPreview'), selBg, selEmoji);
+
+// BG grid
+const bgGrid = document.getElementById('bgGrid');
+BG_COLORS.forEach(c => {
+  const d = document.createElement('div');
+  d.className = 'bg-option' + (c === selBg ? ' selected' : '');
+  d.style.background = c;
+  d.addEventListener('click', () => {
+    selBg = c;
+    bgGrid.querySelectorAll('.bg-option').forEach(x => x.classList.remove('selected'));
+    d.classList.add('selected');
+    renderAvatar(document.getElementById('avatarPreview'), selBg, selEmoji);
+  });
+  bgGrid.appendChild(d);
+});
+
+// Emoji grid
+const emojiGrid = document.getElementById('emojiGrid');
+EMOJIS.forEach(e => {
+  const d = document.createElement('div');
+  d.className = 'emoji-option' + (e === selEmoji ? ' selected' : '');
+  d.textContent = e;
+  d.addEventListener('click', () => {
+    selEmoji = e;
+    emojiGrid.querySelectorAll('.emoji-option').forEach(x => x.classList.remove('selected'));
+    d.classList.add('selected');
+    renderAvatar(document.getElementById('avatarPreview'), selBg, selEmoji);
+  });
+  emojiGrid.appendChild(d);
+});
+
+// Save avatar
+document.getElementById('saveAvatar').addEventListener('click', () => {
+  user.avatarBg    = selBg;
+  user.avatarEmoji = selEmoji;
+  localStorage.setItem('highly_user', JSON.stringify(user));
+  renderAvatar(document.getElementById('avatarBig'), selBg, selEmoji);
+  showToast('🎨 Avatar kaydedildi!');
+});
+
+// Save name
+document.getElementById('saveName').addEventListener('click', async () => {
+  const name = document.getElementById('editName').value.trim();
+  if (!name) { showToast('İsim boş olamaz!'); return; }
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${user.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` },
+      body: JSON.stringify({ name })
+    });
+    user.name = name;
+    localStorage.setItem('highly_user', JSON.stringify(user));
+    document.getElementById('profileName').textContent = name;
+    showToast('✓ İsim güncellendi!');
+  } catch { showToast('❌ Hata oluştu!'); }
+});
+
+// Password toggle
+document.getElementById('pwToggle').addEventListener('click', () => {
+  const f = document.getElementById('pwFields');
+  f.classList.toggle('show');
+  document.getElementById('pwToggle').textContent = f.classList.contains('show') ? '− Kapat' : '+ Şifre değiştir';
+});
+
+// Save password
+document.getElementById('savePw').addEventListener('click', async () => {
+  const cur  = document.getElementById('pwCurrent').value;
+  const nw   = document.getElementById('pwNew').value;
+  const conf = document.getElementById('pwConfirm').value;
+  if (!cur || !nw || !conf)    { showToast('Tüm alanları doldur!'); return; }
+  if (nw !== conf)             { showToast('Yeni şifreler eşleşmiyor!'); return; }
+  if (nw.length < 6)           { showToast('Şifre en az 6 karakter olmalı!'); return; }
+  if (cur !== user.password)   { showToast('Mevcut şifre yanlış!'); return; }
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${user.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` },
+      body: JSON.stringify({ password: nw })
+    });
+    user.password = nw;
+    localStorage.setItem('highly_user', JSON.stringify(user));
+    document.getElementById('pwCurrent').value = '';
+    document.getElementById('pwNew').value = '';
+    document.getElementById('pwConfirm').value = '';
+    showToast('🔐 Şifre değiştirildi!');
+  } catch { showToast('❌ Hata oluştu!'); }
+});
+
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  if (confirm('Çıkış yapmak istediğine emin misin?')) {
+    localStorage.removeItem('highly_user');
+    location.href = 'index.html';
+  }
+});
+
+// Delete account
+document.getElementById('deleteBtn').addEventListener('click', async () => {
+  if (!confirm('Hesabını silmek istediğine emin misin? Bu işlem geri alınamaz!')) return;
+  if (!confirm('Son kez soruyorum, tüm verilerin silinecek!')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${user.id}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    localStorage.clear();
+    location.href = 'index.html';
+  } catch { showToast('❌ Hata oluştu!'); }
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
