@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Müzik</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#a78bfa;--a2:#7c3aed;--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 50% 60%,rgba(167,139,250,0.08) 0%,transparent 55%)}
+
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden;position:relative;z-index:2}
+
+/* SIDEBAR - playlist */
+.sidebar{width:300px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sb-top{padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;gap:10px}
+.sb-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.upload-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;
+            background:rgba(167,139,250,.1);border:1px dashed rgba(167,139,250,.3);border-radius:10px;
+            color:var(--a1);font-size:13px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.upload-btn:hover{background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.5)}
+.file-input{display:none}
+.sb-list{flex:1;overflow-y:auto;padding:8px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.track-item{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:10px;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.track-item:hover{background:rgba(255,255,255,.04);border-color:var(--border)}
+.track-item.active{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.25)}
+.track-num{font-size:11px;color:var(--muted);min-width:18px;text-align:center;flex-shrink:0}
+.track-item.active .track-num{display:none}
+.track-playing{display:none;font-size:13px;min-width:18px;text-align:center;flex-shrink:0}
+.track-item.active .track-playing{display:block}
+.track-info{flex:1;min-width:0}
+.track-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-dur{font-size:11px;color:var(--muted);margin-top:1px}
+.track-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;opacity:0;transition:opacity .2s;padding:3px;flex-shrink:0}
+.track-item:hover .track-del{opacity:1}
+.track-del:hover{color:#f87171}
+.sb-empty{text-align:center;padding:40px 16px;color:var(--muted);font-size:13px;line-height:2}
+
+/* MAIN PLAYER */
+.player-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;gap:32px}
+
+/* Album art */
+.album-art{width:200px;height:200px;border-radius:20px;background:linear-gradient(135deg,var(--s2),var(--s1));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5);transition:all .4s}
+.album-art.playing{box-shadow:0 24px 60px rgba(167,139,250,.2);border-color:rgba(167,139,250,.3);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.album-visualizer{position:absolute;bottom:0;left:0;right:0;height:40px;display:flex;align-items:flex-end;justify-content:center;gap:3px;padding:0 12px 8px;opacity:0;transition:opacity .3s}
+.album-art.playing .album-visualizer{opacity:1}
+.vis-bar{width:3px;border-radius:2px;background:rgba(167,139,250,.6);animation:visPulse 0.6s ease-in-out infinite}
+@keyframes visPulse{0%,100%{height:4px}50%{height:20px}}
+
+/* Track info */
+.track-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;letter-spacing:-.5px;max-width:400px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-subtitle{font-size:13px;color:var(--muted);text-align:center}
+
+/* Progress */
+.progress-wrap{width:100%;max-width:420px}
+.progress-times{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:8px}
+.progress-bar{width:100%;height:4px;background:rgba(255,255,255,.08);border-radius:2px;cursor:pointer;position:relative}
+.progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--a1),var(--a2));transition:width .1s linear;position:relative}
+.progress-fill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:var(--a1);box-shadow:0 0 8px rgba(167,139,250,.5);opacity:0;transition:opacity .2s}
+.progress-bar:hover .progress-fill::after{opacity:1}
+
+/* Controls */
+.controls{display:flex;align-items:center;gap:16px}
+.ctrl-btn{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:8px;border-radius:50%;transition:all .2s;display:flex;align-items:center;justify-content:center;width:42px;height:42px}
+.ctrl-btn:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.ctrl-btn.active{color:var(--a1)}
+.play-btn{width:64px;height:64px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-size:24px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(167,139,250,.35)}
+.play-btn:hover{transform:scale(1.07);box-shadow:0 12px 32px rgba(167,139,250,.45)}
+.play-btn:active{transform:scale(.97)}
+
+/* Volume */
+.volume-wrap{display:flex;align-items:center;gap:10px;width:100%;max-width:200px}
+.vol-icon{font-size:16px;color:var(--muted);flex-shrink:0;cursor:pointer}
+.vol-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:rgba(255,255,255,.08);outline:none;cursor:pointer}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--a1);cursor:pointer;box-shadow:0 0 6px rgba(167,139,250,.4)}
+
+.no-track{text-align:center;color:var(--muted)}
+.no-track-icon{font-size:64px;margin-bottom:16px;opacity:.4}
+.no-track h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
+.no-track p{font-size:14px;line-height:1.6}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:11px 20px;font-size:13px;color:var(--a1);opacity:0;z-index:9999;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:640px){.sidebar{width:100%;height:200px;border-right:none;border-bottom:1px solid var(--border)}.layout{flex-direction:column}.album-art{width:140px;height:140px;font-size:52px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">🎵</div>
+    <span class="n-title">Highly Müzik</span>
+  </a>
+  <div class="n-right">
+    <a href="dashboard.html" class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
+      <span id="navName">...</span>
+    </a>
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <!-- Playlist Sidebar -->
+  <div class="sidebar">
+    <div class="sb-top">
+      <div class="sb-title">🎵 Çalma Listesi</div>
+      <label class="upload-btn" for="fileInput">
+        ➕ Müzik Ekle (.mp3, .wav, .ogg, .flac)
+      </label>
+      <input class="file-input" type="file" id="fileInput" accept="audio/*" multiple/>
+    </div>
+    <div class="sb-list" id="trackList"></div>
+  </div>
+
+  <!-- Player -->
+  <div class="player-main" id="playerMain">
+    <div class="no-track" id="noTrack">
+      <div class="no-track-icon">🎵</div>
+      <h3>Müzik Yok</h3>
+      <p>Sol panelden müzik dosyalarını<br>yükleyerek başla!</p>
+    </div>
+
+    <div id="playerUI" style="display:none;flex-direction:column;align-items:center;gap:28px;width:100%">
+      <!-- Album art -->
+      <div class="album-art" id="albumArt">
+        <span id="albumEmoji">🎵</span>
+        <div class="album-visualizer" id="visualizer"></div>
+      </div>
+
+      <!-- Track info -->
+      <div style="text-align:center">
+        <div class="track-title" id="trackTitle">—</div>
+        <div class="track-subtitle" id="trackSub">Highly Müzik</div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-wrap">
+        <div class="progress-times">
+          <span id="curTime">0:00</span>
+          <span id="durTime">0:00</span>
+        </div>
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="ctrl-btn" id="shuffleBtn" title="Karıştır">🔀</button>
+        <button class="ctrl-btn" id="prevBtn" title="Önceki">⏮</button>
+        <button class="play-btn" id="playBtn">▶</button>
+        <button class="ctrl-btn" id="nextBtn" title="Sonraki">⏭</button>
+        <button class="ctrl-btn" id="repeatBtn" title="Tekrarla">🔁</button>
+      </div>
+
+      <!-- Volume -->
+      <div class="volume-wrap">
+        <span class="vol-icon" id="volIcon">🔊</span>
+        <input class="vol-slider" type="range" id="volSlider" min="0" max="100" value="80"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Auth
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
+document.getElementById('navName').textContent = user.name.split(' ')[0];
+
+// Audio engine
+const audio    = new Audio();
+let tracks     = []; // { name, url, duration }
+let curIdx     = 0;
+let shuffle    = false;
+let repeat     = false;
+let muted      = false;
+
+// Visualizer bars
+const VIS_COUNT = 14;
+document.getElementById('visualizer').innerHTML =
+  Array.from({length:VIS_COUNT},(_,i)=>
+    `<div class="vis-bar" style="animation-delay:${(i*0.07).toFixed(2)}s;animation-duration:${(0.5+Math.random()*0.4).toFixed(2)}s"></div>`
+  ).join('');
+
+// File upload
+document.getElementById('fileInput').addEventListener('change', e => {
+  const files = Array.from(e.target.files);
+  let added = 0;
+  files.forEach(file => {
+    if (!file.type.startsWith('audio/')) return;
+    const url  = URL.createObjectURL(file);
+    const name = file.name.replace(/\.[^/.]+$/, '');
+    tracks.push({ name, url, duration: '—' });
+    added++;
+    // Süre al
+    const tmp = new Audio(url);
+    tmp.addEventListener('loadedmetadata', () => {
+      const idx = tracks.findIndex(t => t.url === url);
+      if (idx > -1) { tracks[idx].duration = fmtTime(tmp.duration); renderList(); }
+    });
+  });
+  if (added) {
+    renderList();
+    if (tracks.length === added) loadTrack(0); // İlk yükleme
+    showToast(`🎵 ${added} parça eklendi!`);
+  }
+  e.target.value = '';
+});
+
+// Drag & drop
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => {
+  e.preventDefault();
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('audio/'));
+  if (!files.length) return;
+  files.forEach(file => {
+    const url  = URL.createObjectURL(file);
+    const name = file.name.replace(/\.[^/.]+$/, '');
+    tracks.push({ name, url, duration: '—' });
+    const tmp = new Audio(url);
+    tmp.addEventListener('loadedmetadata', () => {
+      const idx = tracks.findIndex(t => t.url === url);
+      if (idx > -1) { tracks[idx].duration = fmtTime(tmp.duration); renderList(); }
+    });
+  });
+  renderList();
+  if (tracks.length === files.length) loadTrack(0);
+  showToast(`🎵 ${files.length} parça eklendi!`);
+});
+
+function renderList() {
+  const el = document.getElementById('trackList');
+  if (!tracks.length) { el.innerHTML = `<div class="sb-empty">🎵 Henüz müzik yok<br>Yukarıdan dosya ekle<br>veya sürükle bırak!</div>`; return; }
+  el.innerHTML = tracks.map((t,i) => `
+    <div class="track-item${i===curIdx?' active':''}" data-i="${i}">
+      <span class="track-num">${i+1}</span>
+      <span class="track-playing">▶</span>
+      <div class="track-info">
+        <div class="track-name">${t.name}</div>
+        <div class="track-dur">${t.duration}</div>
+      </div>
+      <button class="track-del" data-i="${i}">🗑</button>
+    </div>`).join('');
+  el.querySelectorAll('.track-item').forEach(item => {
+    item.addEventListener('click', e => {
+      if (e.target.closest('.track-del')) return;
+      loadTrack(parseInt(item.dataset.i));
+      audio.play();
+      setPlaying(true);
+    });
+  });
+  el.querySelectorAll('.track-del').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); removeTrack(parseInt(btn.dataset.i)); });
+  });
+}
+
+function removeTrack(i) {
+  URL.revokeObjectURL(tracks[i].url);
+  tracks.splice(i, 1);
+  if (!tracks.length) { curIdx=0; audio.src=''; setPlaying(false); showPlayerUI(false); }
+  else if (i === curIdx) { curIdx = Math.min(curIdx, tracks.length-1); loadTrack(curIdx); }
+  else if (i < curIdx) { curIdx--; }
+  renderList();
+}
+
+function loadTrack(i) {
+  curIdx = i;
+  const t = tracks[i];
+  audio.src = t.url;
+  document.getElementById('trackTitle').textContent = t.name;
+  document.getElementById('trackSub').textContent   = 'Highly Müzik';
+  document.getElementById('durTime').textContent    = t.duration !== '—' ? t.duration : '—';
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('curTime').textContent    = '0:00';
+  showPlayerUI(true);
+  renderList();
+  // Emoji per type
+  const emojis = ['🎵','🎶','🎸','🎹','🎺','🎻','🥁','🎷'];
+  document.getElementById('albumEmoji').textContent = emojis[i % emojis.length];
+}
+
+function showPlayerUI(show) {
+  document.getElementById('noTrack').style.display  = show ? 'none' : 'block';
+  document.getElementById('playerUI').style.display = show ? 'flex' : 'none';
+}
+
+function setPlaying(v) {
+  document.getElementById('playBtn').textContent = v ? '⏸' : '▶';
+  document.getElementById('albumArt').classList.toggle('playing', v);
+}
+
+// Audio events
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('curTime').textContent = fmtTime(audio.currentTime);
+});
+audio.addEventListener('loadedmetadata', () => {
+  document.getElementById('durTime').textContent = fmtTime(audio.duration);
+  if (tracks[curIdx]) tracks[curIdx].duration = fmtTime(audio.duration);
+  renderList();
+});
+audio.addEventListener('ended', () => {
+  if (repeat) { audio.currentTime=0; audio.play(); return; }
+  if (shuffle) { loadTrack(Math.floor(Math.random()*tracks.length)); audio.play(); return; }
+  if (curIdx < tracks.length-1) { loadTrack(curIdx+1); audio.play(); }
+  else { setPlaying(false); audio.currentTime=0; document.getElementById('progressFill').style.width='0%'; }
+});
+audio.addEventListener('play',  () => setPlaying(true));
+audio.addEventListener('pause', () => setPlaying(false));
+
+// Controls
+document.getElementById('playBtn').addEventListener('click', () => {
+  if (!tracks.length) return;
+  audio.paused ? audio.play() : audio.pause();
+});
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (!tracks.length) return;
+  if (audio.currentTime > 3) { audio.currentTime=0; return; }
+  loadTrack(shuffle ? Math.floor(Math.random()*tracks.length) : (curIdx-1+tracks.length)%tracks.length);
+  audio.play();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (!tracks.length) return;
+  loadTrack(shuffle ? Math.floor(Math.random()*tracks.length) : (curIdx+1)%tracks.length);
+  audio.play();
+});
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  shuffle = !shuffle;
+  document.getElementById('shuffleBtn').classList.toggle('active', shuffle);
+  showToast(shuffle ? '🔀 Karıştırma açık' : '🔀 Karıştırma kapalı');
+});
+document.getElementById('repeatBtn').addEventListener('click', () => {
+  repeat = !repeat;
+  document.getElementById('repeatBtn').classList.toggle('active', repeat);
+  showToast(repeat ? '🔁 Tekrar açık' : '🔁 Tekrar kapalı');
+});
+
+// Progress click
+document.getElementById('progressBar').addEventListener('click', e => {
+  if (!audio.duration) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+});
+
+// Volume
+const volSlider = document.getElementById('volSlider');
+volSlider.addEventListener('input', () => {
+  audio.volume = volSlider.value / 100;
+  const v = parseInt(volSlider.value);
+  document.getElementById('volIcon').textContent = v===0?'🔇':v<50?'🔉':'🔊';
+});
+document.getElementById('volIcon').addEventListener('click', () => {
+  muted = !muted;
+  audio.muted = muted;
+  document.getElementById('volIcon').textContent = muted ? '🔇' : parseInt(volSlider.value)<50 ? '🔉' : '🔊';
+});
+audio.volume = 0.8;
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space')      { e.preventDefault(); audio.paused ? audio.play() : audio.pause(); }
+  if (e.code === 'ArrowRight') { audio.currentTime = Math.min(audio.duration, audio.currentTime+5); }
+  if (e.code === 'ArrowLeft')  { audio.currentTime = Math.max(0, audio.currentTime-5); }
+  if (e.code === 'ArrowUp')    { audio.volume = Math.min(1, audio.volume+0.1); volSlider.value=audio.volume*100; }
+  if (e.code === 'ArrowDown')  { audio.volume = Math.max(0, audio.volume-0.1); volSlider.value=audio.volume*100; }
+});
+
+function fmtTime(s) {
+  if (!s || isNaN(s)) return '0:00';
+  const m = Math.floor(s/60), sec = Math.floor(s%60);
+  return `${m}:${String(sec).padStart(2,'0')}`;
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+renderList();
+</script>
+</body>
+</html>
