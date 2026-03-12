@@ -63,7 +63,7 @@ nav{position:relative;z-index:20;display:flex;align-items:center;justify-content
     <span class="n-title">Highly AI</span>
   </a>
   <div class="n-right">
-    <button class="n-clear" id="clearBtn">🗑 Temizle</button>
+    <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--muted)">🧠 <select id="modelSel" style="background:transparent;border:none;color:#e8e8ff;font-family:DM Sans,sans-serif;font-size:12px;outline:none;cursor:pointer"><option value="wiki">Highly AI 1.0</option></select></div><button class="n-clear" id="clearBtn">🗑 Temizle</button>
     <a href="dashboard.html" class="n-user">
       <div class="n-avatar" id="navAvatar">?</div>
       <span id="navName">...</span>
@@ -76,13 +76,9 @@ nav{position:relative;z-index:20;display:flex;align-items:center;justify-content
   <div class="welcome" id="welcome">
     <div class="welcome-icon">🤖</div>
     <h2>Highly AI'ya hoş geldin!</h2>
-    <p>Sorular sor, kod yaz, içerik üret. Sana yardımcı olmak için buradayım!</p>
-    <div class="suggestions">
-      <button class="sug-btn">💡 Fikir üret</button>
-      <button class="sug-btn">📝 Metin yaz</button>
-      <button class="sug-btn">💻 Kod yardımı</button>
-      <button class="sug-btn">🌍 Bir şey anlat</button>
-      <button class="sug-btn">🎯 Plan yap</button>
+    <p>Herhangi bir konuyu sor, Wikipedia'dan araştırayım!</p>
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:999px;padding:7px 16px;font-size:12px;color:#a78bfa;margin-top:4px">
+      🧠 <strong>Highly AI 1.0</strong> · Wikipedia destekli
     </div>
   </div>
 </div>
@@ -92,7 +88,7 @@ nav{position:relative;z-index:20;display:flex;align-items:center;justify-content
     <textarea class="msg-input" id="msgInput" placeholder="Bir şey sor... (Enter ile gönder)" rows="1"></textarea>
     <button class="send-btn" id="sendBtn">↑</button>
   </div>
-  <div class="input-hint">Gemini tarafından desteklenmektedir · Highly AI</div>
+  <div class="input-hint">Wikipedia tarafından desteklenmektedir · Highly AI</div>
 </div>
 
 <script>
@@ -109,10 +105,6 @@ const chatWrap = document.getElementById('chatWrap');
 const msgInput = document.getElementById('msgInput');
 const sendBtn  = document.getElementById('sendBtn');
 const welcome  = document.getElementById('welcome');
-
-document.querySelectorAll('.sug-btn').forEach(btn => {
-  btn.addEventListener('click', () => { msgInput.value = btn.textContent.slice(3); send(); });
-});
 
 msgInput.addEventListener('input', () => {
   msgInput.style.height = 'auto';
@@ -162,6 +154,70 @@ function esc(t) {
   return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// Sohbet kalıpları — bunlar Wikipedia'ya gitmesin
+const CHAT_PATTERNS = [
+  /^(selam|merhaba|hey|hi|hello)/i,
+  /^(nasılsın|naber|ne haber|ne var ne yok)/i,
+  /^(teşekkür|sağol|eyvallah|tamam|ok|iyi)/i,
+  /^(kim|sen kimsin|adın ne|highly ai)/i,
+  /^(günaydın|iyi geceler|iyi akşamlar|iyi günler)/i,
+  /^(evet|hayır|yok|var|olur|olmaz)/i,
+  /^(😀|😂|👍|❤️|🙂)/,
+];
+
+const CHAT_RESPONSES = {
+  selam: [`Selam ${user.name}! 👋 Nasıl yardımcı olabilirim?`, `Merhaba! 😊 Ne öğrenmek istiyorsun?`, `Hey! 👋 Sana nasıl yardımcı olabilirim?`],
+  nasıl: [`İyiyim, teşekkürler! 😊 Sen nasılsın?`, `Gayet iyiyim! Sana yardımcı olmaya hazırım 🚀`, `Süper! Sen?`],
+  teşekkür: [`Rica ederim! 😊`, `Ne demek! Başka sorun var mı?`, `Her zaman! 🙌`],
+  default: [`Anlıyorum! Başka bir şey sormak ister misin?`, `Tabii ki! Sana nasıl yardımcı olabilirim?`]
+};
+
+function isSohbet(text) {
+  return CHAT_PATTERNS.some(p => p.test(text.trim()));
+}
+
+function sohbetCevap(text) {
+  const t = text.toLowerCase();
+  if (/selam|merhaba|hey/.test(t)) return CHAT_RESPONSES.selam[Math.floor(Math.random()*3)];
+  if (/nasıl|naber/.test(t)) return CHAT_RESPONSES.nasıl[Math.floor(Math.random()*3)];
+  if (/teşekkür|sağol|eyvallah/.test(t)) return CHAT_RESPONSES.teşekkür[Math.floor(Math.random()*3)];
+  return CHAT_RESPONSES.default[Math.floor(Math.random()*2)];
+}
+
+async function searchWikipedia(query) {
+  // Önce Türkçe Wikipedia'da ara
+  const searchUrl = `https://tr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=1`;
+  const searchRes = await fetch(searchUrl);
+  const searchData = await searchRes.json();
+  const results = searchData.query?.search;
+  if (!results?.length) {
+    // Türkçe bulunamazsa İngilizce dene
+    const enUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=1`;
+    const enRes = await fetch(enUrl);
+    const enData = await enRes.json();
+    const enResults = enData.query?.search;
+    if (!enResults?.length) return null;
+    const title = enResults[0].title;
+    const sumUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=extracts&exintro=true&explaintext=true&format=json&origin=*`;
+    const sumRes = await fetch(sumUrl);
+    const sumData = await sumRes.json();
+    const pages = sumData.query?.pages;
+    const page = Object.values(pages)[0];
+    if (!page?.extract) return null;
+    const text = page.extract.slice(0, 800).trim();
+    return { title, text, url: `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`, lang: 'en' };
+  }
+  const title = results[0].title;
+  const sumUrl = `https://tr.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=extracts&exintro=true&explaintext=true&format=json&origin=*`;
+  const sumRes = await fetch(sumUrl);
+  const sumData = await sumRes.json();
+  const pages = sumData.query?.pages;
+  const page = Object.values(pages)[0];
+  if (!page?.extract) return null;
+  const text = page.extract.slice(0, 800).trim();
+  return { title, text, url: `https://tr.wikipedia.org/wiki/${encodeURIComponent(title)}`, lang: 'tr' };
+}
+
 async function send() {
   const text = msgInput.value.trim();
   if (!text) return;
@@ -172,24 +228,26 @@ async function send() {
   addTyping();
 
   try {
-    const res = await fetch(WORKER, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: history,
-        system: `Sen Highly ekosisteminin AI asistanısın. Kullanıcının adı ${user.name}. Türkçe konuş, yardımsever ve samimi ol.`
-      })
-    });
+    // Sohbet mi kontrol et
+    if (isSohbet(text)) {
+      await new Promise(r => setTimeout(r, 600));
+      document.getElementById('typing')?.remove();
+      const reply = sohbetCevap(text);
+      history.push({ role: 'assistant', content: reply });
+      addMsg('ai', reply);
+      return;
+    }
 
-    const data = await res.json();
+    // Wikipedia'dan ara
+    const wiki = await searchWikipedia(text);
     document.getElementById('typing')?.remove();
 
-    if (data.content?.[0]?.text) {
-      const reply = data.content[0].text;
+    if (wiki) {
+      const reply = `📖 **${wiki.title}**\n\n${wiki.text}\n\n🔗 [Wikipedia'da oku](${wiki.url})`;
       history.push({ role: 'assistant', content: reply });
       addMsg('ai', reply);
     } else {
-      addMsg('ai', '❌ Hata: ' + JSON.stringify(data));
+      addMsg('ai', `❌ "${text}" hakkında bilgi bulunamadı. Farklı bir şekilde sormayı dene!`);
     }
   } catch(e) {
     document.getElementById('typing')?.remove();
