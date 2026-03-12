@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#6366f1;--a2:#4f46e5;--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 20% 20%,rgba(99,102,241,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(167,139,250,0.06) 0%,transparent 50%)}
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
+.n-clear{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;padding:5px 12px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.n-clear:hover{border-color:rgba(248,113,113,.4);color:#f87171}
+.chat-wrap{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px;position:relative;z-index:2;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:40px;gap:16px}
+.welcome-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 8px 32px rgba(99,102,241,.3)}
+.welcome h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800}
+.welcome p{color:var(--muted);font-size:14px;max-width:400px;line-height:1.7}
+.suggestions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
+.sug-btn{padding:9px 16px;background:var(--s1);border:1px solid var(--border);border-radius:999px;color:var(--text);font-size:13px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.sug-btn:hover{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:#a78bfa}
+.msg{display:flex;gap:12px;max-width:780px;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse;margin-left:auto}
+.msg-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;font-family:'Syne',sans-serif}
+.msg.user .msg-avatar{background:linear-gradient(135deg,var(--a1),var(--a2))}
+.msg.ai .msg-avatar{background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid rgba(99,102,241,.3);font-size:18px}
+.msg-bubble{padding:14px 18px;border-radius:16px;font-size:14px;line-height:1.7;max-width:100%}
+.msg.user .msg-bubble{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border-radius:16px 4px 16px 16px}
+.msg.ai .msg-bubble{background:var(--s1);border:1px solid var(--border);border-radius:4px 16px 16px 16px}
+.msg.ai .msg-bubble pre{background:rgba(0,0,0,.3);border-radius:8px;padding:12px;overflow-x:auto;margin:10px 0;font-size:13px}
+.msg.ai .msg-bubble code{background:rgba(99,102,241,.15);padding:2px 6px;border-radius:4px;font-size:13px}
+.typing{display:flex;align-items:center;gap:5px;padding:6px 0}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:t .9s ease-in-out infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes t{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+.input-wrap{position:relative;z-index:10;padding:16px 24px;background:rgba(6,7,15,0.95);border-top:1px solid var(--border);flex-shrink:0}
+.input-box{display:flex;align-items:flex-end;gap:10px;background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:12px 14px;transition:border-color .2s}
+.input-box:focus-within{border-color:rgba(99,102,241,.4)}
+.msg-input{flex:1;background:none;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;outline:none;resize:none;max-height:120px;min-height:24px}
+.msg-input::placeholder{color:var(--muted)}
+.send-btn{width:38px;height:38px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-size:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.send-btn:hover{opacity:.9;transform:scale(1.05)}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.input-hint{text-align:center;font-size:11px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<nav>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">🤖</div>
+    <span class="n-title">Highly AI</span>
+  </a>
+  <div class="n-right">
+    <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--muted)">🧠 <select id="modelSel" style="background:transparent;border:none;color:#e8e8ff;font-family:DM Sans,sans-serif;font-size:12px;outline:none;cursor:pointer"><option value="wiki">Gene 1.0</option><option value="gene2">Gene 2.0 ✨</option></select></div><button class="n-clear" id="clearBtn">🗑 Temizle</button>
+    <a href="dashboard.html" class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
+      <span id="navName">...</span>
+    </a>
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="chat-wrap" id="chatWrap">
+  <div class="welcome" id="welcome">
+    <div class="welcome-icon">🤖</div>
+    <h2>Highly AI'ya hoş geldin!</h2>
+    <p>Herhangi bir konuyu sor, Wikipedia'dan araştırayım!</p>
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:999px;padding:7px 16px;font-size:12px;color:#a78bfa;margin-top:4px">
+      🧠 <strong id="modelBadge">Gene 1.0</strong> · <span id="modelDesc">Wikipedia destekli</span>
+    </div>
+  </div>
+</div>
+
+<div class="input-wrap">
+  <div class="input-box">
+    <textarea class="msg-input" id="msgInput" placeholder="Bir şey sor... (Enter ile gönder)" rows="1"></textarea>
+    <button class="send-btn" id="sendBtn">↑</button>
+  </div>
+  <div class="input-hint">Highly AI hata yapabilir. Sonuçları kontrol edin.</div>
+</div>
+
+<script>
+const WORKER = 'https://highly-ai-proxy.emrir41.workers.dev/ai';
+
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
+document.getElementById('navName').textContent = user.name.split(' ')[0];
+
+let history = [];
+const chatWrap = document.getElementById('chatWrap');
+const msgInput = document.getElementById('msgInput');
+const sendBtn  = document.getElementById('sendBtn');
+const welcome  = document.getElementById('welcome');
+
+msgInput.addEventListener('input', () => {
+  msgInput.style.height = 'auto';
+  msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
+});
+msgInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
+sendBtn.addEventListener('click', send);
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  history = [];
+  chatWrap.innerHTML = '';
+  chatWrap.appendChild(welcome);
+  welcome.style.display = 'flex';
+});
+
+function addMsg(role, text) {
+  welcome.style.display = 'none';
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `
+    <div class="msg-avatar">${role === 'user' ? user.name[0].toUpperCase() : '🤖'}</div>
+    <div class="msg-bubble">${role === 'ai' ? fmt(text) : esc(text)}</div>`;
+  chatWrap.appendChild(div);
+  chatWrap.scrollTop = chatWrap.scrollHeight;
+}
+
+function addTyping() {
+  welcome.style.display = 'none';
+  const div = document.createElement('div');
+  div.className = 'msg ai'; div.id = 'typing';
+  div.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chatWrap.appendChild(div);
+  chatWrap.scrollTop = chatWrap.scrollHeight;
+}
+
+function fmt(t) {
+  return esc(t)
+    .replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+}
+function esc(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Sohbet kalıpları — bunlar Wikipedia'ya gitmesin
+const CHAT_PATTERNS = [
+  /^(selam|merhaba|hey|hi|hello)/i,
+  /^(nasılsın|naber|ne haber|ne var ne yok)/i,
+  /^(teşekkür|sağol|eyvallah|tamam|ok|iyi)/i,
+  /^(kim|sen kimsin|adın ne|highly ai)/i,
+  /^(günaydın|iyi geceler|iyi akşamlar|iyi günler)/i,
+  /^(evet|hayır|yok|var|olur|olmaz)/i,
+  /^(😀|😂|👍|❤️|🙂)/,
+];
+
+const CHAT_RESPONSES = {
+  selam: [`Selam ${user.name}! 👋 Nasıl yardımcı olabilirim?`, `Merhaba! 😊 Ne öğrenmek istiyorsun?`, `Hey! 👋 Sana nasıl yardımcı olabilirim?`],
+  nasıl: [`İyiyim, teşekkürler! 😊 Sen nasılsın?`, `Gayet iyiyim! Sana yardımcı olmaya hazırım 🚀`, `Süper! Sen?`],
+  teşekkür: [`Rica ederim! 😊`, `Ne demek! Başka sorun var mı?`, `Her zaman! 🙌`],
+  default: [`Anlıyorum! Başka bir şey sormak ister misin?`, `Tabii ki! Sana nasıl yardımcı olabilirim?`]
+};
+
+function isSohbet(text) {
+  return CHAT_PATTERNS.some(p => p.test(text.trim()));
+}
+
+function sohbetCevap(text) {
+  const t = text.toLowerCase();
+  if (/selam|merhaba|hey/.test(t)) return CHAT_RESPONSES.selam[Math.floor(Math.random()*3)];
+  if (/nasıl|naber/.test(t)) return CHAT_RESPONSES.nasıl[Math.floor(Math.random()*3)];
+  if (/teşekkür|sağol|eyvallah/.test(t)) return CHAT_RESPONSES.teşekkür[Math.floor(Math.random()*3)];
+  return CHAT_RESPONSES.default[Math.floor(Math.random()*2)];
+}
+
+async function searchWikipedia(query) {
+  // Önce Türkçe Wikipedia'da ara
+  const searchUrl = `https://tr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=1`;
+  const searchRes = await fetch(searchUrl);
+  const searchData = await searchRes.json();
+  const results = searchData.query?.search;
+  if (!results?.length) {
+    // Türkçe bulunamazsa İngilizce dene
+    const enUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=1`;
+    const enRes = await fetch(enUrl);
+    const enData = await enRes.json();
+    const enResults = enData.query?.search;
+    if (!enResults?.length) return null;
+    const title = enResults[0].title;
+    const sumUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=extracts&exintro=true&explaintext=true&format=json&origin=*`;
+    const sumRes = await fetch(sumUrl);
+    const sumData = await sumRes.json();
+    const pages = sumData.query?.pages;
+    const page = Object.values(pages)[0];
+    if (!page?.extract) return null;
+    const text = page.extract.slice(0, 800).trim();
+    return { title, text, url: `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`, lang: 'en' };
+  }
+  const title = results[0].title;
+  const sumUrl = `https://tr.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=extracts&exintro=true&explaintext=true&format=json&origin=*`;
+  const sumRes = await fetch(sumUrl);
+  const sumData = await sumRes.json();
+  const pages = sumData.query?.pages;
+  const page = Object.values(pages)[0];
+  if (!page?.extract) return null;
+  const text = page.extract.slice(0, 800).trim();
+  return { title, text, url: `https://tr.wikipedia.org/wiki/${encodeURIComponent(title)}`, lang: 'tr' };
+}
+
+async function send() {
+  const text = msgInput.value.trim();
+  if (!text) return;
+  msgInput.value = ''; msgInput.style.height = 'auto';
+  sendBtn.disabled = true;
+  addMsg('user', text);
+  history.push({ role: 'user', content: text });
+  addTyping();
+
+  try {
+    // Sohbet mi kontrol et
+    if (isSohbet(text)) {
+      await new Promise(r => setTimeout(r, 600));
+      document.getElementById('typing')?.remove();
+      const reply = sohbetCevap(text);
+      history.push({ role: 'assistant', content: reply });
+      addMsg('ai', reply);
+      return;
+    }
+
+    // Wikipedia'dan ara
+    const wiki = await searchWikipedia(text);
+    document.getElementById('typing')?.remove();
+
+    if (wiki) {
+      const reply = `📖 **${wiki.title}**\n\n${wiki.text}\n\n🔗 [Wikipedia'da oku](${wiki.url})`;
+      history.push({ role: 'assistant', content: reply });
+      addMsg('ai', reply);
+    } else {
+      addMsg('ai', `❌ "${text}" hakkında bilgi bulunamadı. Farklı bir şekilde sormayı dene!`);
+    }
+  } catch(e) {
+    document.getElementById('typing')?.remove();
+    addMsg('ai', '❌ Bağlantı hatası: ' + e.message);
+  } finally {
+    sendBtn.disabled = false;
+    msgInput.focus();
+  }
+}
+
+// Model değişince badge güncelle
+document.getElementById('modelSel').addEventListener('change', function() {
+  const isGene2 = this.value === 'gene2';
+  const badge = document.getElementById('modelBadge');
+  const desc  = document.getElementById('modelDesc');
+  if (badge) badge.textContent = isGene2 ? 'Gene 2.0' : 'Gene 1.0';
+  if (desc)  desc.textContent  = isGene2 ? 'Matematik · Hava · Döviz · Sohbet' : 'Wikipedia destekli';
+  history = [];
+  chatWrap.innerHTML = '';
+  chatWrap.appendChild(welcome);
+  welcome.style.display = 'flex';
+});
+
+// ===== GENE 2.0 MODÜLLERİ =====
+
+// 1. MATEMATİK
+function isMath(t) {
+  return /[\d\+\-\*\/\^\%√]/.test(t) && /[\d]/.test(t) ||
+    /kaç(tır|tir|tur|tür)?(\s|$)/.test(t) ||
+    /(\d+)\s*(çarpı|bölü|artı|eksi|kere)\s*(\d+)/.test(t) ||
+    /karekök|faktöriyel|yüzde|\^/.test(t);
+}
+
+function solveMath(t) {
+  try {
+    let expr = t.toLowerCase()
+      .replace(/çarpı|kere/g, '*')
+      .replace(/bölü/g, '/')
+      .replace(/artı/g, '+')
+      .replace(/eksi/g, '-')
+      .replace(/karekök\s*(\d+)/g, 'Math.sqrt($1)')
+      .replace(/(\d+)\s*\^\s*(\d+)/g, 'Math.pow($1,$2)')
+      .replace(/(\d+)!/g, (m,n) => { let f=1; for(let i=2;i<=parseInt(n);i++) f*=i; return f; })
+      .replace(/yüzde\s*(\d+)\s*(.*?)\s*(\d+)/g, (m,p,_,v) => (parseFloat(v)*parseFloat(p)/100).toString())
+      .replace(/[^0-9\+\-\*\/\.\(\)MathsqrpowE]/g, ' ').trim();
+    // Basit ifadeyse eval
+    const result = Function('"use strict"; return (' + expr + ')')();
+    if (isNaN(result) || !isFinite(result)) return null;
+    return result % 1 === 0 ? result.toString() : result.toFixed(6).replace(/\.?0+$/, '');
+  } catch { return null; }
+}
+
+function mathCevap(t) {
+  const result = solveMath(t);
+  if (result !== null) return `🧮 **Sonuç: ${result}**`;
+  return null;
+}
+
+// 2. TARİH & SAAT
+function isTarih(t) {
+  return /(saat kaç|saat\s*kaç|bugün ne|bugün hangi|gün bugün|tarih ne|today|hangi gün|günlerden ne|ay kaç|yıl kaç)/i.test(t);
+}
+
+function tarihCevap() {
+  const now = new Date();
+  const DAYS   = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  return `🕐 Şu an **${hh}:${mm}**
+📅 **${DAYS[now.getDay()]}, ${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}**`;
+}
+
+// 3. HAVA DURUMU
+function isHava(t) {
+  return /(hava|hava durumu|bugün hava|dışarıda|sıcaklık|hava nasıl|yağmur|kar yağ|fırtına)/i.test(t);
+}
+
+async function havaCevap() {
+  try {
+    const geo = await fetch('https://ipapi.co/json/');
+    const gd  = await geo.json();
+    const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${gd.latitude}&lon=${gd.longitude}&appid=bd5e378503939ddaee76f12ad7a97608&units=metric&lang=tr`);
+    const d   = await res.json();
+    const icons = {'01d':'☀️','01n':'🌙','02d':'⛅','02n':'⛅','03d':'☁️','04d':'☁️','09d':'🌧','10d':'🌦','11d':'⛈','13d':'❄️','50d':'🌫'};
+    const icon = icons[d.weather[0].icon] || '🌤';
+    return `${icon} **${d.name} hava durumu:**
+
+🌡 Sıcaklık: **${Math.round(d.main.temp)}°C** (hissedilen ${Math.round(d.main.feels_like)}°C)
+☁️ Durum: ${d.weather[0].description}
+💧 Nem: %${d.main.humidity}
+💨 Rüzgar: ${Math.round(d.wind.speed*3.6)} km/s`;
+  } catch { return '❌ Hava bilgisi alınamadı, internet bağlantını kontrol et.'; }
+}
+
+// 4. DÖVİZ
+function isDoviz(t) {
+  return /(dolar|euro|sterlin|pound|döviz|kur|tl kaç|kaç tl|usd|eur|gbp|dolar kaç|euro kaç)/i.test(t);
+}
+
+async function dovizCevap(t) {
+  try {
+    const res  = await fetch('https://api.frankfurter.app/latest?from=USD&to=TRY,EUR,GBP');
+    const data = await res.json();
+    const usdTry = data.rates.TRY;
+    const eurTry = usdTry / data.rates.EUR;
+    const gbpTry = usdTry / data.rates.GBP;
+    const tl = t.toLowerCase();
+    if (/euro|eur/.test(tl)) return `💶 **1 Euro = ${eurTry.toFixed(2)} TL**
+💵 1 Dolar = ${usdTry.toFixed(2)} TL
+💷 1 Sterlin = ${gbpTry.toFixed(2)} TL`;
+    if (/sterlin|pound|gbp/.test(tl)) return `💷 **1 Sterlin = ${gbpTry.toFixed(2)} TL**
+💵 1 Dolar = ${usdTry.toFixed(2)} TL
+💶 1 Euro = ${eurTry.toFixed(2)} TL`;
+    return `💵 **1 Dolar = ${usdTry.toFixed(2)} TL**
+💶 1 Euro = ${eurTry.toFixed(2)} TL
+💷 1 Sterlin = ${gbpTry.toFixed(2)} TL`;
+  } catch { return '❌ Döviz bilgisi alınamadı.'; }
+}
+
+// 5. KİMLİK (AI hakkında sorular)
+function isKimlik(t) {
+  return /(sen kimsin|adın ne|highly ai|gene|kim yapı|nesin|ne iş yapı|bana yardım)/i.test(t);
+}
+
+function kimlikCevap() {
+  const cevaplar = [
+    `Merhaba! Ben **Highly AI** — Gene 2.0 modeliyle çalışıyorum. 🤖
+
+Sana şunlarda yardımcı olabilirim:
+🧮 Matematik işlemleri
+🌤 Hava durumu
+💵 Döviz kurları
+📅 Tarih ve saat
+📖 Bilgi araştırma`,
+    `Ben Highly ekosisteminin yapay zeka asistanıyım! Gene 2.0 ile güçlendirildim. Matematik, hava, döviz, tarih ve araştırma konularında yardımcı olabilirim. 🚀`,
+  ];
+  return cevaplar[Math.floor(Math.random()*cevaplar.length)];
+}
+
+// Ana send fonksiyonunu güncelle
+async function send() {
+  const text = msgInput.value.trim();
+  if (!text) return;
+  msgInput.value = ''; msgInput.style.height = 'auto';
+  sendBtn.disabled = true;
+  addMsg('user', text);
+  history.push({ role: 'user', content: text });
+  addTyping();
+
+  const model = document.getElementById('modelSel').value;
+
+  try {
+    await new Promise(r => setTimeout(r, 400));
+    document.getElementById('typing')?.remove();
+
+    let reply = null;
+
+    // === GENE 1.0 ===
+    if (model === 'wiki') {
+      if (isSohbet(text)) { reply = sohbetCevap(text); }
+      else {
+        const wiki = await searchWikipedia(text);
+        reply = wiki
+          ? `📖 **${wiki.title}**
+
+${wiki.text}
+
+🔗 [Wikipedia'da oku](${wiki.url})`
+          : `❌ "${text}" hakkında bilgi bulunamadı. Farklı bir şekilde sormayı dene!`;
+      }
+    }
+
+    // === GENE 2.0 ===
+    else if (model === 'gene2') {
+      if (isSohbet(text))       { reply = sohbetCevap(text); }
+      else if (isKimlik(text))  { reply = kimlikCevap(); }
+      else if (isTarih(text))   { reply = tarihCevap(); }
+      else if (isHava(text))    { addTyping(); reply = await havaCevap(); document.getElementById('typing')?.remove(); }
+      else if (isDoviz(text))   { addTyping(); reply = await dovizCevap(text); document.getElementById('typing')?.remove(); }
+      else if (isMath(text))    { reply = mathCevap(text); }
+      
+      // Math başarısızsa veya başka soruysa Wikipedia'ya git
+      if (!reply) {
+        const wiki = await searchWikipedia(text);
+        reply = wiki
+          ? `📖 **${wiki.title}**
+
+${wiki.text}
+
+🔗 [Wikipedia'da oku](${wiki.url})`
+          : `🤔 Bunu tam olarak anlayamadım. Şunları sorabilirsin:
+
+🧮 Matematik: "15 çarpı 24"
+🌤 Hava: "Bugün hava nasıl?"
+💵 Döviz: "Dolar kaç TL?"
+📅 Saat: "Saat kaç?"
+📖 Bilgi: "Einstein kimdir?"`;
+      }
+    }
+
+    history.push({ role: 'assistant', content: reply });
+    addMsg('ai', reply);
+
+  } catch(e) {
+    document.getElementById('typing')?.remove();
+    addMsg('ai', '❌ Hata: ' + e.message);
+  } finally {
+    sendBtn.disabled = false;
+    msgInput.focus();
+  }
+}
+
+msgInput.focus();
+</script>
+</body>
+</html>
