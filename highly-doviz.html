@@ -199,18 +199,18 @@ let rates = {};
 
 async function fetchRates() {
   try {
-    // Ücretsiz API: exchangerate-api
-    const res  = await fetch('https://api.exchangerate-api.com/v4/latest/TRY');
+    // frankfurter.app - CORS destekli, ücretsiz, güvenilir
+    const res  = await fetch('https://api.frankfurter.app/latest?from=TRY&to=USD,EUR,GBP,JPY,CHF,CAD,AUD,RUB,CNY,SAR,AED,SEK');
     const data = await res.json();
-    // TRY bazlı, ters çevir
+    // TRY bazlı ters çevir
     Object.keys(data.rates).forEach(k => {
       if (data.rates[k]) rates[k] = 1 / data.rates[k];
     });
     rates['TRY'] = 1;
     renderAll();
-    document.getElementById('lastUpdate').textContent = 'Son güncelleme: ' + new Date().toLocaleTimeString('tr');
+    document.getElementById('lastUpdate').textContent = 'Son güncelleme: ' + new Date().toLocaleTimeString('tr-TR');
   } catch(e) {
-    document.getElementById('lastUpdate').textContent = '❌ Veri alınamadı, tekrar dene';
+    document.getElementById('lastUpdate').textContent = '❌ Veri alınamadı: ' + e.message;
   }
 }
 
