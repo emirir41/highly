@@ -19,16 +19,21 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-con
             display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff}
 .n-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:18px}
 .n-right{display:flex;align-items:center;gap:10px}
-.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:6px 14px 6px 6px;font-size:13px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:6px 14px 6px 6px;font-size:13px;text-decoration:none;color:inherit}
 .n-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#4f46e5);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px}
 .n-logout{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;padding:6px 12px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
 .n-logout:hover{border-color:rgba(248,113,113,.4);color:#f87171}
 main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-index:2}
-.greeting{margin-bottom:36px}
+.greeting{margin-bottom:12px}
 .greeting-time{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
 .greeting-name{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.5px}
 .greeting-name span{background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .greeting-sub{font-size:14px;color:var(--muted);margin-top:6px}
+.clock-wrap{display:flex;align-items:center;gap:20px;margin-bottom:28px;margin-top:16px;flex-wrap:wrap}
+.clock{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;letter-spacing:-2px;line-height:1}
+.clock-sub{font-size:13px;color:var(--muted);margin-top:4px}
+.motivasyon{flex:1;background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:14px 18px;font-size:13px;color:var(--muted);line-height:1.6;min-width:200px}
+.motivasyon strong{color:var(--text);display:block;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px}
 .stat-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
 .sc-icon{font-size:22px;margin-bottom:10px}
@@ -47,8 +52,7 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
 .ac-desc{font-size:12px;color:var(--muted);line-height:1.5}
 .ac-badge{position:absolute;top:14px;right:14px;font-size:9px;padding:3px 8px;border-radius:999px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .badge-new{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.25)}
-.badge-soon{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2)}
-.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bottom-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .widget{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px 22px}
 .widget-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
 .cal-today{display:flex;align-items:center;gap:14px;margin-bottom:14px}
@@ -65,8 +69,17 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
 .pom-stat{background:rgba(255,255,255,.03);border-radius:10px;padding:12px;text-align:center}
 .pom-stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
 .pom-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.hava-main{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.hava-icon{font-size:44px}
+.hava-temp{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;line-height:1}
+.hava-city{font-size:12px;color:var(--muted);margin-top:4px}
+.hava-desc{font-size:12px;color:var(--muted);margin-bottom:10px;text-transform:capitalize}
+.hava-details{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hava-detail{background:rgba(255,255,255,.03);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--muted)}
+.hava-detail span{font-family:'Syne',sans-serif;font-weight:700;color:var(--text);display:block;font-size:13px}
+@media(max-width:900px){.bottom-row{grid-template-columns:1fr 1fr}}
 @media(max-width:768px){.stats-row{grid-template-columns:repeat(2,1fr)}.bottom-row{grid-template-columns:1fr}.apps-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.apps-grid{grid-template-columns:1fr}.greeting-name{font-size:24px}}
+@media(max-width:480px){.apps-grid{grid-template-columns:1fr}.greeting-name{font-size:24px}.clock{font-size:36px}}
 </style>
 </head>
 <body>
@@ -76,7 +89,7 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
     <span class="n-brand">Highly</span>
   </a>
   <div class="n-right">
-    <a href="highly-profil.html" class="n-user" style="text-decoration:none;color:inherit">
+    <a href="highly-profil.html" class="n-user">
       <div class="n-avatar" id="navAvatar">?</div>
       <span id="navName">...</span>
     </a>
@@ -91,6 +104,17 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
     <div class="greeting-sub" id="greetDate">—</div>
   </div>
 
+  <div class="clock-wrap">
+    <div>
+      <div class="clock" id="clockDisplay">00:00:00</div>
+      <div class="clock-sub" id="clockDate">—</div>
+    </div>
+    <div class="motivasyon">
+      <strong>💡 Günün Sözü</strong>
+      <span id="motivasyonSoz">—</span>
+    </div>
+  </div>
+
   <div class="stats-row">
     <div class="stat-card"><div class="sc-icon">🍅</div><div class="sc-val" id="statPom">0</div><div class="sc-lbl">Pomodoro</div></div>
     <div class="stat-card"><div class="sc-icon">⏱</div><div class="sc-val" id="statFocus">0</div><div class="sc-lbl">Odaklanma (dk)</div></div>
@@ -100,19 +124,27 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
 
   <div class="section-title">Hızlı Erişim</div>
   <div class="quick-grid">
-    <a href="highly-hava.html"     class="quick-btn">🌤 Hava</a>
-    <a href="highly-harita.html"   class="quick-btn">🗺 Harita</a>
-    <a href="highly-takvim.html"   class="quick-btn">📅 Takvim</a>
-    <a href="highly-pomodoro.html" class="quick-btn">⏱ Pomodoro</a>
-    <a href="highly-notlar.html"   class="quick-btn">📝 Not Al</a>
-    <a href="highly-cevirmen.html" class="quick-btn">🌐 Çevir</a>
-    <a href="highly-muzik.html"    class="quick-btn">🎵 Müzik</a>
-    <a href="highly-butce.html"    class="quick-btn">💰 Bütçe</a>
-    <a href="highly-arama.html"    class="quick-btn">🔍 Ara</a>
+    <a href="highly-ai.html"      class="quick-btn">🤖 AI</a>
+    <a href="highly-hava.html"    class="quick-btn">🌤 Hava</a>
+    <a href="highly-harita.html"  class="quick-btn">🗺 Harita</a>
+    <a href="highly-takvim.html"  class="quick-btn">📅 Takvim</a>
+    <a href="highly-pomodoro.html"class="quick-btn">⏱ Pomodoro</a>
+    <a href="highly-notlar.html"  class="quick-btn">📝 Not Al</a>
+    <a href="highly-cevirmen.html"class="quick-btn">🌐 Çevir</a>
+    <a href="highly-muzik.html"   class="quick-btn">🎵 Müzik</a>
+    <a href="highly-butce.html"   class="quick-btn">💰 Bütçe</a>
+    <a href="highly-doviz.html"   class="quick-btn">💵 Döviz</a>
+    <a href="highly-arama.html"   class="quick-btn">🔍 Ara</a>
   </div>
 
   <div class="section-title">Tüm Uygulamalar</div>
   <div class="apps-grid">
+    <a href="highly-ai.html" class="app-card">
+      <span class="ac-badge badge-new">YENİ</span>
+      <div class="ac-icon-wrap" style="background:rgba(99,102,241,.12)">🤖</div>
+      <div class="ac-name">Highly AI</div>
+      <div class="ac-desc">Wikipedia destekli akıllı asistan</div>
+    </a>
     <a href="highly-hava.html" class="app-card">
       <div class="ac-icon-wrap" style="background:rgba(56,189,248,.12)">🌤</div>
       <div class="ac-name">Hava Durumu</div>
@@ -134,40 +166,35 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
       <div class="ac-desc">Etkinlik ekle, hatırlatıcı kur</div>
     </a>
     <a href="highly-cevirmen.html" class="app-card">
-      <span class="ac-badge badge-new">YENİ</span>
       <div class="ac-icon-wrap" style="background:rgba(52,211,153,.12)">🌐</div>
       <div class="ac-name">Çevirmen</div>
       <div class="ac-desc">13 dil, otomatik algılama</div>
     </a>
     <a href="highly-notlar.html" class="app-card">
-      <span class="ac-badge badge-new">YENİ</span>
       <div class="ac-icon-wrap" style="background:rgba(245,158,11,.12)">📝</div>
       <div class="ac-name">Not Defteri</div>
       <div class="ac-desc">Notlar, kategoriler, otomatik kayıt</div>
     </a>
     <a href="highly-pomodoro.html" class="app-card">
-      <span class="ac-badge badge-new">YENİ</span>
       <div class="ac-icon-wrap" style="background:rgba(248,113,113,.12)">⏱</div>
       <div class="ac-name">Pomodoro</div>
       <div class="ac-desc">Odaklanma zamanlayıcı, istatistik</div>
     </a>
     <a href="highly-butce.html" class="app-card">
-      <span class="ac-badge badge-new">YENİ</span>
       <div class="ac-icon-wrap" style="background:rgba(52,211,153,.12)">💰</div>
       <div class="ac-name">Bütçe Takibi</div>
       <div class="ac-desc">Gelir/gider takibi, grafikler</div>
     </a>
     <a href="highly-muzik.html" class="app-card">
-      <span class="ac-badge badge-new">YENİ</span>
       <div class="ac-icon-wrap" style="background:rgba(167,139,250,.12)">🎵</div>
       <div class="ac-name">Müzik Çalar</div>
       <div class="ac-desc">MP3/WAV/FLAC yükle ve çal</div>
     </a>
-    <a href="highly-ai.html" class="app-card" style="opacity:.55;pointer-events:none">
-      <span class="ac-badge badge-soon">YAKINDA</span>
-      <div class="ac-icon-wrap" style="background:rgba(99,102,241,.12)">🤖</div>
-      <div class="ac-name">Highly AI</div>
-      <div class="ac-desc">Claude ile sohbet et</div>
+    <a href="highly-doviz.html" class="app-card">
+      <span class="ac-badge badge-new">YENİ</span>
+      <div class="ac-icon-wrap" style="background:rgba(245,158,11,.12)">💵</div>
+      <div class="ac-name">Döviz</div>
+      <div class="ac-desc">Canlı kurlar, altın, çevirici</div>
     </a>
   </div>
 
@@ -185,7 +212,7 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
       <a href="highly-takvim.html" class="widget-link" style="color:#6366f1">Takvime git →</a>
     </div>
     <div class="widget">
-      <div class="widget-title">🍅 Pomodoro İstatistik</div>
+      <div class="widget-title">🍅 Pomodoro</div>
       <div class="pom-stats">
         <div class="pom-stat"><div class="pom-stat-val" id="pomPom">0</div><div class="pom-stat-lbl">🍅 Pomodoro</div></div>
         <div class="pom-stat"><div class="pom-stat-val" id="pomFocus">0</div><div class="pom-stat-lbl">⏱ Dakika</div></div>
@@ -193,6 +220,11 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
         <div class="pom-stat"><div class="pom-stat-val" id="pomHours">0</div><div class="pom-stat-lbl">🕐 Saat</div></div>
       </div>
       <a href="highly-pomodoro.html" class="widget-link" style="color:#f87171">Pomodoro'ya git →</a>
+    </div>
+    <div class="widget">
+      <div class="widget-title">🌤 Hava Durumu</div>
+      <div id="havaWidget"><div style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0">Yükleniyor...</div></div>
+      <a href="highly-hava.html" class="widget-link" style="color:#38bdf8">Hava durumuna git →</a>
     </div>
   </div>
 </main>
@@ -204,7 +236,7 @@ const user = JSON.parse(saved || '{"name":"?"}');
 const navAvatar = document.getElementById('navAvatar');
 navAvatar.textContent = user.avatarEmoji || user.name[0].toUpperCase();
 if (user.avatarBg) navAvatar.style.background = user.avatarBg;
-document.getElementById('navName').textContent = user.name.split(' ')[0];
+document.getElementById('navName').textContent   = user.name.split(' ')[0];
 document.getElementById('greetName').textContent = user.name.split(' ')[0];
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -221,20 +253,49 @@ document.getElementById('calDay').textContent       = now.getDate();
 document.getElementById('calDayName').textContent   = DAYS[now.getDay()];
 document.getElementById('calMonthYear').textContent = `${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
 
+// Canlı saat
+function updateClock() {
+  const d  = new Date();
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mm = String(d.getMinutes()).padStart(2,'0');
+  const ss = String(d.getSeconds()).padStart(2,'0');
+  document.getElementById('clockDisplay').textContent = `${hh}:${mm}:${ss}`;
+  document.getElementById('clockDate').textContent    = `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// Motivasyon
+const SOZLER = [
+  'Başarı, her gün tekrarlanan küçük çabaların toplamıdır.',
+  'Bugün zor olan şey, yarın alışkanlık olacak.',
+  'Mükemmel olmak için değil, dün olduğundan daha iyi olmak için çalış.',
+  'Her büyük yolculuk tek bir adımla başlar.',
+  'Zamanını boşa harcama; hayat, zamanın aktığı şeydir.',
+  'Düşün, inan, hayal et ve cesur ol.',
+  'Başarısızlık bir son değil, yeni bir başlangıçtır.',
+  'En iyi yatırım, kendinize yapılan yatırımdır.',
+  'Yapabildiğin şeyi bugün yap, yarına bırakma.',
+  'Zorluklar, gizlenmiş fırsatlardır.',
+  'Odaklan, çünkü dikkat dağınıklığı başarının düşmanıdır.',
+  'Her yeni gün, yeni bir fırsat kapısıdır.',
+];
+document.getElementById('motivasyonSoz').textContent = SOZLER[now.getDate() % SOZLER.length];
+
 // Stats
 const notes  = JSON.parse(localStorage.getItem('highly_notes')  || '[]');
 const events = JSON.parse(localStorage.getItem('highly_events') || '[]');
 const pom    = parseInt(localStorage.getItem('hp_pomodoros') || '0');
 const focus  = parseInt(localStorage.getItem('hp_focus')     || '0');
 const streak = parseInt(localStorage.getItem('hp_streak')    || '0');
-document.getElementById('statPom').textContent   = pom;
-document.getElementById('statFocus').textContent = focus;
-document.getElementById('statNotes').textContent = notes.length;
-document.getElementById('statEvents').textContent= events.length;
-document.getElementById('pomPom').textContent    = pom;
-document.getElementById('pomFocus').textContent  = focus;
-document.getElementById('pomStreak').textContent = streak;
-document.getElementById('pomHours').textContent  = (focus/60).toFixed(1);
+document.getElementById('statPom').textContent    = pom;
+document.getElementById('statFocus').textContent  = focus;
+document.getElementById('statNotes').textContent  = notes.length;
+document.getElementById('statEvents').textContent = events.length;
+document.getElementById('pomPom').textContent     = pom;
+document.getElementById('pomFocus').textContent   = focus;
+document.getElementById('pomStreak').textContent  = streak;
+document.getElementById('pomHours').textContent   = (focus/60).toFixed(1);
 
 // Takvim widget
 const today  = now.toISOString().split('T')[0];
@@ -244,6 +305,31 @@ const calEl  = document.getElementById('calEvents');
 calEl.innerHTML = todays.length
   ? todays.slice(0,4).map(e=>`<div class="cal-event" style="border-color:${COLORS[e.category]||'#6366f1'}"><span class="cal-event-time">${e.time||'—'}</span><span class="cal-event-name">${e.title}</span></div>`).join('')
   : `<div class="cal-empty">Bugün etkinlik yok 🎉</div>`;
+
+// Hava widget
+const WICONS = {'01d':'☀️','01n':'🌙','02d':'⛅','02n':'⛅','03d':'☁️','03n':'☁️','04d':'☁️','04n':'☁️','09d':'🌧','09n':'🌧','10d':'🌦','10n':'🌦','11d':'⛈','11n':'⛈','13d':'❄️','13n':'❄️','50d':'🌫','50n':'🌫'};
+async function loadHava() {
+  try {
+    const geo = await fetch('https://ipapi.co/json/');
+    const gd  = await geo.json();
+    const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${gd.latitude}&lon=${gd.longitude}&appid=bd5e378503939ddaee76f12ad7a97608&units=metric&lang=tr`);
+    const d   = await res.json();
+    const icon = WICONS[d.weather[0].icon] || '🌤';
+    document.getElementById('havaWidget').innerHTML = `
+      <div class="hava-main">
+        <div class="hava-icon">${icon}</div>
+        <div><div class="hava-temp">${Math.round(d.main.temp)}°C</div><div class="hava-city">${d.name}</div></div>
+      </div>
+      <div class="hava-desc">${d.weather[0].description}</div>
+      <div class="hava-details">
+        <div class="hava-detail"><span>${d.main.humidity}%</span>Nem</div>
+        <div class="hava-detail"><span>${Math.round(d.wind.speed*3.6)} km/s</span>Rüzgar</div>
+      </div>`;
+  } catch {
+    document.getElementById('havaWidget').innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px">Hava bilgisi alınamadı</div>';
+  }
+}
+loadHava();
 </script>
 </body>
 </html>
