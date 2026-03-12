@@ -76,10 +76,10 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
     <span class="n-brand">Highly</span>
   </a>
   <div class="n-right">
-    <div class="n-user">
+    <a href="highly-profil.html" class="n-user" style="text-decoration:none;color:inherit">
       <div class="n-avatar" id="navAvatar">?</div>
       <span id="navName">...</span>
-    </div>
+    </a>
     <button class="n-logout" id="logoutBtn">Çıkış</button>
   </div>
 </nav>
@@ -201,8 +201,10 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-i
 const saved = localStorage.getItem('highly_user');
 if (!saved) location.href = 'highly-id.html';
 const user = JSON.parse(saved || '{"name":"?"}');
-document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
-document.getElementById('navName').textContent   = user.name.split(' ')[0];
+const navAvatar = document.getElementById('navAvatar');
+navAvatar.textContent = user.avatarEmoji || user.name[0].toUpperCase();
+if (user.avatarBg) navAvatar.style.background = user.avatarBg;
+document.getElementById('navName').textContent = user.name.split(' ')[0];
 document.getElementById('greetName').textContent = user.name.split(' ')[0];
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
