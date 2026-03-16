@@ -378,7 +378,7 @@ function renderMessages(msgs) {
   });
 
   el.innerHTML = html;
-  if (wasBottom) el.scrollTop = el.scrollHeight;
+  el.scrollTop = el.scrollHeight;
 }
 
 function escHtml(t) {
@@ -403,10 +403,12 @@ async function sendMsg() {
       await loadMessages();
       // Son mesajı güncelle
       const f = allFriends.find(x => x.id == activeUid);
-      if (f) f.lastMsg = data[0];
+      if (f) { f.lastMsg = data[0]; f.unread = 0; }
       renderConvList(allFriends);
+    } else {
+      toast('Mesaj gönderilemedi!', 'err');
     }
-  } catch(e) { toast('Mesaj gönderilemedi!', 'err'); }
+  } catch(e) { console.error(e); toast('Hata: ' + e.message, 'err'); }
   document.getElementById('sendBtn').disabled = false;
   msgInput.focus();
 }
