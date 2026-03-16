@@ -157,7 +157,22 @@ main{position:relative;z-index:2;max-width:620px;margin:0 auto;padding:40px 24px
     </div>
   </div>
 
-  <!-- Çıkış / Hesap sil -->
+  <!-- Kullanıcı adı -->
+  <div class="section">
+    <div class="sec-title">🔑 Kullanıcı Adı</div>
+    <div class="form-group">
+      <label class="form-label">Kullanıcı Adı</label>
+      <div style="position:relative">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px">@</span>
+        <input class="form-input" id="editUsername" type="text" placeholder="kullaniciadi" style="padding-left:28px"/>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">Arkadaşların seni bu isimle bulacak. Sadece harf, rakam ve alt çizgi.</div>
+    </div>
+    <button class="btn-save" id="saveUsername">✓ Kullanıcı Adını Kaydet</button>
+  </div>
+
+  <!-- İsim & Email -->
+  <div class="section">
   <div class="section">
     <div class="sec-title">⚠️ Hesap</div>
     <button class="btn-danger" id="logoutBtn">🚪 Çıkış Yap</button>
@@ -192,8 +207,34 @@ const EMOJIS = [
 let selBg    = user.avatarBg    || '#6366f1';
 let selEmoji = user.avatarEmoji || '😎';
 
+document.getElementById('editUsername').value = user.username || '';
+
 // Init
 document.getElementById('profileName').textContent  = user.name  || '?';
+document.getElementById('saveUsername').addEventListener('click', async () => {
+  const uname = document.getElementById('editUsername').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
+  if (!uname) return showToast('Kullanıcı adı boş olamaz!', false);
+  if (uname.length < 3) return showToast('En az 3 karakter olmalı!', false);
+  document.getElementById('editUsername').value = uname;
+  try {
+    // Başkası kullanıyor mu?
+    const chk  = await fetch(`${SUPABASE_URL}/rest/v1/users?username=eq.${uname}&id=neq.${user.id}&select=id`, { headers: H });
+    const exist = await chk.json();
+    if (exist && exist.length) return showToast('@' + uname + ' zaten alınmış!', false);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${user.id}`, {
+      method: 'PATCH',
+      headers: { ...H, 'Prefer': 'return=representation' },
+      body: JSON.stringify({ username: uname })
+    });
+    const data = await res.json();
+    if (data && data[0]) {
+      const u = JSON.parse(localStorage.getItem('highly_user') || '{}');
+      u.username = uname;
+      localStorage.setItem('highly_user', JSON.stringify(u));
+      showToast('@' + uname + ' kaydedildi! ✅', true);
+    }
+  } catch(e) { showToast('Hata: ' + e.message, false); }
+});
 document.getElementById('profileEmail').textContent = user.email || '?';
 document.getElementById('editName').value  = user.name  || '';
 document.getElementById('editEmail').value = user.email || '';
