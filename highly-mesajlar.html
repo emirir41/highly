@@ -178,15 +178,17 @@ function fmtTime(ts){
   const d=new Date(ts), now=new Date(), diff=now-d;
   if(diff<60000) return 'şimdi';
   if(diff<3600000) return Math.floor(diff/60000)+'dk';
-  if(now.toDateString()===d.toDateString()) return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+  if(now.toDateString()===d.toDateString()) return d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
   return d.getDate()+'/'+(d.getMonth()+1);
 }
 
 function fmtDay(ts){
   const d=new Date(ts), now=new Date();
-  if(now.toDateString()===d.toDateString()) return 'Bugün';
-  const y=new Date(now-86400000);
-  if(y.toDateString()===d.toDateString()) return 'Dün';
+  const dStr=d.toLocaleDateString('tr-TR');
+  const nStr=now.toLocaleDateString('tr-TR');
+  const yStr=new Date(now-86400000).toLocaleDateString('tr-TR');
+  if(dStr===nStr) return 'Bugün';
+  if(dStr===yStr) return 'Dün';
   const M=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
   return d.getDate()+' '+M[d.getMonth()];
 }
@@ -318,7 +320,7 @@ function renderMsgs(msgs){
   msgs.forEach(m=>{
     const isMine = m.sender_id==me.id;
     const day    = fmtDay(m.created_at);
-    const time   = new Date(m.created_at).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+    const time   = new Date(m.created_at).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'});
     if(day!==lastDay){ html+='<div class="day-sep">'+day+'</div>'; lastDay=day; }
 
     const avStyle = isMine
