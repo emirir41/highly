@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly — Mesajlar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#6366f1;--a2:#4f46e5;--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 20% 20%,rgba(99,102,241,0.06) 0%,transparent 50%),
+             radial-gradient(ellipse at 80% 80%,rgba(52,211,153,0.04) 0%,transparent 50%)}
+
+/* Layout */
+.app{display:flex;flex:1;overflow:hidden;position:relative;z-index:2}
+
+/* Sol panel — sohbet listesi */
+.sidebar{width:300px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sb-header{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sb-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800}
+.sb-back{color:var(--muted);text-decoration:none;font-size:12px;padding:6px 12px;border:1px solid var(--border);border-radius:8px;transition:all .2s}
+.sb-back:hover{color:var(--text);border-color:rgba(255,255,255,.15)}
+.sb-search{padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-search-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none}
+.sb-search-input::placeholder{color:var(--muted)}
+.sb-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.conv-item{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;transition:background .2s;border-bottom:1px solid rgba(255,255,255,.03);position:relative}
+.conv-item:hover{background:rgba(255,255,255,.04)}
+.conv-item.active{background:rgba(99,102,241,.1);border-right:3px solid var(--a1)}
+.conv-avatar{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-family:'Syne',sans-serif;font-weight:800;color:#fff}
+.conv-info{flex:1;min-width:0}
+.conv-name{font-size:14px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-last{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.conv-time{font-size:10px;color:var(--muted)}
+.conv-unread{width:18px;height:18px;background:var(--a1);border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff}
+.sb-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px}
+
+/* Sağ panel — chat */
+.chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.chat-header{padding:14px 20px;border-bottom:1px solid var(--border);background:rgba(6,7,15,.95);backdrop-filter:blur(20px);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.chat-header-avatar{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-family:'Syne',sans-serif;font-weight:800;color:#fff}
+.chat-header-info{flex:1}
+.chat-header-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
+.chat-header-status{font-size:11px;color:var(--muted)}
+.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.msg-wrap{display:flex;gap:8px;max-width:70%}
+.msg-wrap.mine{flex-direction:row-reverse;margin-left:auto}
+.msg-av{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-family:'Syne',sans-serif;font-weight:800;color:#fff;margin-top:auto}
+.msg-content{display:flex;flex-direction:column;gap:2px}
+.msg-wrap.mine .msg-content{align-items:flex-end}
+.msg-bubble{padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.6;max-width:100%;word-break:break-word}
+.msg-wrap.mine .msg-bubble{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border-radius:16px 4px 16px 16px}
+.msg-wrap.other .msg-bubble{background:var(--s1);border:1px solid var(--border);border-radius:4px 16px 16px 16px}
+.msg-time{font-size:10px;color:var(--muted);padding:0 4px}
+.msg-read{font-size:10px;color:rgba(167,139,250,.6);padding:0 4px}
+
+/* Hoş geldin ekranı */
+.chat-welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;gap:14px}
+.cw-icon{font-size:56px}
+.cw-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
+.cw-sub{font-size:13px;color:var(--muted);max-width:300px;line-height:1.6}
+
+/* Input */
+.chat-input-wrap{padding:14px 18px;background:rgba(6,7,15,.95);border-top:1px solid var(--border);flex-shrink:0}
+.chat-input-box{display:flex;align-items:flex-end;gap:10px;background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:10px 14px;transition:border-color .2s}
+.chat-input-box:focus-within{border-color:rgba(99,102,241,.4)}
+.chat-input{flex:1;background:none;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;outline:none;resize:none;max-height:100px;min-height:22px}
+.chat-input::placeholder{color:var(--muted)}
+.send-btn{width:36px;height:36px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-size:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.send-btn:hover{opacity:.9;transform:scale(1.05)}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* Typing indicator */
+.typing-indicator{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px;color:var(--muted)}
+.typing-dots{display:flex;gap:3px}
+.typing-dots span{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:td .9s ease-in-out infinite}
+.typing-dots span:nth-child(2){animation-delay:.15s}
+.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+
+/* Gün ayırıcı */
+.day-divider{text-align:center;font-size:11px;color:var(--muted);margin:8px 0;display:flex;align-items:center;gap:10px}
+.day-divider::before,.day-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;opacity:0;z-index:9999;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:#34d399;color:#34d399}
+.toast.err{border-color:#f87171;color:#f87171}
+
+/* Mobil */
+@media(max-width:640px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:50;transform:translateX(-100%);transition:transform .3s;width:280px}
+  .sidebar.mobile-open{transform:translateX(0)}
+  .chat-area{width:100%}
+  .mob-menu{display:flex!important}
+}
+.mob-menu{display:none;width:34px;height:34px;background:var(--s1);border:1px solid var(--border);border-radius:9px;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text);margin-right:4px}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sol: Sohbet listesi -->
+  <div class="sidebar" id="sidebar">
+    <div class="sb-header">
+      <div class="sb-title">💬 Mesajlar</div>
+      <a href="dashboard.html" class="sb-back">← Dashboard</a>
+    </div>
+    <div class="sb-search">
+      <input class="sb-search-input" id="searchConv" placeholder="Arkadaş ara..." oninput="filterConvs(this.value)"/>
+    </div>
+    <div class="sb-list" id="convList">
+      <div class="sb-empty">Arkadaş listesi yükleniyor...</div>
+    </div>
+  </div>
+
+  <!-- Sağ: Chat alanı -->
+  <div class="chat-area" id="chatArea">
+    <!-- Header -->
+    <div class="chat-header" id="chatHeader" style="display:none">
+      <button class="mob-menu" onclick="toggleSidebar()">☰</button>
+      <div class="chat-header-avatar" id="chatHeaderAv">?</div>
+      <div class="chat-header-info">
+        <div class="chat-header-name" id="chatHeaderName">—</div>
+        <div class="chat-header-status" id="chatHeaderStatus">@kullaniciadi</div>
+      </div>
+    </div>
+
+    <!-- Hoş geldin -->
+    <div class="chat-welcome" id="chatWelcome">
+      <div class="cw-icon">💬</div>
+      <div class="cw-title">Mesajlaşmaya Başla</div>
+      <div class="cw-sub">Soldan bir arkadaş seç ve sohbet et!</div>
+    </div>
+
+    <!-- Mesajlar -->
+    <div class="chat-messages" id="chatMessages" style="display:none"></div>
+
+    <!-- Input -->
+    <div class="chat-input-wrap" id="chatInputWrap" style="display:none">
+      <div class="chat-input-box">
+        <textarea class="chat-input" id="msgInput" placeholder="Mesaj yaz..." rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMsg()">↑</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0';
+const H = { 'Content-Type':'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{}');
+
+let activeUid    = null;
+let activeUser   = null;
+let allFriends   = [];
+let pollInterval = null;
+
+// URL'den uid al
+const urlParams = new URLSearchParams(location.search);
+const initUid   = urlParams.get('uid');
+
+// Input auto-resize
+const msgInput = document.getElementById('msgInput');
+msgInput.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
+msgInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+});
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + (type||'ok');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+}
+
+// Avatar oluştur
+function makeAv(u, size) {
+  const s = size || 42;
+  const bg = u.avatarBg || '#6366f1';
+  const style = 'width:' + s + 'px;height:' + s + 'px;border-radius:' + Math.round(s*0.3) + 'px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:Syne,sans-serif;font-weight:800;color:#fff;';
+  if (u.avatarEmoji) return '<div style="' + style + 'background:transparent;font-size:' + Math.round(s*0.55) + 'px">' + u.avatarEmoji + '</div>';
+  return '<div style="' + style + 'background:' + bg + ';font-size:' + Math.round(s*0.38) + 'px">' + (u.name ? u.name[0].toUpperCase() : '?') + '</div>';
+}
+
+function fmtTime(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  const diff = now - d;
+  if (diff < 60000) return 'şimdi';
+  if (diff < 3600000) return Math.floor(diff/60000) + 'dk';
+  if (diff < 86400000) return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  return d.getDate() + '/' + (d.getMonth()+1);
+}
+
+function fmtDate(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  const diff = now.toDateString() === d.toDateString();
+  if (diff) return 'Bugün';
+  const yesterday = new Date(now - 86400000);
+  if (yesterday.toDateString() === d.toDateString()) return 'Dün';
+  const DAYS = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  const MONTHS = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  return d.getDate() + ' ' + MONTHS[d.getMonth()];
+}
+
+// Arkadaş listesini yükle
+async function loadFriends() {
+  try {
+    const res  = await fetch(SB_URL + '/rest/v1/friendships?or=(sender_id.eq.' + user.id + ',receiver_id.eq.' + user.id + ')&status=eq.accepted&select=*', { headers: H });
+    const data = await res.json();
+    if (!data || !data.length) {
+      document.getElementById('convList').innerHTML = '<div class="sb-empty">Henüz arkadaşın yok.<br><a href="highly-arkadaslar.html" style="color:#a78bfa">Arkadaş ekle →</a></div>';
+      return;
+    }
+    const ids = data.map(f => f.sender_id == user.id ? f.receiver_id : f.sender_id);
+    const uRes = await fetch(SB_URL + '/rest/v1/users?id=in.(' + ids.join(',') + ')&select=id,name,username,avatarEmoji,avatarBg', { headers: H });
+    const users = await uRes.json();
+
+    // Son mesajları çek
+    const msgRes = await fetch(SB_URL + '/rest/v1/messages?or=(sender_id.eq.' + user.id + ',receiver_id.eq.' + user.id + ')&order=created_at.desc&limit=100&select=*', { headers: H });
+    const msgs   = await msgRes.json();
+
+    allFriends = users.map(u => {
+      const lastMsg = (msgs || []).find(m =>
+        (m.sender_id == user.id && m.receiver_id == u.id) ||
+        (m.sender_id == u.id && m.receiver_id == user.id)
+      );
+      const unread = (msgs || []).filter(m => m.sender_id == u.id && m.receiver_id == user.id && !m.read).length;
+      return { ...u, lastMsg, unread };
+    }).sort((a,b) => {
+      const at = a.lastMsg ? new Date(a.lastMsg.created_at) : 0;
+      const bt = b.lastMsg ? new Date(b.lastMsg.created_at) : 0;
+      return bt - at;
+    });
+
+    renderConvList(allFriends);
+
+    // URL'den uid geldiyse aç
+    if (initUid) {
+      const target = allFriends.find(f => f.id == initUid);
+      if (target) openChat(target);
+    }
+  } catch(e) { console.error(e); toast('Arkadaşlar yüklenemedi', 'err'); }
+}
+
+function renderConvList(friends) {
+  const el = document.getElementById('convList');
+  if (!friends.length) { el.innerHTML = '<div class="sb-empty">Arkadaş bulunamadı.</div>'; return; }
+  el.innerHTML = friends.map(f => {
+    const isActive = activeUid == f.id;
+    const lastTxt  = f.lastMsg ? (f.lastMsg.sender_id == user.id ? 'Sen: ' : '') + f.lastMsg.content.slice(0,35) + (f.lastMsg.content.length > 35 ? '...' : '') : 'Henüz mesaj yok';
+    const lastTime = f.lastMsg ? fmtTime(f.lastMsg.created_at) : '';
+    return '<div class="conv-item' + (isActive ? ' active' : '') + '" onclick="openChat(' + JSON.stringify(f).replace(/"/g,'&quot;') + ')">' +
+      makeAv(f) +
+      '<div class="conv-info"><div class="conv-name">' + f.name + '</div><div class="conv-last">' + lastTxt + '</div></div>' +
+      '<div class="conv-meta"><span class="conv-time">' + lastTime + '</span>' +
+      (f.unread > 0 ? '<span class="conv-unread">' + f.unread + '</span>' : '') +
+      '</div></div>';
+  }).join('');
+}
+
+function filterConvs(q) {
+  if (!q) { renderConvList(allFriends); return; }
+  const filtered = allFriends.filter(f => f.name.toLowerCase().includes(q.toLowerCase()) || (f.username||'').toLowerCase().includes(q.toLowerCase()));
+  renderConvList(filtered);
+}
+
+// Chat aç
+async function openChat(friend) {
+  activeUid  = friend.id;
+  activeUser = friend;
+
+  // Header güncelle
+  document.getElementById('chatHeader').style.display    = 'flex';
+  document.getElementById('chatWelcome').style.display   = 'none';
+  document.getElementById('chatMessages').style.display  = 'flex';
+  document.getElementById('chatInputWrap').style.display = 'block';
+
+  const hAv = document.getElementById('chatHeaderAv');
+  if (friend.avatarEmoji) { hAv.textContent = friend.avatarEmoji; hAv.style.background = 'transparent'; hAv.style.fontSize = '22px'; }
+  else { hAv.textContent = friend.name[0].toUpperCase(); hAv.style.background = friend.avatarBg || '#6366f1'; }
+  document.getElementById('chatHeaderName').textContent   = friend.name;
+  document.getElementById('chatHeaderStatus').textContent = '@' + (friend.username || '');
+
+  // Sidebar'ı kapat (mobil)
+  document.getElementById('sidebar').classList.remove('mobile-open');
+
+  // Mesajları yükle
+  await loadMessages();
+  document.getElementById('msgInput').focus();
+
+  // Polling başlat
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(loadMessages, 3000);
+
+  // Sidebar'ı güncelle
+  renderConvList(allFriends);
+}
+
+// Mesajları yükle
+async function loadMessages() {
+  if (!activeUid) return;
+  try {
+    const res  = await fetch(
+      SB_URL + '/rest/v1/messages?or=(and(sender_id.eq.' + user.id + ',receiver_id.eq.' + activeUid + '),and(sender_id.eq.' + activeUid + ',receiver_id.eq.' + user.id + '))&order=created_at.asc&select=*',
+      { headers: H }
+    );
+    const msgs = await res.json();
+    renderMessages(msgs || []);
+
+    // Okundu işaretle
+    const unread = (msgs || []).filter(m => m.sender_id == activeUid && !m.read);
+    if (unread.length) {
+      await fetch(SB_URL + '/rest/v1/messages?sender_id=eq.' + activeUid + '&receiver_id=eq.' + user.id + '&read=eq.false', {
+        method: 'PATCH', headers: H, body: JSON.stringify({ read: true })
+      });
+      // Badge güncelle
+      const f = allFriends.find(x => x.id == activeUid);
+      if (f) f.unread = 0;
+      renderConvList(allFriends);
+    }
+  } catch(e) { console.error(e); }
+}
+
+function renderMessages(msgs) {
+  const el = document.getElementById('chatMessages');
+  const wasBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+
+  if (!msgs.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">Henüz mesaj yok. İlk mesajı gönder! 👋</div>';
+    return;
+  }
+
+  let html = '';
+  let lastDay = '';
+
+  msgs.forEach((m, i) => {
+    const isMine = m.sender_id == user.id;
+    const day    = fmtDate(m.created_at);
+    const time   = new Date(m.created_at).toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit'});
+
+    if (day !== lastDay) {
+      html += '<div class="day-divider">' + day + '</div>';
+      lastDay = day;
+    }
+
+    const av = isMine
+      ? (user.avatarEmoji ? '<div style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:transparent">' + user.avatarEmoji + '</div>'
+        : '<div style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;font-family:Syne,sans-serif;font-weight:800;color:#fff;background:' + (user.avatarBg||'#6366f1') + '">' + user.name[0].toUpperCase() + '</div>')
+      : makeAv(activeUser, 28);
+
+    html += '<div class="msg-wrap ' + (isMine ? 'mine' : 'other') + '">' +
+      av +
+      '<div class="msg-content">' +
+      '<div class="msg-bubble">' + escHtml(m.content) + '</div>' +
+      '<div style="display:flex;align-items:center;gap:4px">' +
+      '<span class="msg-time">' + time + '</span>' +
+      (isMine ? '<span class="msg-read">' + (m.read ? '✓✓' : '✓') + '</span>' : '') +
+      '</div></div></div>';
+  });
+
+  el.innerHTML = html;
+  if (wasBottom) el.scrollTop = el.scrollHeight;
+}
+
+function escHtml(t) {
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+// Mesaj gönder
+async function sendMsg() {
+  const text = msgInput.value.trim();
+  if (!text || !activeUid) return;
+  msgInput.value = ''; msgInput.style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+
+  try {
+    const res  = await fetch(SB_URL + '/rest/v1/messages', {
+      method: 'POST',
+      headers: Object.assign({}, H, { 'Prefer': 'return=representation' }),
+      body: JSON.stringify({ sender_id: user.id, receiver_id: activeUid, content: text, read: false })
+    });
+    const data = await res.json();
+    if (data && data[0]) {
+      await loadMessages();
+      // Son mesajı güncelle
+      const f = allFriends.find(x => x.id == activeUid);
+      if (f) f.lastMsg = data[0];
+      renderConvList(allFriends);
+    }
+  } catch(e) { toast('Mesaj gönderilemedi!', 'err'); }
+  document.getElementById('sendBtn').disabled = false;
+  msgInput.focus();
+}
+
+// Başlat
+loadFriends();
+</script>
+</body>
+</html>
