@@ -173,6 +173,40 @@ main{position:relative;z-index:2;max-width:620px;margin:0 auto;padding:40px 24px
 
   <!-- İsim & Email -->
   <div class="section">
+    <div class="sec-title">✏️ Bilgileri Düzenle</div>
+    <div class="form-group">
+      <label class="form-label">Ad Soyad</label>
+      <input class="form-input" id="editName" type="text" placeholder="Adın"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">E-posta</label>
+      <input class="form-input" id="editEmail" type="email" disabled/>
+    </div>
+    <button class="btn-save" id="saveName">✓ Kaydet</button>
+  </div>
+
+  <!-- Şifre değiştir -->
+  <div class="section">
+    <div class="sec-title">🔐 Şifre Değiştir</div>
+    <button class="pw-toggle" id="pwToggle">+ Şifre değiştir</button>
+    <div class="pw-fields" id="pwFields">
+      <div class="form-group">
+        <label class="form-label">Mevcut Şifre</label>
+        <input class="form-input" id="pwCurrent" type="password" placeholder="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Yeni Şifre</label>
+        <input class="form-input" id="pwNew" type="password" placeholder="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Yeni Şifre Tekrar</label>
+        <input class="form-input" id="pwConfirm" type="password" placeholder="••••••••"/>
+      </div>
+      <button class="btn-save" id="savePw">✓ Şifreyi Değiştir</button>
+    </div>
+  </div>
+
+  <!-- Çıkış / Hesap sil -->
   <div class="section">
     <div class="sec-title">⚠️ Hesap</div>
     <button class="btn-danger" id="logoutBtn">🚪 Çıkış Yap</button>
@@ -185,6 +219,7 @@ main{position:relative;z-index:2;max-width:620px;margin:0 auto;padding:40px 24px
 <script>
 const SUPABASE_URL = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0';
+const H = { 'Content-Type':'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY };
 
 const saved = localStorage.getItem('highly_user');
 if (!saved) location.href = 'highly-id.html';
