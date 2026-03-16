@@ -204,8 +204,13 @@ function backToList(){
 // Arkadaşları yükle
 async function loadFriends(){
   try {
-    const r1 = await fetch(SB+'/rest/v1/friendships?and=(status.eq.accepted)&or=(sender_id.eq.'+me.id+',receiver_id.eq.'+me.id+')&select=*',{headers:H});
-    const fs  = await r1.json();
+    // İki ayrı sorgu - gönderdiğim kabul edilmiş arkadaşlıklar
+    const r1a = await fetch(SB+'/rest/v1/friendships?sender_id=eq.'+me.id+'&status=eq.accepted&select=*',{headers:H});
+    const fs1 = await r1a.json() || [];
+    // Aldığım kabul edilmiş arkadaşlıklar
+    const r1b = await fetch(SB+'/rest/v1/friendships?receiver_id=eq.'+me.id+'&status=eq.accepted&select=*',{headers:H});
+    const fs2 = await r1b.json() || [];
+    const fs  = [...fs1, ...fs2];
     if(!fs||!fs.length){ document.getElementById('convList').innerHTML='<div class="sb-empty">Henüz arkadaşın yok.<br><a href="highly-arkadaslar.html">Arkadaş ekle →</a></div>'; return; }
 
     const ids = fs.map(f=>f.sender_id==me.id?f.receiver_id:f.sender_id);

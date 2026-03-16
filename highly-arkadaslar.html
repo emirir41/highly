@@ -280,7 +280,7 @@ async function removeFreind(fId) {
 // ===== ARKADAŞLARI YÜKLE =====
 async function loadArkadaslar() {
   try {
-    const res  = await fetch(SB_URL + '/rest/v1/friendships?or=(sender_id.eq.' + user.id + ',receiver_id.eq.' + user.id + ')&status=eq.accepted&select=*', { headers: H });
+    const r1 = await fetch(SB_URL + '/rest/v1/friendships?sender_id=eq.' + user.id + '&status=eq.accepted&select=*', { headers: H });const r2 = await fetch(SB_URL + '/rest/v1/friendships?receiver_id=eq.' + user.id + '&status=eq.accepted&select=*', { headers: H });const res = { json: async () => [...(await r1.json()||[]), ...(await r2.json()||[])] };
     const data = await res.json();
     const el   = document.getElementById('arkadaslarList');
     if (!data || !data.length) { el.innerHTML = '<div class="empty"><span class="empty-icon">👥</span><div class="empty-text">Henüz arkadaşın yok.<br>Yukarıdan kullanıcı adıyla arayabilirsin!</div></div>'; return; }
