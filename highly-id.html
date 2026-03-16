@@ -135,6 +135,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       <!-- Kayıt -->
       <div class="form" id="formKayit">
         <div class="field">
+          <label>Kullanıcı Adı</label>
+          <div class="input-wrap">
+            <span class="input-icon">@</span>
+            <input type="text" id="kayitUsername" placeholder="kullaniciadi (harf, rakam, alt çizgi)"/>
+          </div>
+        </div>
+        <div class="field">
           <label>Ad Soyad</label>
           <div class="input-wrap">
             <span class="input-icon">👤</span>
@@ -258,9 +265,11 @@ async function register() {
   var name  = document.getElementById('kayitAd').value.trim();
   var email = document.getElementById('kayitEmail').value.trim();
   var pass  = document.getElementById('kayitPass').value;
+  var uname = document.getElementById('kayitUsername').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
   var terms = document.getElementById('termsCheck').checked;
 
-  if (!name || !email || !pass) return toast('Lütfen tüm alanları doldurun.', 'err');
+  if (!name || !email || !pass || !uname) return toast('Lütfen tüm alanları doldurun.', 'err');
+  if (uname.length < 3) return toast('Kullanıcı adı en az 3 karakter olmalı.', 'err');
   if (!terms) {
     document.getElementById('termsErr').classList.add('show');
     return toast('Kullanım koşullarını kabul etmelisiniz.', 'err');
@@ -273,10 +282,13 @@ async function register() {
     var chk  = await fetch(SB_URL + '/rest/v1/users?email=eq.' + encodeURIComponent(email) + '&select=id', { headers: H });
     var exist = await chk.json();
     if (exist && exist.length) { toast('Bu e-posta zaten kayıtlı.', 'err'); setLoading('kayitBtn', false, 'Hesap Oluştur →'); return; }
+    var uchk = await fetch(SB_URL + '/rest/v1/users?username=eq.' + encodeURIComponent(uname) + '&select=id', { headers: H });
+    var uexist = await uchk.json();
+    if (uexist && uexist.length) { toast('@' + uname + ' kullanıcı adı alınmış!', 'err'); setLoading('kayitBtn', false, 'Hesap Oluştur →'); return; }
     var res  = await fetch(SB_URL + '/rest/v1/users', {
       method: 'POST',
       headers: Object.assign({}, H, { 'Prefer': 'return=representation' }),
-      body: JSON.stringify({ name: name, email: email, password: pass })
+      body: JSON.stringify({ name: name, email: email, password: pass, username: uname })
     });
     var data = await res.json();
     if (data && data[0]) {
