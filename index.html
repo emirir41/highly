@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Highly — Kişisel Ekosistem</title>
+<meta name="description" content="Highly — Hava durumu, harita, takvim, not defteri, AI asistan ve daha fazlası. Günlük ihtiyaçlarının hepsi tek çatı altında, tamamen ücretsiz."/>
+<meta name="keywords" content="highly, kişisel ekosistem, hava durumu, harita, yapay zeka, not defteri, takvim, ücretsiz"/>
+<meta name="author" content="Highly"/>
+<meta property="og:title" content="Highly — Kişisel Web Ekosistemi"/>
+<meta property="og:description" content="Günlük ihtiyaçlarının hepsi tek çatı altında. Tamamen ücretsiz."/>
+<meta property="og:url" content="https://www.highly.com.tr"/>
+<title>Highly — Kişisel Web Ekosistemi</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -13,7 +19,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .bg-orb-1{width:500px;height:500px;background:rgba(99,102,241,.12);top:-100px;left:-100px}
 .bg-orb-2{width:400px;height:400px;background:rgba(167,139,250,.08);bottom:-80px;right:-80px}
 .bg-orb-3{width:300px;height:300px;background:rgba(52,211,153,.06);top:40%;left:50%;transform:translate(-50%,-50%)}
-nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:rgba(6,7,15,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:rgba(6,7,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
 .n-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.35)}
 .n-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:18px}
@@ -22,39 +29,66 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:cent
 .btn-outline:hover{background:rgba(255,255,255,.06)}
 .btn-primary{padding:9px 20px;border:none;border-radius:999px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:0 4px 14px rgba(99,102,241,.3)}
 .btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+
+/* Hero */
 .hero{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 80px;text-align:center}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);border-radius:999px;font-size:12px;color:#a78bfa;margin-bottom:28px;font-weight:500}
 .badge-dot{width:6px;height:6px;border-radius:50%;background:#a78bfa;animation:blink 1.8s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.hero-title{font-family:'Syne',sans-serif;font-size:clamp(40px,7vw,78px);font-weight:800;letter-spacing:-2px;line-height:1.05;margin-bottom:24px}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(38px,7vw,76px);font-weight:800;letter-spacing:-2px;line-height:1.05;margin-bottom:24px}
 .grad{background:linear-gradient(135deg,#6366f1,#a78bfa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:520px;line-height:1.7;margin-bottom:40px}
-.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:56px}
+.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:540px;line-height:1.7;margin-bottom:40px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:52px}
 .btn-big{padding:14px 32px;border-radius:999px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;text-decoration:none;transition:all .2s;cursor:pointer}
 .btn-big-primary{border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 8px 28px rgba(99,102,241,.35)}
 .btn-big-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(99,102,241,.45)}
 .btn-big-outline{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text)}
 .btn-big-outline:hover{background:rgba(255,255,255,.08)}
-.app-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:680px}
-.chip{display:flex;align-items:center;gap:7px;padding:9px 16px;background:var(--s1);border:1px solid var(--border);border-radius:999px;font-size:13px;font-weight:500;transition:all .2s}
+.app-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:700px}
+.chip{display:flex;align-items:center;gap:7px;padding:8px 15px;background:var(--s1);border:1px solid var(--border);border-radius:999px;font-size:13px;font-weight:500;transition:all .2s}
 .chip:hover{border-color:rgba(255,255,255,.14);background:var(--s2);transform:translateY(-1px)}
+
+/* Stats */
+.stats-section{position:relative;z-index:2;padding:60px 24px 0;max-width:800px;margin:0 auto}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:center}
+.stat-item{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:24px}
+.stat-num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-lbl{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* Features */
 .section{position:relative;z-index:2;padding:80px 24px;max-width:1000px;margin:0 auto}
-.sec-title{font-family:'Syne',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:800;text-align:center;letter-spacing:-.5px;margin-bottom:12px}
-.sec-sub{text-align:center;color:var(--muted);font-size:15px;margin-bottom:52px}
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
-.feat-card{background:var(--s1);border:1px solid var(--border);border-radius:18px;padding:26px;transition:all .22s}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,38px);font-weight:800;text-align:center;letter-spacing:-.5px;margin-bottom:12px}
+.sec-sub{text-align:center;color:var(--muted);font-size:15px;margin-bottom:48px;line-height:1.6}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.feat-card{background:var(--s1);border:1px solid var(--border);border-radius:18px;padding:24px;transition:all .22s}
 .feat-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.3);border-color:rgba(255,255,255,.12)}
-.fi{font-size:32px;margin-bottom:16px}
-.fn{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px}
+.fi{font-size:30px;margin-bottom:14px}
+.fn{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:7px}
 .fd{font-size:13px;color:var(--muted);line-height:1.6}
-.ftag{display:inline-block;margin-top:12px;font-size:10px;padding:3px 10px;border-radius:999px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.ftag{display:inline-block;margin-top:10px;font-size:10px;padding:3px 10px;border-radius:999px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+/* Nasıl çalışır */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.how-card{text-align:center;padding:28px 20px;background:var(--s1);border:1px solid var(--border);border-radius:16px}
+.how-num{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff;margin:0 auto 14px}
+.how-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px}
+.how-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* CTA */
 .cta-sec{position:relative;z-index:2;padding:60px 24px 80px;text-align:center}
-.cta-box{max-width:540px;margin:0 auto;background:var(--s1);border:1px solid rgba(99,102,241,.2);border-radius:24px;padding:52px 40px;box-shadow:0 0 80px rgba(99,102,241,.08)}
-.cta-title{font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,34px);font-weight:800;letter-spacing:-.5px;margin-bottom:12px}
-.cta-sub{color:var(--muted);font-size:15px;margin-bottom:32px;line-height:1.6}
-footer{position:relative;z-index:2;text-align:center;padding:28px 24px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
-footer span{color:var(--text)}
-@media(max-width:480px){.n-actions .btn-outline{display:none}.hero-btns{flex-direction:column;align-items:center}}
+.cta-box{max-width:540px;margin:0 auto;background:var(--s1);border:1px solid rgba(99,102,241,.2);border-radius:24px;padding:48px 40px;box-shadow:0 0 80px rgba(99,102,241,.08)}
+.cta-title{font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-.5px;margin-bottom:12px}
+.cta-sub{color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.6}
+
+/* Footer */
+footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32px 24px;color:var(--muted);font-size:13px}
+.footer-inner{max-width:900px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px}
+.footer-links{display:flex;flex-wrap:wrap;gap:20px;justify-content:center}
+.footer-links a{color:var(--muted);text-decoration:none;transition:color .2s;font-size:13px}
+.footer-links a:hover{color:var(--text)}
+.footer-copy{font-size:12px;color:var(--muted);text-align:center}
+
+@media(max-width:600px){.n-actions .btn-outline{display:none}.hero-btns{flex-direction:column;align-items:center}.stats-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -73,12 +107,13 @@ footer span{color:var(--text)}
   </div>
 </nav>
 
+<!-- Hero -->
 <section class="hero">
   <div class="hero-badge"><div class="badge-dot"></div>Kişisel web ekosistemin</div>
   <h1 class="hero-title">Her şey bir yerde,<br><span class="grad">tamamen ücretsiz.</span></h1>
-  <p class="hero-sub">Hava durumundan haritaya, müzikten not defterine — günlük ihtiyaçlarının hepsi tek çatı altında. Ücretsiz, seninle.</p>
+  <p class="hero-sub">Hava durumundan haritaya, yapay zekadan not defterine — günlük ihtiyaçlarının hepsi tek çatı altında. Seninle, her zaman.</p>
   <div class="hero-btns">
-    <a href="highly-id.html" class="btn-big btn-big-primary">Hemen Başla</a>
+    <a href="highly-id.html" class="btn-big btn-big-primary">Hemen Başla →</a>
     <a href="#features" class="btn-big btn-big-outline">Keşfet ↓</a>
   </div>
   <div class="app-chips">
@@ -93,41 +128,96 @@ footer span{color:var(--text)}
     <div class="chip">🎵 Müzik Çalar</div>
     <div class="chip">🤖 Highly AI</div>
     <div class="chip">💵 Döviz</div>
+    <div class="chip">💬 Mesajlaşma</div>
   </div>
 </section>
 
+<!-- İstatistikler -->
+<div class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-item"><div class="stat-num">12+</div><div class="stat-lbl">Uygulama</div></div>
+    <div class="stat-item"><div class="stat-num">%100</div><div class="stat-lbl">Ücretsiz</div></div>
+    <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Reklam Zorunluluğu</div></div>
+  </div>
+</div>
+
+<!-- Özellikler -->
 <section class="section" id="features">
   <h2 class="sec-title">Ekosisteme hoş geldin</h2>
-  <p class="sec-sub">Günlük hayatını kolaylaştıran 12 uygulama, tek hesap.</p>
+  <p class="sec-sub">Günlük hayatını kolaylaştıran 12 uygulama, tek hesap, sıfır maliyet.<br>Verilerinin tamamı tarayıcında güvenle saklanır.</p>
   <div class="feat-grid">
     <div class="feat-card"><div class="fi">🌤</div><div class="fn">Hava Durumu</div><div class="fd">Anlık hava, saatlik tahmin ve 5 günlük öngörü. Otomatik konum algılama.</div><span class="ftag" style="background:rgba(56,189,248,.15);color:#38bdf8">Ücretsiz API</span></div>
-    <div class="feat-card"><div class="fi">🗺</div><div class="fn">Harita & Rota</div><div class="fd">A'dan B'ye yol tarifi, mesafe ve tahmini süre. OpenStreetMap tabanlı.</div><span class="ftag" style="background:rgba(52,211,153,.15);color:#34d399">Ücretsiz</span></div>
+    <div class="feat-card"><div class="fi">🗺</div><div class="fn">Harita & Navigasyon</div><div class="fd">A'dan B'ye yol tarifi, sesli navigasyon, trafik bildirimi. OpenStreetMap tabanlı.</div><span class="ftag" style="background:rgba(52,211,153,.15);color:#34d399">Ücretsiz</span></div>
+    <div class="feat-card"><div class="fi">🤖</div><div class="fn">Highly AI</div><div class="fd">Gene 3.0 ile zengin sohbet, duygu algılama, hava, döviz, matematik ve araştırma.</div><span class="ftag" style="background:rgba(99,102,241,.15);color:#6366f1">Gene 3.0</span></div>
+    <div class="feat-card"><div class="fi">💬</div><div class="fn">Mesajlaşma</div><div class="fd">Highly kullanıcılarıyla gerçek zamanlı mesajlaş. Arkadaş ekle, sohbet et.</div><span class="ftag" style="background:rgba(52,211,153,.15);color:#34d399">Gerçek Zamanlı</span></div>
     <div class="feat-card"><div class="fi">📅</div><div class="fn">Takvim</div><div class="fd">Etkinlik ekle, kategorize et, hatırlatıcı kur. Aylık ve ajanda görünümü.</div><span class="ftag" style="background:rgba(167,139,250,.15);color:#a78bfa">Yerel kayıt</span></div>
     <div class="feat-card"><div class="fi">🌐</div><div class="fn">Çevirmen</div><div class="fd">13 dil desteği, otomatik algılama, çeviri geçmişi. API key gerekmez.</div><span class="ftag" style="background:rgba(52,211,153,.15);color:#34d399">MyMemory</span></div>
     <div class="feat-card"><div class="fi">📝</div><div class="fn">Not Defteri</div><div class="fd">Notlar oluştur, kategorize et, anında kaydet. Arama ve format desteği.</div><span class="ftag" style="background:rgba(245,158,11,.15);color:#f59e0b">Yerel kayıt</span></div>
     <div class="feat-card"><div class="fi">⏱</div><div class="fn">Pomodoro</div><div class="fd">Odaklanma zamanlayıcısı, istatistik takibi, özelleştirilebilir süreler.</div><span class="ftag" style="background:rgba(248,113,113,.15);color:#f87171">Verimlilik</span></div>
     <div class="feat-card"><div class="fi">💰</div><div class="fn">Bütçe Takibi</div><div class="fd">Gelir ve giderlerini takip et, aylık raporlar al, kategorize et.</div><span class="ftag" style="background:rgba(52,211,153,.15);color:#34d399">Yerel kayıt</span></div>
     <div class="feat-card"><div class="fi">🎵</div><div class="fn">Müzik Çalar</div><div class="fd">MP3, WAV, FLAC dosyalarını yükle ve çal. Karıştır, tekrarla.</div><span class="ftag" style="background:rgba(167,139,250,.15);color:#a78bfa">Kendi müziğin</span></div>
-    <div class="feat-card"><div class="fi">🔍</div><div class="fn">Arama</div><div class="fd">Web, görsel ve haber araması. Serper.dev API ile güçlendirildi.</div><span class="ftag" style="background:rgba(99,102,241,.15);color:#6366f1">Serper.dev</span></div>
-    <div class="feat-card"><div class="fi">🤖</div><div class="fn">Highly AI</div><div class="fd">Wikipedia destekli akıllı asistan. Soru sor, bilgi öğren.</div><span class="ftag" style="background:rgba(99,102,241,.15);color:#6366f1">Wikipedia</span></div>
+    <div class="feat-card"><div class="fi">🔍</div><div class="fn">Arama</div><div class="fd">Web, görsel ve haber araması. Güçlü arama motoru entegrasyonu.</div><span class="ftag" style="background:rgba(99,102,241,.15);color:#6366f1">Web Arama</span></div>
     <div class="feat-card"><div class="fi">💵</div><div class="fn">Döviz</div><div class="fd">Canlı döviz kurları, altın fiyatları ve para birimi çevirici.</div><span class="ftag" style="background:rgba(245,158,11,.15);color:#f59e0b">Canlı veri</span></div>
   </div>
 </section>
 
+<!-- Nasıl çalışır -->
+<section class="section" style="padding-top:0">
+  <h2 class="sec-title">Nasıl Çalışır?</h2>
+  <p class="sec-sub">3 adımda başla, saniyeler içinde hazır ol.</p>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">1</div>
+      <div class="how-title">Hesap Oluştur</div>
+      <div class="how-desc">E-posta ve şifreinle ücretsiz kayıt ol. Kullanıcı adını seç.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">2</div>
+      <div class="how-title">Dashboard'una Gir</div>
+      <div class="how-desc">Tüm uygulamalara tek ekrandan eriş. Saat, hava, motivasyon — hepsi orada.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">3</div>
+      <div class="how-title">Keşfet</div>
+      <div class="how-desc">Harita, AI, mesajlaşma, not defteri — ihtiyacın olan her şey hazır.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">4</div>
+      <div class="how-title">Arkadaş Ekle</div>
+      <div class="how-desc">Kullanıcı adıyla arkadaş bul, istek gönder, mesajlaş.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
 <section class="cta-sec">
   <div class="cta-box">
-    <div style="font-size:48px;margin-bottom:20px">🚀</div>
+    <div style="font-size:48px;margin-bottom:18px">🚀</div>
     <h2 class="cta-title">Hemen başla, ücretsiz.</h2>
-    <p class="cta-sub">Kayıt ol, dashboard'una gir ve tüm uygulamalara tek tıkla eriş. Tamamen ücretsiz.</p>
+    <p class="cta-sub">Hesabını oluştur, dashboard'una gir ve tüm uygulamalara tek tıkla eriş. Tamamen ücretsiz, her zaman.</p>
     <a href="highly-id.html" class="btn-big btn-big-primary">Hesap Oluştur →</a>
   </div>
 </section>
 
-<footer>Made with ❤️ — <span>Highly Ekosistemi</span> &nbsp;·&nbsp; Tüm veriler tarayıcında saklanır</footer>
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="highly-id.html">Giriş Yap</a>
+      <a href="highly-sozlesme.html">Kullanım Koşulları</a>
+      <a href="highly-sozlesme.html">Gizlilik Politikası</a>
+      <a href="mailto:infoandhelphighly@gmail.com">İletişim</a>
+    </div>
+    <div class="footer-copy">
+      © 2026 Highly. Tüm hakları saklıdır. &nbsp;·&nbsp; Tüm veriler tarayıcınızda saklanır.
+    </div>
+  </div>
+</footer>
 
 <script>
 if (localStorage.getItem('highly_user')) {
-  document.getElementById('navActions').innerHTML = `<a href="dashboard.html" class="btn-primary">Dashboard →</a>`;
+  document.getElementById('navActions').innerHTML = '<a href="dashboard.html" class="btn-primary">Dashboard →</a>';
 }
 </script>
 </body>
