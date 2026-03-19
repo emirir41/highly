@@ -4,8 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Highly Dashboard</title>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1842711344931829"
-     crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -466,7 +464,16 @@ footer a:hover{color:var(--text)}
   &nbsp;·&nbsp; Tüm veriler tarayıcında saklanır.</p>
 </footer>
 
-<div class="toast" id="toast"></div>
+<!-- Ramazan Popup -->
+<div id="ramazanPopup" style="position:fixed;bottom:24px;right:24px;z-index:9999;max-width:300px;background:rgba(11,13,28,0.85);border:1px solid rgba(167,139,250,0.3);border-radius:16px;padding:18px 20px;backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:slideInRight .4s ease;display:none">
+  <div style="font-size:28px;margin-bottom:8px">🌙</div>
+  <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#e8e8ff;margin-bottom:4px">Değerli kullanıcımız <span id="ramazanIsim"></span>,</div>
+  <div style="font-size:13px;color:#a78bfa;line-height:1.5">Ramazan Bayramınız mübarek olsun! 🌙✨</div>
+  <button onclick="closeRamazan()" style="position:absolute;top:10px;right:12px;background:none;border:none;color:#4a4d6a;cursor:pointer;font-size:16px;line-height:1">✕</button>
+</div>
+<style>
+@keyframes slideInRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+</style>
 
 <script>
 // Kullanıcı
@@ -618,6 +625,17 @@ function showToast(msg, type) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = `toast show ${type||'ok'}`;
   setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Ramazan popup
+if (!localStorage.getItem('ramazan2026')) {
+  const popup = document.getElementById('ramazanPopup');
+  document.getElementById('ramazanIsim').textContent = user.name.split(' ')[0];
+  popup.style.display = 'block';
+  localStorage.setItem('ramazan2026', '1');
+}
+function closeRamazan() {
+  document.getElementById('ramazanPopup').style.display = 'none';
 }
 </script>
 </body>
