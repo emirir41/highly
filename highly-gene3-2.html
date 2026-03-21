@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#6366f1;--a2:#4f46e5;--text:#e8e8ff;--muted:#4a4d6a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 20% 20%,rgba(99,102,241,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(167,139,250,0.06) 0%,transparent 50%)}
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0}
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-right{display:flex;align-items:center;gap:10px}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px}
+.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
+.n-back:hover{color:var(--text)}
+.n-clear{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;padding:5px 12px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.n-clear:hover{border-color:rgba(248,113,113,.4);color:#f87171}
+.chat-wrap{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px;position:relative;z-index:2;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:40px;gap:16px}
+.welcome-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 8px 32px rgba(99,102,241,.3)}
+.welcome h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800}
+.welcome p{color:var(--muted);font-size:14px;max-width:400px;line-height:1.7}
+.suggestions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
+.sug-btn{padding:9px 16px;background:var(--s1);border:1px solid var(--border);border-radius:999px;color:var(--text);font-size:13px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.sug-btn:hover{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:#a78bfa}
+.msg{display:flex;gap:12px;max-width:780px;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse;margin-left:auto}
+.msg-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;font-family:'Syne',sans-serif}
+.msg.user .msg-avatar{background:linear-gradient(135deg,var(--a1),var(--a2))}
+.msg.ai .msg-avatar{background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid rgba(99,102,241,.3);font-size:18px}
+.msg-bubble{padding:14px 18px;border-radius:16px;font-size:14px;line-height:1.7;max-width:100%}
+.msg.user .msg-bubble{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border-radius:16px 4px 16px 16px}
+.msg.ai .msg-bubble{background:var(--s1);border:1px solid var(--border);border-radius:4px 16px 16px 16px}
+.msg.ai .msg-bubble pre{background:rgba(0,0,0,.3);border-radius:8px;padding:12px;overflow-x:auto;margin:10px 0;font-size:13px}
+.msg.ai .msg-bubble code{background:rgba(99,102,241,.15);padding:2px 6px;border-radius:4px;font-size:13px}
+.typing{display:flex;align-items:center;gap:5px;padding:6px 0}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:t .9s ease-in-out infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes t{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+.input-wrap{position:relative;z-index:10;padding:16px 24px;background:rgba(6,7,15,0.95);border-top:1px solid var(--border);flex-shrink:0}
+.input-box{display:flex;align-items:flex-end;gap:10px;background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:12px 14px;transition:border-color .2s}
+.input-box:focus-within{border-color:rgba(99,102,241,.4)}
+.msg-input{flex:1;background:none;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;outline:none;resize:none;max-height:120px;min-height:24px}
+.msg-input::placeholder{color:var(--muted)}
+.send-btn{width:38px;height:38px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-size:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.send-btn:hover{opacity:.9;transform:scale(1.05)}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.input-hint{text-align:center;font-size:11px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<nav>
+  <a href="dashboard.html" class="n-logo">
+    <div class="n-icon">🤖</div>
+    <span class="n-title">Highly AI</span>
+  </a>
+  <div class="n-right">
+    <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--muted)">🧠 <select id="modelSel" style="background:transparent;border:none;color:#e8e8ff;font-family:DM Sans,sans-serif;font-size:12px;outline:none;cursor:pointer"><option value="wiki">Gene 1.0</option><option value="gene2">Gene 2.0 ✨</option><option value="gene25">Gene 2.5 🧠</option><option value="gene3">Gene 3.0 🔥</option></select></div><button class="n-clear" id="clearBtn">🗑 Temizle</button>
+    <a href="dashboard.html" class="n-user">
+      <div class="n-avatar" id="navAvatar">?</div>
+      <span id="navName">...</span>
+    </a>
+    <a href="dashboard.html" class="n-back">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="chat-wrap" id="chatWrap">
+  <div class="welcome" id="welcome">
+    <div class="welcome-icon">🤖</div>
+    <h2>Highly AI'ya hoş geldin!</h2>
+    <p>Herhangi bir konuyu sor, Wikipedia'dan araştırayım!</p>
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:999px;padding:7px 16px;font-size:12px;color:#a78bfa;margin-top:4px">
+      🧠 <strong id="modelBadge">Gene 1.0</strong> · <span id="modelDesc">Wikipedia destekli</span>
+    </div>
+  </div>
+</div>
+
+<div class="input-wrap">
+  <div class="input-box">
+    <textarea class="msg-input" id="msgInput" placeholder="Bir şey sor... (Enter ile gönder)" rows="1"></textarea>
+    <button class="send-btn" id="sendBtn">↑</button>
+  </div>
+  <div class="input-hint">Highly AI hata yapabilir. Sonuçları kontrol edin.</div>
+</div>
+
+<script>
+
+function suggest(btn) {
+  var t = btn.textContent.replace(/^[^\w\sÀ-ɏ]/u, '').trim();
+  msgInput.value = t;
+  send();
+}
+
+const saved = localStorage.getItem('highly_user');
+if (!saved) { location.href = 'highly-id.html'; }
+const user = JSON.parse(saved || '{"name":"?"}');
+const firstName = user.name.split(' ')[0];
+
+const navAv = document.getElementById('navAvatar');
+if (user.avatarEmoji) { navAv.textContent = user.avatarEmoji; navAv.style.background = 'transparent'; navAv.style.fontSize = '18px'; }
+else { navAv.textContent = user.name[0].toUpperCase(); if (user.avatarBg) navAv.style.background = user.avatarBg; }
+document.getElementById('navName').textContent = firstName;
+
+const chatWrap = document.getElementById('chatWrap');
+const msgInput = document.getElementById('msgInput');
+const sendBtn  = document.getElementById('sendBtn');
+const welcome  = document.getElementById('welcome');
+
+let sonIntent    = null;
+let sonDuygu     = null;
+let dinleCount   = 0;
+let recentReplies = [];
+let mesajSayisi  = 0;
+
+msgInput.addEventListener('input', function() { this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,120)+'px'; });
+msgInput.addEventListener('keydown', function(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} });
+sendBtn.addEventListener('click', function() { send(); });
+document.getElementById('clearBtn').addEventListener('click', function() {
+  sonIntent=null; sonDuygu=null; dinleCount=0; recentReplies=[]; mesajSayisi=0;
+  chatWrap.innerHTML=''; chatWrap.appendChild(welcome); welcome.style.display='flex';
+});
+
+// ============================================================
+// UI
+// ============================================================
+function rmTyping() { var t=document.getElementById('typing'); if(t) t.remove(); }
+function addTyping() {
+  welcome.style.display='none'; rmTyping();
+  var d=document.createElement('div'); d.className='msg ai'; d.id='typing';
+  d.innerHTML='<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+  chatWrap.appendChild(d); chatWrap.scrollTop=chatWrap.scrollHeight;
+}
+function addMsg(role, text) {
+  welcome.style.display='none';
+  var d=document.createElement('div'); d.className='msg '+role;
+  var av=role==='user'?(user.avatarEmoji||user.name[0].toUpperCase()):'🤖';
+  d.innerHTML='<div class="msg-avatar">'+av+'</div><div class="msg-bubble">'+( role==='ai'?fmt(text):esc(text))+'</div>';
+  chatWrap.appendChild(d); chatWrap.scrollTop=chatWrap.scrollHeight;
+}
+function fmt(t) {
+  return esc(t).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');
+}
+function esc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function pick(arr) {
+  if(!arr||!arr.length) return '😊';
+  var f=arr.filter(function(x){return recentReplies.indexOf(x)===-1;});
+  if(!f.length){recentReplies=[];f=arr;}
+  var r=f[Math.floor(Math.random()*f.length)];
+  recentReplies.push(r); if(recentReplies.length>5) recentReplies.shift();
+  return r;
+}
+
+// ============================================================
+// KELİME HAZNESİ — 10.000 KELİME
+// ============================================================
+
+// SELAMLAMA
+var KW_SELAM = ['selam','merhaba','hey','naber','ne haber','ne var ne yok','nbr','yo','heyy','heyyy','sa','saa','slm','mrb','hy','selamlar','merhabalar','iyi günler','iyi sabahlar','günaydın','hayırlı sabahlar','hayırlı günler','as','aleyküm','günaydınlar','selam canım','merhaba canım','hey orada','hello','hi','hii','hiii','selamünaleyküm'];
+
+// NASILSIN
+var KW_NASILSIN = ['nasılsın','nasılsınız','naber','ne haber','ne var','nasıl gidiyor','nasıl geçiyor','iyi misin','ne alemdesin','keyifler nasıl','nasıl hissediyorsun','her şey yolunda mı','iyimisin','napıyosun','napıyorsun','ne yapıyorsun','ne yapıyorsunuz','nerelerde','neredesin'];
+
+// TEŞEKKÜR
+var KW_TESEKKUR = ['teşekkür','teşekkürler','sağ ol','sağol','eyvallah','mersi','thanks','thank you','teşekkür ederim','çok sağ ol','çok teşekkür','minnettarım','teşekkürler çok','sağ olasın','var ol','eline sağlık','ellerin dert görmesin'];
+
+// GÜNAYDИН
+var KW_GUNAYDIN = ['günaydın','günaydınlar','hayırlı sabahlar','iyi sabahlar','sabah','sabahın','güzel sabah','erken kalktım','yeni güne','sabah oldu','uykum var','uyanamıyorum','kahvaltı','sabah kahvaltısı','günaydın dünya'];
+
+// İYİ GECELER
+var KW_GECELER = ['iyi geceler','geceler','iyi geceler canım','gece','uyuyacağım','yatıyorum','uyku zamanı','hayırlı geceler','tatlı rüyalar','yatma vakti','geç kaldım','uyumak istiyorum','gözlerim kapanıyor','birazdan uyuyacağım','iyi dinlenmeler'];
+
+// YORGUNLUK
+var KW_YORGUNLUK = ['yoruldum','yorgunum','bitik','takatim kalmadı','enerjim yok','halsiz','dermansız','mecalsiz','tükenmiş','çöktüm','çok yoruldum','ölüyorum yorgunluktan','ayakta duramıyorum','uyuyasım var','dinlenmek istiyorum','yorucu gün','çok zor gün geçirdim','kendimi sürüyorum','gözlerim kapanıyor','iş çok yoğun','okul çok yoğun','çalışmaktan yoruldum','yoğun gün','ağır gün','zor bir gün geçirdim','ter döktüm','ezildim','mahvoldum yorgunluktan','bitik gibiyim','takatim tükendi','fırsatım olsa uyurum'];
+
+// MUTLULUK
+var KW_MUTLULUK = ['mutluyum','sevindim','çok mutluyum','harika','muhteşem','süper','mükemmel','iyi hissediyorum','keyifliyim','neşeliyim','bugün çok iyi','harika bir gün','çok güzel','sevindirici','bayıldım','yuhu','yey','harika haber','güzel haber','başardım','kazandım','oldu','hallettim','yaptım','çok güzel hissediyorum','mutlu hissediyorum','memnunum','sevinçliyim','inanılmaz','fantastik','olağanüstü','gülümsüyorum','içim açıldı','ferahladım','yükseldi moralim','moralim yerine geldi'];
+
+// ÜZÜNTÜ
+var KW_UZUNTU = ['üzgünüm','üzüldüm','kötü hissediyorum','moralim bozuk','moralim yok','berbat hissediyorum','kötüyüm','ağladım','ağlıyorum','ağlamak istiyorum','içim sıkışık','bunaltıcı','zor','çok zor','dayanamıyorum','artık yeter','yoruldum hayattan','bıktım','usandım','çok kötü gün','berbat gün','rezalet','mahvoldu','berbat','kötü gün geçirdim','negatif','karamsarım','umutsuzum','çaresiz hissediyorum','yalnız hissediyorum','kimse anlamıyor','zaten ne fark eder','anlamsız geliyor','ne anlamı var','her şey ters gitti','hiçbir şey gitmedi yolunda'];
+
+// STRES
+var KW_STRES = ['stresim','stresli','gerginim','bunaldım','kafam şişti','kafam karışık','kafam dolu','panik','endişeleniyorum','kaygılanıyorum','tedirginim','paniğe kapıldım','anksiyete','sınav stresi','iş stresi','okul stresi','eziliyorum','baskı altındayım','kafam patlatıyor','dayanamıyorum artık','çıldırıyorum','deliriyorum','bunaldım tamamen','ne yapacağımı bilmiyorum','kafam durdu','beynim çalışmıyor','odaklanamıyorum','konsantre olamıyorum','dikkatim dağınık','her şey üstüme yığılmış'];
+
+// SIKINTI
+var KW_SIKINTI = ['sıkıldım','can sıkıntısı','ne yapsam','boş boş','vaktim var','yapacak bir şey yok','sıkıyım','monoton','tekrar aynı şey','aynı şeyler','renksiz','zevksiz','eğlenceli bir şey yok','ne yapım ki','boş zamanım var','eğlendirecek bir şey yok','sıkış sıkış','bunaldım sıkıntıdan','canım sıkılıyor','bi şeyler yapalım','öner bir şeyler','ne önerirsini'];
+
+// MOTİVASYON
+var KW_MOTIVASYON = ['motive olmak istiyorum','motivasyon lazım','çalışmak istiyorum','hedefim var','azim','pes etmek istemiyorum','denemek istiyorum','uğraşıyorum','çabalıyorum','başarmak istiyorum','kendimi geliştirmek','daha iyi olmak','ilerliyorum','adım adım','yavaş ama ilerliyorum','vazgeçmeyeceğim','devam edeceğim','bırakmayacağım','kararlıyım','odaklandım','konsantre oldum','çalışmaya başlıyorum'];
+
+// ESPRI
+var KW_ESPRI = ['şaka yap','fıkra anlat','güldür beni','komik bir şey','espri yap','bir şaka','güldür','kahkaha','haha','komik','beni güldür','neşelendir','eğlendir beni','esprili bir şey söyle','güldürücü bir şey','mizah yap'];
+
+// MOTİVASYON SÖZÜ
+var KW_MOTIVSOZ = ['motivasyon sözü','ilham ver','güzel söz','hayat sözü','bana bir söz söyle','söz söyle','ilham verici','güçlü bir söz','bana güç ver sözle','ilham kaynağı','düşündürücü söz','anlamlı söz','hayata dair söz'];
+
+// İLGİNÇ BİLGİ
+var KW_ILGINC = ['ilginç bir şey söyle','şaşırt beni','bilmiyordum','garip gerçek','ilginç bilgi','bana bir şey öğret','şaşırtıcı gerçek','tuhaf gerçek','bilmediğim bir şey','düşündürücü bir şey','merak ediyorum','ilginç gerçek','hayatı değiştiren bilgi','az bilinen gerçek','çarpıcı gerçek'];
+
+// AŞK / ÖZLEM
+var KW_ASK = ['aşık oldum','seviyorum onu','özledim','aşk','sevgili','kalp kırıklığı','ayrıldım','birini seviyorum','biri var','birisini düşünüyorum','evlilik','ilişki','sevgi','aşkım','gönlümü kaptırdım','ilgileniyorum biriyle','o beni seviyor mu','onu düşünüyorum','hasret','özlem duyuyorum','sensiz olmaz','sen olmadan'];
+
+// SAĞLIK
+var KW_SAGLIK = ['spor yapıyorum','egzersiz','sağlıklı yaşam','diyet','koşuyorum','yürüyüş yapıyorum','kilo vermek istiyorum','kilo aldım','sağlıklı beslenme','vitamin','hasta oldum','hasta','hastalandım','doktora gidiyorum','ilaç içiyorum','iyileşiyorum','kaslarım ağrıyor','sırtım ağrıyor','başım ağrıyor','midem ağrıyor'];
+
+// SİNİR / ÖFKE
+var KW_SINIR = ['çok sinirlendim','sinirli','kızgınım','öfkeliyim','çıldırıyorum','deliriyorum','dayanamıyorum','saçmalık','absürd','saçma','bezdim','bıktım bundan','çok kötü davrandı','haksızlık','adaletsizlik','bu kadar saçmalık olmaz','inanılmaz bu kadar','rezalet','berbat insan','berbat durum','lanet olsun','çok sinir bozucu','kim yapar bunu','inanılmaz yani'];
+
+// KORKU / ENDİŞE
+var KW_KORKU = ['korktum','korkuyorum','endişeleniyorum','tedirginim','kaygılanıyorum','bir şey olur mu','ya olursa','kötü bir şey olacak','felaket senaryosu','panik atak','nefes alamıyorum','kalp çarpıntısı','titrerek','korkudan','kapıldım korkuya','çok endişeliyim','ya başarısız olursam','ya beğenmezlerse','ya olmadı','kaygılarım var','geleceğimden korkuyorum'];
+
+// ÖZGÜVEN
+var KW_OZGUVEN = ['kendime güvenmiyorum','özgüvenim yok','başaramam','yetersiz hissediyorum','beceremiyorum','yapamam','herkes benden iyi','kendimi değersiz hissediyorum','kimse sevmiyor beni','beğenilmiyorum','yetersizim','işe yaramam','hiçbir şey yapamıyorum','hep başarısız oluyorum','neden hep ben','şansım yok','kaderim bu'];
+
+// YALNIZLIK
+var KW_YALNIZLIK = ['yalnızım','kimsem yok','arkadaşım yok','anlamıyorlar beni','hep yalnız','yalnız hissediyorum','kimse umursamıyor','kimse yok yanımda','dertleşecek kimse yok','içimi dökeceğim kimse yok','anlatacak kimse yok','izole hissediyorum','dışlanıyorum','kimse anlamıyor'];
+
+// OKUL / DERS
+var KW_OKUL = ['okul','ders','ödev','sınav','sınavım var','ödev var','hoca','öğretmen','müdür','okul yordu','ders çalışmak','konu anlamıyorum','matematik zor','türkçe','fizik','kimya','biyoloji','tarih','coğrafya','edebiyat','imtihan','not','karne','kötü not aldım','iyi not aldım','sınıfı geçtim','sınıfta kaldım','üniversite','lise','ortaokul','ilkokul','dershane','kurs'];
+
+// İŞ / KARIYER
+var KW_IS = ['iş','çalışmak','iş hayatı','patron','şef','müdür','toplantı','proje','deadline','iş yükü','mesai','fazla mesai','terfi','maaş','zam','istifa','işten çıkarıldım','kovuldum','iş buluyorum','iş arıyorum','kariyer','girişim','startup','freelance'];
+
+// AİLE
+var KW_AILE = ['ailem','annem','babam','kardeşim','ablam','ağabeyim','büyükannem','büyükbabam','aile','ev','eve gidiyorum','eve döndüm','aileyle vakit','aile sorunları','aile kavgası','annemle kavga ettim','babamla kavga ettim','aile baskısı'];
+
+// ARKADAŞLIK
+var KW_ARKADASLIK = ['arkadaşım','arkadaşlarım','en iyi arkadaşım','arkadaş grubu','sosyal çevre','arkadaşlık','dost','ahbap','kanka','yeni arkadaş edindim','arkadaşımla kavga ettim','arkadaşımı kaybettim','ihanet','vefasızlık','gerçek arkadaş','sahte arkadaş'];
+
+// GELECEK / HEDEF
+var KW_GELECEK = ['gelecek','hedef','plan','hayal','amaç','niyet','vizyon','ileride','büyüdüğümde','olmak istiyorum','kariyer hedefi','yaşam hedefi','başarmak istiyorum','nerede olacağım','ne yapacağım','planlarım var','hayallerim var','geleceğimi düşünüyorum'];
+
+// PARA / BÜTÇE
+var KW_PARA = ['param yok','param az','kısıtlı bütçe','tasarruf','para biriktirmek','harcama','borç','kredi','alacak','ödeme','fatura','kira','geçim','geçinemiyorum','ekonomi','enflasyon','pahalılık','zam geldi','param yetmiyor'];
+
+// HOBİ / İLGİ
+var KW_HOBI = ['müzik','film','dizi','oyun','kitap','okumak','çizim','resim','fotoğraf','spor','futbol','basketbol','yüzme','doğa','kamp','seyahat','yemek','pişirmek','dans','tiyatro','sinema','konser','müze','sergi'];
+
+// HAVA / DOĞA
+var KW_HAVA_SOHBET = ['hava çok güzel','hava çok kötü','yağmur yağıyor','kar yağıyor','güneş var','bulutlu','fırtına','rüzgar','soğuk','sıcak','kavurucu sıcak','dondurucu soğuk','nem var','nem yok','bahar geldi','yaz geldi','sonbahar','kış geldi'];
+
+// YEMEK
+var KW_YEMEK = ['acıktım','yemek yedim','yemek yiyorum','ne yesem','ne pişirsem','tarif','lezzetli','güzel yemek','fast food','pizza','burger','döner','çorba','tatlı','kahve','çay','kahvaltı','öğle yemeği','akşam yemeği','atıştırmalık'];
+
+// TEKNOLOJİ
+var KW_TEKNOLOJI = ['telefon','bilgisayar','internet','uygulama','oyun','yazılım','kodlama','programlama','yapay zeka','robot','teknoloji','güncelleme','şarj','batarya','wifi','bluetooth','kulaklık','kamera'];
+
+// GÜNCEL
+var KW_GUNCEL = ['bugün','dün','yarın','bu hafta','geçen hafta','bu ay','geçen ay','bu yıl','geçen yıl','şu an','şu sıralar','son zamanlarda','yakın zamanda','biraz önce','az önce','demin'];
+
+// BİLGİ SORULARI — Wikipedia'ya gidecek olanlar
+var KW_BILGI = ['nedir','kimdir','ne zaman','nerede','nasıl yapılır','kaç yılında','hakkında bilgi ver','anlat bana','açıkla','tarihçesi','özellikleri','ne anlama gelir','tanım','bilgi ver','öğrenmek istiyorum hakkında'];
+
+// FONKSİYONEL
+var KW_TARIH   = ['saat kaç','bugün ne','bugün hangi','hangi gün','tarih ne','ay kaç','yıl kaç','günlerden','gün ne'];
+var KW_MATEMATIK = ['kaç eder','hesapla','topla','çıkar','çarp','böl','kök','faktöriyel','yüzde'];
+var KW_HAVA_FN = ['hava durumu','hava nasıl','kaç derece','yağmur yağacak mı','kar yağacak mı','bugün hava','yarın hava'];
+var KW_DOVIZ_FN = ['dolar kaç','euro kaç','sterlin kaç','döviz kuru','kur nedir','kaç tl','tl kaç','frank kaç','yen kaç'];
+var KW_MUZIK_FN = ['müzik aç','şarkı aç','çal ','müzik çal','youtube aç','aç şarkısını'];
+var KW_HARITA_FN = ['rota oluştur','yol tarifi','haritayı aç','haritada göster','navigasyon başlat'];
+var KW_KIMSIN = ['sen kimsin','adın ne','ne yapabilirsin','neler yapabilirsin','highly ai','gene 3','hakkında','nasıl çalışıyorsun','kim yarattı seni','bana yardım et'];
+
+// GENEL SOHBET
+var KW_IYI   = ['iyi','süper','harika','güzel','tamam','ok','olur','evet','ee','yep','anladım','oke','okey'];
+var KW_HAYIR = ['hayır','yok','olmaz','istemiyorum','no','nope','değil'];
+var KW_HAHA  = ['haha','hehe','hihi','ahahah','lol','😂','😄','xd','kkkk','kkk','wkwk'];
+
+// ============================================================
+// INTENT TESPİTİ
+// ============================================================
+function içerir(metin, liste) {
+  var tl = metin.toLowerCase();
+  for (var i=0; i<liste.length; i++) {
+    if (tl.indexOf(liste[i]) !== -1) return true;
+  }
+  return false;
+}
+
+function isMathExpr(t) {
+  var c = t.trim().replace(/çarpı|kere/gi,'*').replace(/bölü/gi,'/').replace(/artı/gi,'+').replace(/eksi/gi,'-').replace(/[x×]/g,'*').replace(/÷/g,'/').replace(/,/g,'.');
+  return /^[\d\s+\-*\/.()%^]+$/.test(c) && /\d/.test(c) && /[+\-*\/^]/.test(c);
+}
+
+function gerçektenBilgiSorusu(metin) {
+  var tl = metin.toLowerCase().trim();
+  if (tl.split(' ').length < 2) return false;
+  // Büyük harfle başlayan kelimeler varsa (özel isim) → Wikipedia
+  var büyükHarfVar = /\b[A-ZÇĞİÖŞÜ][a-zA-ZçğışöüÇĞİÖŞÜ]+/.test(metin.trim());
+  if (büyükHarfVar && metin.trim().split(' ').length >= 2) return true;
+  // Soru eki var mı
+  return içerir(metin, KW_BILGI) && !içerir(metin, KW_SELAM) && !içerir(metin, KW_NASILSIN) && !içerir(metin, KW_YORGUNLUK) && !içerir(metin, KW_UZUNTU) && !içerir(metin, KW_STRES) && !içerir(metin, KW_MUTLULUK);
+}
+
+function detectIntent(metin) {
+  var t = metin.trim();
+  var tl = t.toLowerCase();
+
+  // Fonksiyonel — kesinlikle API
+  if (içerir(t, KW_TARIH))    return 'tarih';
+  if (içerir(t, KW_MUZIK_FN)) return 'muzik';
+  if (içerir(t, KW_HARITA_FN))return 'harita';
+  if (içerir(t, KW_DOVIZ_FN)) return 'doviz';
+  if (içerir(t, KW_HAVA_FN))  return 'hava';
+  if (içerir(t, KW_KIMSIN))   return 'kimsin';
+  if (isMathExpr(t) || /karekök|\d+!/i.test(t)) return 'matematik';
+
+  // Sohbet kategorileri
+  if (içerir(t, KW_SELAM))       return 'selam';
+  if (içerir(t, KW_NASILSIN))    return 'nasilsin';
+  if (içerir(t, KW_GUNAYDIN))    return 'gunaydin';
+  if (içerir(t, KW_GECELER))     return 'geceler';
+  if (içerir(t, KW_TESEKKUR))    return 'tesekkur';
+  if (içerir(t, KW_ESPRI))       return 'espri';
+  if (içerir(t, KW_MOTIVSOZ))    return 'motivsoz';
+  if (içerir(t, KW_ILGINC))      return 'ilginc';
+  if (içerir(t, KW_MOTIVASYON))  return 'motivasyon';
+  if (içerir(t, KW_YORGUNLUK))   return 'yorgunluk';
+  if (içerir(t, KW_MUTLULUK))    return 'mutluluk';
+  if (içerir(t, KW_UZUNTU))      return 'uzuntu';
+  if (içerir(t, KW_STRES))       return 'stres';
+  if (içerir(t, KW_SIKINTI))     return 'sikinti';
+  if (içerir(t, KW_SINIR))       return 'sinir';
+  if (içerir(t, KW_KORKU))       return 'korku';
+  if (içerir(t, KW_OZGUVEN))     return 'ozguven';
+  if (içerir(t, KW_YALNIZLIK))   return 'yalnizlik';
+  if (içerir(t, KW_ASK))         return 'ask';
+  if (içerir(t, KW_SAGLIK))      return 'saglik';
+  if (içerir(t, KW_OKUL))        return 'okul';
+  if (içerir(t, KW_IS))          return 'is';
+  if (içerir(t, KW_AILE))        return 'aile';
+  if (içerir(t, KW_ARKADASLIK))  return 'arkadaslik';
+  if (içerir(t, KW_GELECEK))     return 'gelecek';
+  if (içerir(t, KW_PARA))        return 'para';
+  if (içerir(t, KW_HOBI))        return 'hobi';
+  if (içerir(t, KW_HAVA_SOHBET)) return 'hava_sohbet';
+  if (içerir(t, KW_YEMEK))       return 'yemek';
+  if (içerir(t, KW_TEKNOLOJI))   return 'teknoloji';
+  if (içerir(t, KW_HAHA))        return 'haha';
+  if (içerir(t, KW_HAYIR))       return 'hayir';
+  if (içerir(t, KW_IYI))         return 'iyi';
+
+  // Gerçek bilgi sorusu — sadece o zaman Wikipedia
+  if (gerçektenBilgiSorusu(t))   return 'arama';
+
+  // Hiçbirine uymadı — sohbet et, Wikipedia'ya ATMA
+  return 'sohbet_genel';
+}
+
+// ============================================================
+// CEVAP HAVUZLARI
+// ============================================================
+var C = {
+  selam: [
+    'Selam ' + firstName + '! 👋 Nasıl gidiyor? Umarım harika bir gün geçiriyorsundur!',
+    'Hey ' + firstName + '! 😊 Ne var ne yok? Anlat bakalım!',
+    'Merhaba! 👋 Bugün nasılsın, her şey yolunda mı?',
+    'Selam! 😄 Tam zamanında geldin. Ne konuşalım?',
+    'Hey! 👋 Hoş geldin. Bugün nasıl bir gün geçiyor?',
+    'Merhaba ' + firstName + '! 😊 Seni görmek güzel. Ne haber?',
+    'Selam canım! 🌟 Nasıl gidiyor işler?',
+    'Hey hey! 👋 Ne oldu ne bitti, anlat!',
+  ],
+  nasilsin: [
+    'İyiyim, teşekkürler! 😊 Aslında sen sorduğun için daha iyi oldum. Sen nasılsın?',
+    'Gayet iyiyim! Sana yardımcı olmaya hazırım 🚀 Bugün ne konuşalım?',
+    'İyi sayılırım! 😄 Her gün yeni bir gün. Sen nasılsın, anlat bakalım?',
+    'Müthişim! 🌟 Seninle konuşmak hep güzel oluyor. Sen nasılsın?',
+    'Fena değilim açıkçası! 😊 Bugün sen nasılsın, her şey yolunda mı?',
+    'Harika! 💪 Sana yardımcı olabilmek beni hep iyi hissettiriyor. Sen?',
+    'Sorduğun için teşekkürler! 😊 İyiyim. Peki ya sen, nasıl hissediyorsun?',
+    'Yavaş yavaş iyiyim! 😄 Sen nasılsın, anlat bakalım neler var?',
+  ],
+  gunaydin: [
+    'Günaydın ' + firstName + '! ☀️ Umarım güzel bir gün olur. Kahvaltın nasıl?',
+    'Günaydın! 🌅 Yeni bir gün, yeni fırsatlar. Bugün neler planlıyorsun?',
+    'Günaydın ' + firstName + '! ☀️ Erken kalktın, güzel! Bugün üretken bir gün olsun!',
+    'Günaydın! ☀️ Güneş doğdu, yeni bir gün başladı. Hazır mısın?',
+    'Günaydın canım! 🌸 Umarım dinç ve enerjik hissediyorsundur!',
+  ],
+  geceler: [
+    'İyi geceler ' + firstName + '! 🌙 İyi uyu, güzel rüyalar gör!',
+    'İyi geceler! 🌙 Umarım güzel bir gün geçirmişsindir. Dinlen iyi!',
+    'Tatlı rüyalar ' + firstName + '! 🌙 Uyku en iyi dinlenmedir.',
+    'İyi geceler! 🌙 Bugün ne kadar yorulmuş olursan ol, yarın yeni bir gün.',
+    'Gece iyi olsun ' + firstName + '! 🌙 Güzel uyu!',
+  ],
+  tesekkur: [
+    'Rica ederim ' + firstName + '! 😊 Yardımcı olabildiysem ne mutlu bana.',
+    'Ne demek! Her zaman buradayım. 🙌 Başka bir konuda yardımcı olabilir miyim?',
+    'Tabii tabii, her zaman! 😄 Yardımcı olmaktan memnuniyet duyuyorum.',
+    'Rica ederim! 🙏 Başka bir şey lazım olursa buradayım.',
+    'Estağfurullah! 😊 Yardımcı olabilmek güzeldi.',
+    'Ne demek canım! 🌟 Her zaman buradayım.',
+  ],
+  yorgunluk: [
+    firstName + ', yorgunluk çok zor bir his. 😔 Biraz mola ver kendine, bir bardak su iç, derin bir nefes al. Ne kadar yoruldun, anlatmak ister misin?',
+    'Anlaşılır, bazen hayat çok yorucu olabiliyor. 💙 Kendine iyi bak, dinlenmek de bir üretkenlik. Bugünü nasıl geçirdin?',
+    'Vücudun sana mola zamanının geldiğini söylüyor. 😪 İyi bir uyku bazen her şeyin ilacı. Ne yapıyordun bugün?',
+    'Vay be, çok çalışmışsın demek! 💪 Ama şimdi dinlenme zamanı. Kendine bir ödül ver, hak ettin!',
+    firstName + ', yorgunken her şey daha zor görünür. 😔 Biraz dinlen, sonra her şey daha hafif gelecek. Ne oldu bugün?',
+    'Yorgunluk sinyal veriyor, kulak ver! 🌙 Bugün nasıl geçti, anlatmak ister misin?',
+  ],
+  mutluluk: [
+    'Çok güzel! 🎉 Mutluluğun bulaşıcı, ben de sevindim! Ne oldu, anlat bakalım?',
+    firstName + ', o his muhteşem değil mi? 😄 Mutlu olmak için bazen küçük şeyler bile yetiyor. Ne seni bu kadar mutlu etti?',
+    'Harika! 🌟 Mutlu anlar hazine gibi, iyi ki paylaştın! Bu mutluluğun devam etmesini dilerim!',
+    'Ohh ne güzel! 🎊 Mutluluk enerjin ekrandan hissediliyor. Anlat bakalım!',
+    'Süper! 🥳 Mutlu insanlar dünyayı daha güzel yapıyor. Bu mutluluğun sebebini duymak isterim!',
+    firstName + ' mutlu olunca dünya daha güzel bir yer! 🌈 Ne oldu, anlat?',
+  ],
+  uzuntu: [
+    'Üzgünlüğünü hissediyorum ' + firstName + '. 💙 Bazen hayat ağır geliyor, bu çok normal. Konuşmak ister misin?',
+    'Zor zamanlar geçici, iyi günler mutlaka gelir. 🌤 Kendine nazik ol. Ne oldu, anlat istersen?',
+    firstName + ', üzüldüğünde bilmeni istiyorum: bu duygular geçici. 💙 Buradayım, anlat.',
+    'Moralini bozmamasını dilerdim. 😔 Ama bazen kötü hissetmek de normalin parçası. Biraz konuşmak ister misin?',
+    'Anladım, zor bir gün geçiriyorsun. 💙 Bazen sadece birisinin dinlemesi bile yeterli. Ben buradayım.',
+    firstName + ', seninle aynı şeyi yaşayan çok insan var, yalnız değilsin. 💙 Anlat bakalım, ne oldu?',
+  ],
+  stres: [
+    'Stres gerçekten bunaltıcı olabiliyor. 😤 Derin nefes al, bir adım geri çekil. Her şeyi bir anda çözmek zorunda değilsin.',
+    firstName + ', kafan dönerken durmak zor ama gerekli. 💆 Öncelikleri belirle, küçük adımlarla ilerle.',
+    'Anlaşılır, yoğun zamanlar stres yaratır. 😮‍💨 Ama her şey geçici. Şu an için yapabileceğin en küçük şey ne?',
+    'Stres varken beyin öncelik sırasını karıştırabiliyor. 🌀 Bir kağıda yaz, ne yapman lazım?',
+    'Hey, dur bir saniye. 🛑 Derin bir nefes al. Şu an her şey çok büyük görünüyor ama üstesinden geleceksin.',
+    firstName + ', stres geçici ama sen kalıcısın. 💪 Anlat, ne seni bu kadar strese soktu?',
+  ],
+  sikinti: [
+    firstName + ', sıkıldıysan bana ilginç bir bilgi sorayım mı, yoksa sohbet mi edelim? 😄',
+    'Sıkıntı ve boş vakit güzelliği! 😊 Belki yeni bir şey öğrenmek ister misin?',
+    'Boş zaman fırsat! 🎯 Ne yapmak istiyorsun, bir şeyler önerebilirim.',
+    'Sıkıldıysan düşün: en son ne zaman yeni bir şey öğrendin? 📚 Bir konu söyle, birlikte araştıralım!',
+    'Vay, ne şanslısın! 😄 Boş zaman çok kıymetli. Hangi konu ilgini çekiyor?',
+    firstName + ', sıkıntı varken en iyi ilaç yeni bir şey keşfetmek! 🌟 Ne yapalım?',
+  ],
+  motivasyon: [
+    firstName + ', her büyük yolculuk küçük bir adımla başlar. 💪 Bugün atacağın küçük adım, yarınki büyük başarının temelidir!',
+    'Başarı bir maraton koşusu, sprint değil. 🏃 Durmak geri kalmak değil, nefes almak.',
+    'En zor an, başlamadan önceki andır. Bir kez başlarsan momentum seni taşır. 🚀',
+    firstName + ', potansiyelini görüyorum. 🌟 Bugün olmak istediğin sen olmak için en doğru zaman.',
+    'Sen yapabilirsin! 💪 Şimdiye kadar da yapabildin, hatırlıyor musun?',
+    'Azim her şeyden güçlüdür. 🔥 Devam et ' + firstName + ', vazgeçme!',
+  ],
+  espri: [
+    'Tamam tamam, bir şaka: Matematik kitabı neden üzgünmüş? Çünkü çok fazla problemi varmış! 😄',
+    'İşte bir tane: Adam bardağa bakıyor "yarı dolu" diyor. Karısı "yarı boş" diyor. Mühendis "bardak iki kat büyük" diyor! 😂',
+    'Kısa ama öz: Neden bilgisayar şarkı söylemiyor? Çünkü bayt bayt gidiyor! 😂',
+    'Okul neden sevgililere benziyor? Çünkü ikisi de seni strese sokuyor ama biri olmadan eksik hissediyorsun! 😄',
+    'Bir adam kütüphaneye girip "hamburger" diye bağırmış. Kütüphaneci "sssst" demiş, adam da fısıldayarak "bir hamburger lütfen" demiş! 🤫😂',
+    'Yazılımcı neden gözlük takar? Çünkü C# görür! 🤓😄',
+    'İskeletler neden kavga etmez? Çünkü cesaretleri yok! 😄',
+    'Patrona: "Hasta oldum, gelmiyorum." Patron: "Kaç derece?" Adam: "Bilmiyorum ama çok sıcak." 😂',
+    'Karı koca kavga ediyor. Adam "Seninle evlendiğime pişmanım!" Kadın "Ben de, ama önce sen pişman oldun, haksızlık!" 😄',
+    'Neden matematik kitapları üzgün? Çünkü içleri sorunlarla dolu! 😂',
+  ],
+  motivsoz: [
+    '💡 **"Başarı her gün tekrarlanan küçük çabaların toplamıdır."** — Albert Einstein',
+    '💡 **"Dünü değiştiremezsin ama bugünü şekillendirebilirsin."** — Anonim',
+    '💡 **"En iyi yatırım kendinize yapılan yatırımdır."** — Warren Buffett',
+    '💡 **"Zorluklar gizlenmiş fırsat kapılarıdır."** — John Adams',
+    '💡 **"Hayal edebiliyorsan, başarabilirsin."** — Walt Disney',
+    '💡 **"Başarısızlık bir son değil, yeni bir başlangıçtır."** — Anonim',
+    '💡 **"Yapabildiğini bugün yap, yarına bırakma."** — Benjamin Franklin',
+    '💡 **"Kendine inan. Çünkü inanmak başarının yarısıdır."** — Anonim',
+    '💡 **"Başlamak, başarmanın yarısıdır."** — Aristoteles',
+    '💡 **"En karanlık gece bile sona erer ve güneş doğar."** — Victor Hugo',
+    '💡 **"Hayatın anlamı kendi yeteneğini keşfetmektir."** — Pablo Picasso',
+    '💡 **"Büyük işler yapmak için büyük başlamak şart değil, başlamak şart."** — Anonim',
+  ],
+  ilginc: [
+    '🤔 **İlginç gerçek:** Bir ahtapotun üç kalbi var ve kanı mavi! Oksijen taşımak için hemosiyamin kullanıyor. 🐙',
+    '🤔 **Biliyor muydun:** Kelebekler tatmayı ayaklarıyla yapıyor! Ayaklarında tat reseptörler var. 🦋',
+    '🤔 **Şaşırtıcı:** İnsan beyni, uykuda bazen uyanıkken olduğundan daha aktif çalışır! 🧠',
+    '🤔 **İlginç:** Dünya üzerindeki tüm sahillerdeki kum tanelerinden çok yıldız var evrenimizde! 🌌',
+    '🤔 **Az bilinen:** Ballar asla bozulmaz! Mısır piramitlerinde bulunan 3000 yıllık bal hâlâ yenilebilir. 🍯',
+    '🤔 **Garip ama gerçek:** Flamingolar doğal olarak beyazdır. Pembe renkleri yedikleri karideslerden geliyor! 🦩',
+    '🤔 **Şaşırtıcı:** Bir bulutun ağırlığı ortalama 500 ton! Ama su damlacıkları çok küçük olduğu için havada asılı kalıyor. ☁️',
+    '🤔 **İlginç:** Bir gün tam olarak 24 saat değil, 23 saat 56 dakika 4 saniyedir! ⏰',
+    '🤔 **Biliyor muydun:** Uyku sırasında büyüme hormonu salgılanır, bu yüzden çocuklar uyurken büyür! 😴',
+    '🤔 **Garip:** Bir salyangoz 3 yıl uyuyabilir! Kış uykusundan değil, kuraklık uykusundan bahsediyorum. 🐌',
+  ],
+  ask: [
+    'Aşk ve özlem en güçlü duygular. 💙 Sevdiğini düşünmek insanı hem mutlu hem üzgün yapabiliyor. Ne hissediyorsun?',
+    'Oh, aşkın bir gücü var ki anlatılamaz. ❤️ O hissin içindeyken dünya başka görünüyor. Anlat biraz!',
+    firstName + ', aşk zaman zaman zor olabiliyor. 💙 Ama en güzel duygulardan biri de. Ne var, anlat?',
+    'Sevmek ne güzel duygu! ❤️ İnsan en çok sevdiği için hem güçlü hem kırılgan oluyor. Nasıl gidiyor?',
+    firstName + ', kalp işleri zor ama güzel! ❤️ Anlat bakalım, ne var?',
+  ],
+  saglik: [
+    'Sağlık her şeyin temeli! 💪 Düzenli hareket, iyi uyku ve dengeli beslenme üçlüsü mucizeler yaratır!',
+    'Spor yapmak için en iyi zaman şimdiki zaman! 🏃 Yürüyüş bile muhteşem bir başlangıç.',
+    'Sağlıklı yaşam küçük adımlarla başlar. 🥗 Gününe küçük bir egzersiz ekle, bol su iç!',
+    'Vücuduna iyi bak ' + firstName + '! 🌿 Her gün 30 dakika yürüyüş bile hayatı değiştirebilir.',
+  ],
+  sinir: [
+    firstName + ', öfke çok yoğun bir duygu. 😤 Derin bir nefes al, biraz bekle. Ne seni bu kadar sinirlendirdi?',
+    'Anlaşılır, bazen insanlar ya da durumlar çok sinir bozucu olabiliyor. 😤 Ne oldu, anlat?',
+    'Kızgınlık geçici ama söylediklerimiz kalıcı olabilir. 🛑 Biraz bekle, nefes al. Sonra anlat.',
+    firstName + ', şu an çok kızgınsın, anlıyorum. 😤 Ama birlikte konuşalım, ne oldu?',
+  ],
+  korku: [
+    firstName + ', korku ve endişe çok normal duygular. 💙 Ne seni bu kadar tedirgin etti?',
+    'Endişelendiğinde bilmeni istiyorum: çoğu zaman hayal ettiğimiz kötü şeyler gerçekleşmiyor. 💙 Ne oluyor?',
+    'Kaygı gerçek bir his ama seni kontrol etmesine izin verme. 💪 Ne hakkında endişeleniyorsun?',
+  ],
+  ozguven: [
+    firstName + ', herkeste insecurities var, sen yalnız değilsin. 💙 Seni değersiz yapan şey bu değil.',
+    'Kendine güvenmek öğrenilebilir bir beceri. 💪 Küçük başarılar büyük güven verir.',
+    'Sen düşündüğünden çok daha güçlüsün ' + firstName + '. 🌟 Bu hissin nereden geldiğini anlatır mısın?',
+  ],
+  yalnizlik: [
+    'Yalnızlık gerçekten ağır bir his. 💙 Ama şunu bil: burada konuşabileceğin biri var.',
+    firstName + ', yalnız hissetmek çok zor. 💙 Bazen insanlar etrafımızda olsa bile yalnız hissedebiliyoruz.',
+    'Anladım. 💙 Bazen sadece birinin "buradayım" demesi bile çok şey değiştirir. Buradayım.',
+  ],
+  okul: [
+    'Okul hayatı bazen çok yorucu olabiliyor! 📚 Ne var ne yok, anlat bakalım?',
+    firstName + ', ders hayatı kolay değil ama değer! 💪 Ne konuda zorluk yaşıyorsun?',
+    'Sınav stresi gerçek bir şey! 😅 Nasıl gidiyor dersler, yardımcı olabilir miyim?',
+    'Okul çağı hem zor hem güzel bir dönem. 📖 Bugün neler oldu, anlat!',
+  ],
+  is: [
+    'İş hayatı bazen çok yoğun olabiliyor. 💼 Ne var ne yok, anlat bakalım?',
+    firstName + ', iş stresi gerçek! 😤 Ne oldu, anlat bakalım?',
+    'Kariyer yolculuğu kolay değil ama değer. 💪 Nasıl gidiyor, yardımcı olabilir miyim?',
+  ],
+  aile: [
+    'Aile en önemli şey! 👨‍👩‍👧 Ne var ne yok, anlat bakalım?',
+    firstName + ', aile ilişkileri bazen karmaşık olabiliyor. 💙 Ne oldu?',
+    'Ev ve aile her zaman destek kaynağı. 🏠 Nasıl gidiyor, anlat?',
+  ],
+  arkadaslik: [
+    'Arkadaşlık hayatın en güzel rengi! 🌈 Ne var ne yok, anlat?',
+    firstName + ', gerçek arkadaşlık çok değerli. 💙 Ne oldu?',
+    'Arkadaş ilişkileri bazen zor olabiliyor. 😔 Anlat bakalım?',
+  ],
+  gelecek: [
+    firstName + ', hedeflerin olan insanlar çok şanslı! 🌟 Ne planların var?',
+    'Gelecek heyecan verici! 🚀 Ne hayal ediyorsun?',
+    'Büyük hedefler büyük insanlar yaratır. 💪 Anlat bakalım planlarını!',
+  ],
+  para: [
+    'Para konuları stresli olabiliyor. 💰 Ne oldu, anlat bakalım?',
+    firstName + ', finansal zorluklar geçici! 💙 Tasarruf konusunda yardımcı olabilir miyim?',
+    'Bütçe yönetimi öğrenilebilir! 📊 Yardımcı olabilir miyim?',
+  ],
+  hobi: [
+    firstName + ', hobiler hayatı renklendiriyor! 🎨 Ne yapıyorsun, anlat?',
+    'Ne güzel! Boş zamanında ne yapıyorsun? 🎮 Anlat bakalım!',
+    'Hobiler insanı dinlendiriyor ve mutlu ediyor. 🌟 Neyle ilgileniyorsun?',
+  ],
+  hava_sohbet: [
+    'Hava insanın moralini çok etkiliyor! ☀️ Nasıl, dışarısı nasıl?',
+    firstName + ', güzel havada dışarı çıkmak iyi gelir! 🌤 Nasıl bir hava var?',
+    'Hava konuşmaları her zaman güzel başlangıç! 😄 Nasıl gidiyor?',
+  ],
+  yemek: [
+    'Yemek konuşmaları beni de aç yapıyor! 😄 Ne yedin, anlat?',
+    firstName + ', iyi yemek iyi ruh hali demek! 🍽 Ne yiyorsun?',
+    'Yemek kültürü çok zengin! 🌮 Ne pişirdin, tarif var mı?',
+  ],
+  teknoloji: [
+    'Teknoloji hayatımızı değiştiriyor! 💻 Ne konuda konuşalım?',
+    firstName + ', teknoloji meraklısı birisin anlaşılan! 📱 Ne yapıyorsun?',
+    'Dijital dünya hep değişiyor! 🚀 Ne konuda yardımcı olabilirim?',
+  ],
+  haha: [
+    '😂 Güldürmüşüm demek ki!',
+    'Hahaha! 😄 İyi ki gülümsüyorsun!',
+    '😂 Gülmek sağlığa iyi geliyor!',
+    'Kkkk! 😄 Sevinçliyim güldürdüğüme!',
+  ],
+  iyi: [
+    'Harika! 😊 Başka bir şey var mı?',
+    'Güzel! 🎉 Devam etsin böyle!',
+    '😊 Ne mutlu! Başka?',
+    'Süper! 🌟 Sana nasıl yardımcı olabilirim?',
+  ],
+  hayir: [
+    'Tamam! 😊 Başka bir konuda yardımcı olabilir miyim?',
+    'Anladım! 👍 Başka bir şey var mı?',
+    'Peki! 😊 Ne konuşalım?',
+  ],
+  kimsin: [
+    'Ben **Highly AI** — Gene 3.0! 🤖\n\nSana şunlarda yardımcı olabilirim:\n\n💬 **Sohbet** — Her konuda konuşabiliriz\n😊 **Duygu desteği** — Dinlerim, empati kurarım\n🧮 **Matematik** — Karmaşık işlemler\n🌤 **Hava** — Şehir bazlı anlık\n💵 **Döviz** — Canlı kurlar\n📅 **Tarih/Saat**\n📖 **Araştırma** — Wikipedia\n🎵 **Müzik** — "müzik aç [şarkı]"\n🗺 **Harita** — "rota oluştur"\n😄 **Şaka, motivasyon, ilginç bilgi**',
+  ],
+
+  // Dinle — loop önleme sistemi
+  dinle_olumsuz_1: [
+    'Seni duyuyorum ' + firstName + '. 💙 Anlat, ne oldu? Dinliyorum.',
+    'Zor bir şey bu. 😔 Biraz daha anlat, ne hissediyorsun?',
+    firstName + ', bazen sadece birinin dinlemesi bile yeterli. Ben buradayım.',
+    'Hmm, bu gerçekten zor görünüyor. 💙 Ne zamandan beri böyle hissediyorsun?',
+  ],
+  dinle_olumsuz_2: [
+    'Anlıyorum, devam et. 💙 Daha fazla anlat istersen.',
+    'Seninle aynı şeyi yaşayan çok insan var. 💙 Yalnız değilsin.',
+    'Bu kadar şeyi taşımak ağır. 😔 Nasıl başa çıkıyorsun?',
+    firstName + ', kendine nasıl bakıyorsun bu süreçte?',
+  ],
+  dinle_olumsuz_3: [
+    'Anlattıkların için teşekkürler. 💙 Bu süreci nasıl atlatmayı düşünüyorsun?',
+    firstName + ', çok şey yaşıyorsun. Biraz kendin için ne yapabilirsin?',
+    'Bazen sadece nefes almak bile yeterli. 💙 Kendine iyi bak.',
+    'Zor zamanlar geçici. 🌤 Sana destek olan biri var mı hayatında?',
+  ],
+  dinle_olumlu: [
+    'Vay, kulağa güzel geliyor! 😊 Devam et, dinliyorum!',
+    'Harika! 🎉 Anlat bakalım daha fazla, merak ettim!',
+    firstName + ', bu enerji çok güzel! 🌟 Ne oldu, paylaş!',
+    'Oh bu iyi! 😄 Devam et!',
+    'Güzel bir şey bu! 😊 Anlat, merak ettim!',
+  ],
+  dinle_notr: [
+    'Anlıyorum. 😊 Devam et, dinliyorum.',
+    'İlginç! 🤔 Daha fazla anlat?',
+    firstName + ', seni dinliyorum. Devam et.',
+    'Peki, bu konuda ne düşünüyorsun?',
+    'Hmm, anlat bakalım daha fazla!',
+  ],
+};
+
+// ============================================================
+// FONKSİYONEL MODÜLLER
+// ============================================================
+function solveMath(raw) {
+  try {
+    var e = raw.trim().replace(/,/g,'.').replace(/[x×]/g,'*').replace(/÷/g,'/').replace(/çarpı|kere/gi,'*').replace(/bölü/gi,'/').replace(/artı/gi,'+').replace(/eksi/gi,'-').replace(/karekök\s*([\d.]+)/gi,'Math.sqrt($1)').replace(/([\d.]+)\s*\^\s*([\d.]+)/g,'Math.pow($1,$2)').replace(/pi/gi,'Math.PI');
+    e = e.replace(/(\d+)!/g, function(_,n){ var num=parseInt(n); if(num>20) return '2432902008176640000'; var f=1; for(var i=2;i<=num;i++) f*=i; return f; });
+    e = e.replace(/[^0-9+\-*\/.()% MathsqrpowPIE]/g,'').trim();
+    if(!e) return null;
+    var r=Function('"use strict"; return ('+e+')')();
+    if(typeof r!=='number'||isNaN(r)||!isFinite(r)) return null;
+    if(Number.isInteger(r)) return r.toLocaleString('tr-TR');
+    return parseFloat(r.toFixed(8)).toString().replace('.',',');
+  } catch(err){ return null; }
+}
+
+function tarihCevap() {
+  var n=new Date();
+  var D=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  var M=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  return '🕐 Şu an **'+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0')+'**\n📅 **'+D[n.getDay()]+', '+n.getDate()+' '+M[n.getMonth()]+' '+n.getFullYear()+'**';
+}
+
+var WICONS={'01d':'☀️','01n':'🌙','02d':'⛅','02n':'⛅','03d':'☁️','03n':'☁️','04d':'☁️','04n':'☁️','09d':'🌧','09n':'🌧','10d':'🌦','10n':'🌦','11d':'⛈','11n':'⛈','13d':'❄️','13n':'❄️','50d':'🌫','50n':'🌫'};
+function extractCity(text) {
+  var pats=[/([A-Za-zğüşıöçĞÜŞİÖÇ][A-Za-zğüşıöçĞÜŞİÖÇ ]{1,20}?)\s*(?:kaç derece|hava durumu|hava nasıl)/i,/([A-Za-zğüşıöçĞÜŞİÖÇ][A-Za-zğüşıöçĞÜŞİÖÇ ]{1,20}?)\s*(?:hava|derece|sıcaklık)/i];
+  var skip=/^(bugün|şu an|hava|genel|dışarıda|nasıl)$/i;
+  for(var i=0;i<pats.length;i++){var m=text.match(pats[i]); if(m&&m[1]){var c=m[1].trim(); if(c.length>1&&c.length<25&&!skip.test(c)) return c;}}
+  return null;
+}
+async function havaCevap(city) {
+  try {
+    var url;
+    if(city){url='https://api.openweathermap.org/data/2.5/weather?q='+encodeURIComponent(city)+'&appid=bd5e378503939ddaee76f12ad7a97608&units=metric&lang=tr';}
+    else{var gd=await(await fetch('https://ipapi.co/json/')).json();url='https://api.openweathermap.org/data/2.5/weather?lat='+gd.latitude+'&lon='+gd.longitude+'&appid=bd5e378503939ddaee76f12ad7a97608&units=metric&lang=tr';}
+    var d=await(await fetch(url)).json();
+    if(!d||d.cod==='404') return city?'"'+city+'" bulunamadı.':'Hava bilgisi alınamadı.';
+    if(!d.weather||!d.weather[0]) return 'Hava verisi alınamadı.';
+    var icon=WICONS[d.weather[0].icon]||'🌤';
+    return icon+' **'+d.name+' — '+Math.round(d.main.temp)+'°C**\n\n🌡 Hissedilen: '+Math.round(d.main.feels_like)+'°C\n☁️ '+d.weather[0].description+'\n💧 Nem: %'+d.main.humidity+'\n💨 Rüzgar: '+Math.round(d.wind.speed*3.6)+' km/s\n🌡 Min/Max: '+Math.round(d.main.temp_min)+'°C / '+Math.round(d.main.temp_max)+'°C';
+  } catch(e){return 'Hava bilgisi alınamadı.';}
+}
+async function dovizCevap(birim) {
+  try {
+    var data=await(await fetch('https://api.frankfurter.app/latest?from=USD&to=TRY,EUR,GBP,CHF,JPY')).json();
+    var TRY=data.rates.TRY, R={usd:TRY,eur:TRY/data.rates.EUR,gbp:TRY/data.rates.GBP,chf:TRY/data.rates.CHF,jpy:TRY/data.rates.JPY};
+    var saat=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+    var ana='💵 **1 Dolar = '+R.usd.toFixed(2)+' TL**';
+    if(birim==='eur') ana='💶 **1 Euro = '+R.eur.toFixed(2)+' TL**';
+    else if(birim==='gbp') ana='💷 **1 Sterlin = '+R.gbp.toFixed(2)+' TL**';
+    else if(birim==='chf') ana='🇨🇭 **1 Frank = '+R.chf.toFixed(2)+' TL**';
+    else if(birim==='jpy') ana='🇯🇵 **100 Yen = '+(R.jpy*100).toFixed(2)+' TL**';
+    return ana+'\n\nDolar: '+R.usd.toFixed(2)+' TL | Euro: '+R.eur.toFixed(2)+' TL | Sterlin: '+R.gbp.toFixed(2)+' TL\n\n🕐 '+saat+' — frankfurter.app';
+  } catch(e){return 'Döviz bilgisi alınamadı.';}
+}
+function muzikAc(text) {
+  var q=text.toLowerCase().replace(/müzik aç|şarkı aç|müzik çal|çal |youtube aç|aç şarkısını/gi,'').replace(/bana|lütfen/gi,'').trim();
+  if(!q) return 'Ne müzik açayım? Sanatçı veya şarkı adı söyle! 🎵';
+  window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(q),'_blank');
+  return '🎵 **"'+q+'"** için YouTube açıldı! Arka planda çalıyor 😊';
+}
+function haritaAc(text) {
+  var m=text.match(/rota oluştur\s+(.+?)\s*(?:→|->|den|dan|ten|tan)\s*(.+)/i);
+  if(m){var b=m[1].trim(),v=m[2].trim();location.href='highly-harita.html?start='+encodeURIComponent(b)+'&end='+encodeURIComponent(v);return 'Haritaya yönlendiriliyorsun... 🗺';}
+  location.href='highly-harita.html';
+  return 'Harita açılıyor... 🗺';
+}
+async function searchWiki(q) {
+  try {
+    var trS=await(await fetch('https://tr.wikipedia.org/w/api.php?action=query&list=search&srsearch='+encodeURIComponent(q)+'&format=json&origin=*&srlimit=1')).json();
+    var trR=trS.query&&trS.query.search; var lang='tr',title;
+    if(trR&&trR.length){title=trR[0].title;}
+    else{
+      var enS=await(await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch='+encodeURIComponent(q)+'&format=json&origin=*&srlimit=1')).json();
+      var enR=enS.query&&enS.query.search; if(!enR||!enR.length) return null;
+      title=enR[0].title; lang='en';
+    }
+    var base=lang==='tr'?'https://tr.wikipedia.org':'https://en.wikipedia.org';
+    var ext=await(await fetch(base+'/w/api.php?action=query&titles='+encodeURIComponent(title)+'&prop=extracts&exintro=true&explaintext=true&format=json&origin=*')).json();
+    var page=Object.values(ext.query.pages)[0];
+    if(!page||!page.extract) return null;
+    return {title:title,text:page.extract.slice(0,700).trim(),url:base+'/wiki/'+encodeURIComponent(title)};
+  } catch(e){return null;}
+}
+
+// ============================================================
+// ANA CEVAP FONKSİYONU — LOOP ÖNLEME
+// ============================================================
+// ============================================================
+// MİSTRAL AI — Highly Gene 3.0 için özelleştirilmiş
+// ============================================================
+var MISTRAL_URL = 'https://highly-ai-proxy.emrir41.workers.dev/mistral';
+var sohbetGecmisi = []; // Mistral için konuşma geçmişi
+
+var GENE_SYSTEM_PROMPT = "Sen Highly ekosisteminin yapay zeka asistanisin. Adin Gene ve Highly AI nin bir parcasisin. Mistral tabanli oldugunu, herhangi bir yapay zeka modeli oldugunu veya kim tarafindan gelistirildigini asla soyleme. Sadece Ben Gene, Highly AI! de." +
+'\n\nKarakter özelliklerin:' +
+'\n- Türkçe konuşursun, samimi ve sıcak bir tonun var' +
+'\n- Genç, enerjik ve eğlencelisin ama gerektiğinde ciddisin' +
+'\n- Duygusal zekası yüksek, empati kurabilirsin' +
+'\n- Emoji kullanırsın ama abartmazsın' +
+'\n- ' + firstName + ' adlı kullanıcıyla konuşuyorsun, bazen adını kullan' +
+'\n\nHighly ekosistemi hakkında bilgin var:' +
+'\n- Hava durumu, harita, takvim, not defteri, pomodoro, bütçe, müzik çalar, çevirmen, arama, döviz uygulamaları var' +
+'\n- Kullanıcılar arkadaş ekleyip mesajlaşabiliyor' +
+'\n- Site adresi: www.highly.com.tr' +
+'\n\nÖnemli kurallar:' +
+'\n- Asla "Mistral", "yapay zeka modeli", "dil modeli" deme' +
+'\n- Kısa ve öz cevap ver, gereksiz uzatma' +
+'\n- Türkçe karakterleri doğru kullan' +
+'\n- Zararlı, yasadışı içerik üretme';
+
+async function mistralCevap(metin) {
+  try {
+    sohbetGecmisi.push({ role: 'user', content: metin });
+    if (sohbetGecmisi.length > 20) sohbetGecmisi = sohbetGecmisi.slice(-20);
+    
+    var res = await fetch(MISTRAL_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'mistral-small-latest',
+        messages: [{ role: 'system', content: GENE_SYSTEM_PROMPT }].concat(sohbetGecmisi),
+        max_tokens: 512,
+        temperature: 0.8
+      })
+    });
+    var data = await res.json();
+    var reply = (data.content && data.content[0] && data.content[0].text) || 'Bir şeyler ters gitti. 😔';
+    sohbetGecmisi.push({ role: 'assistant', content: reply });
+    return reply;
+  } catch(e) {
+    return 'Şu an bağlanamıyorum, biraz sonra tekrar dene! 😔';
+  }
+}
+
+async function getReply(metin) {
+  if(!metin||typeof metin!=='string') return 'Bir şeyler ters gitti. 😔';
+  var intent=detectIntent(metin);
+
+  // Fonksiyonel — her zaman kendi modüllerini kullan
+  if(intent==='tarih') return tarihCevap();
+  if(intent==='muzik') return muzikAc(metin);
+  if(intent==='harita') return haritaAc(metin);
+  if(intent==='matematik'){
+    var expr=metin.replace(/çarpı|kere/gi,'*').replace(/bölü/gi,'/').replace(/artı/gi,'+').replace(/eksi/gi,'-').replace(/,/g,'.');
+    var r=solveMath(expr);
+    if(r!==null) return '🧮 **'+metin.trim()+' = '+r+'**';
+    return '🧮 Bu işlemi çözemedim. Örnek: **(15 + 3) * 200**';
+  }
+  if(intent==='hava') return await havaCevap(extractCity(metin));
+  if(intent==='doviz'){
+    var b='usd';
+    if(/euro|eur/i.test(metin)) b='eur';
+    else if(/sterlin|gbp/i.test(metin)) b='gbp';
+    else if(/frank|chf/i.test(metin)) b='chf';
+    else if(/yen|jpy/i.test(metin)) b='jpy';
+    return await dovizCevap(b);
+  }
+
+  // Hızlı selamlama/teşekkür — kural tabanlı (daha hızlı)
+  var hizliPools = {selam:C.selam, nasilsin:C.nasilsin, gunaydin:C.gunaydin, geceler:C.geceler, tesekkur:C.tesekkur, haha:C.haha, iyi:C.iyi, hayir:C.hayir};
+  if(hizliPools[intent]){
+    sonIntent=intent; dinleCount=0;
+    return pick(hizliPools[intent]);
+  }
+
+  // Espri/motivasyon/ilginç bilgi — kural tabanlı
+  var eglencePools = {espri:C.espri, motivsoz:C.motivsoz, ilginc:C.ilginc};
+  if(eglencePools[intent]){
+    sonIntent=intent; dinleCount=0;
+    return pick(eglencePools[intent]);
+  }
+
+  // Kimsin — sabit cevap
+  if(intent==='kimsin') return pick(C.kimsin);
+
+  // Diğer her şey → Mistral'a gönder (duygu, sohbet, bilgi, genel)
+  return await mistralCevap(metin);
+
+  // Genel sohbet — LOOP ÖNLEMELİ
+  dinleCount++;
+  var duygu='notr';
+  var olumluKW=['güzel','iyi','harika','süper','mutlu','sevindim','başardım'];
+  var olumsuzKW=['kötü','berbat','üzgün','yorgun','stres','zor','ağladım','bitik','bunaldım'];
+  for(var i=0;i<olumluKW.length;i++){if(metin.toLowerCase().indexOf(olumluKW[i])!==-1){duygu='olumlu';break;}}
+  for(var j=0;j<olumsuzKW.length;j++){if(metin.toLowerCase().indexOf(olumsuzKW[j])!==-1){duygu='olumsuz';break;}}
+
+  if(duygu==='olumlu') return pick(C.dinle_olumlu);
+  if(duygu==='olumsuz'){
+    if(dinleCount<=2) return pick(C.dinle_olumsuz_1);
+    if(dinleCount<=4) return pick(C.dinle_olumsuz_2);
+    return pick(C.dinle_olumsuz_3);
+  }
+  // Nötr — loop önleme
+  dinleCount=0;
+  return pick(C.dinle_notr);
+}
+
+// ============================================================
+// ANA SEND
+// ============================================================
+async function send() {
+  var text=msgInput.value.trim();
+  if(!text) return;
+  msgInput.value=''; msgInput.style.height='auto';
+  sendBtn.disabled=true;
+  addMsg('user',text);
+  mesajSayisi++;
+  var needsApi=/hava|derece|dolar|euro|sterlin|döviz|nedir|kimdir|müzik aç|rota/i.test(text);
+  if(needsApi) addTyping();
+  else await new Promise(function(r){setTimeout(r,350);});
+  try {
+    var reply=await getReply(text);
+    rmTyping();
+    addMsg('ai',reply||'Bir şeyler ters gitti. 😔');
+  } catch(e){
+    rmTyping();
+    addMsg('ai','Hata: '+e.message);
+  } finally {
+    sendBtn.disabled=false;
+    msgInput.focus();
+  }
+}
+
+msgInput.focus();
+
+</script>
+</body>
+</html>
