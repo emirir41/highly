@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly — Yetkisiz Erişim</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--border:rgba(255,255,255,0.07);--text:#e8e8ff;--muted:#4a4d6a;--red:#f87171}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,rgba(248,113,113,.06) 0%,transparent 60%)}
+.box{background:var(--s1);border:1px solid rgba(248,113,113,.2);border-radius:24px;padding:48px 40px;max-width:420px;width:90%;text-align:center;position:relative;z-index:2}
+.icon{font-size:56px;margin-bottom:20px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:10px;color:var(--red)}
+p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--s1);border:1px solid var(--border);border-radius:12px;color:var(--text);text-decoration:none;font-size:13px;font-weight:500;transition:all .2s}
+.btn:hover{border-color:rgba(255,255,255,.15)}
+.code{font-family:monospace;font-size:11px;color:var(--muted);margin-top:24px;padding:10px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="box">
+  <span class="icon">🚫</span>
+  <h1>Yetkisiz Erişim</h1>
+  <p>Bu sayfaya erişim yetkiniz bulunmamaktadır. Burası yalnızca yetkili Highly yöneticilerine aittir.</p>
+  <a href="dashboard.html" class="btn">⌂ Dashboard'a Dön</a>
+  <div class="code">Hata Kodu: 403 — Forbidden</div>
+</div>
+</body>
+</html>

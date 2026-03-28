@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--text:#e8e8ff;--muted:#4a4d6a;--a1:#6366f1;--a2:#a78bfa;--red:#f87171;--green:#34d399;--yellow:#f59e0b}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 10% 10%,rgba(248,113,113,.06) 0%,transparent 50%),radial-gradient(ellipse at 90% 90%,rgba(99,102,241,.05) 0%,transparent 50%)}
+
+/* Nav */
+nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(6,7,15,.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
+.n-left{display:flex;align-items:center;gap:10px}
+.n-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#ef4444,#f87171);display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.n-badge{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25);font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;font-family:'Syne',sans-serif;letter-spacing:.5px}
+.n-right{display:flex;align-items:center;gap:8px}
+.n-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#fff;text-decoration:none}
+.n-btn{padding:7px 14px;background:var(--s1);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:all .2s}
+.n-btn:hover{color:var(--text);border-color:var(--border2)}
+.n-btn.danger{color:var(--red);border-color:rgba(248,113,113,.2)}
+.n-btn.danger:hover{background:rgba(248,113,113,.08)}
+
+main{max-width:1100px;margin:0 auto;padding:28px 20px 80px;position:relative;z-index:2}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;background:rgba(255,255,255,.03);border-radius:12px;padding:4px;margin-bottom:24px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:9px 16px;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;border-radius:9px;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.tab.active{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+
+.panel{display:none}
+.panel.show{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* Stat grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:18px;transition:border-color .2s}
+.stat-card:hover{border-color:var(--border2)}
+.sc-icon{font-size:22px;margin-bottom:8px}
+.sc-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:3px}
+.sc-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+/* Kartlar */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px}
+.card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card-title-icon{font-size:18px}
+
+/* Form elemanları */
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.form-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:rgba(99,102,241,.4)}
+.form-input::placeholder{color:var(--muted)}
+textarea.form-input{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Butonlar */
+.btn{padding:10px 20px;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+.btn-primary:hover{opacity:.9}
+.btn-danger{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25);color:var(--red)}
+.btn-danger:hover{background:rgba(248,113,113,.2)}
+.btn-success{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.25);color:var(--green)}
+.btn-success:hover{background:rgba(52,211,153,.2)}
+.btn-warn{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);color:var(--yellow)}
+.btn-warn:hover{background:rgba(245,158,11,.2)}
+
+/* Toggle */
+.toggle-wrap{display:flex;align-items:center;gap:12px}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--s2);border:1px solid var(--border);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle.on{background:linear-gradient(135deg,var(--a1),var(--a2));border-color:transparent}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .2s;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.toggle.on::after{left:22px}
+.toggle-label{font-size:13px}
+
+/* İlerleme */
+.progress-wrap{margin-bottom:8px}
+.progress-bar{height:8px;background:var(--s2);border-radius:4px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:4px;transition:width .5s}
+.progress-info{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+
+/* Kullanıcı listesi */
+.user-table{width:100%;border-collapse:collapse}
+.user-table th{text-align:left;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:8px 12px;border-bottom:1px solid var(--border)}
+.user-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.03);font-size:13px;vertical-align:middle}
+.user-table tr:hover td{background:rgba(255,255,255,.02)}
+.user-av{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:#fff}
+.badge-active{background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.2);font-size:10px;padding:2px 8px;border-radius:999px;font-weight:700}
+.badge-banned{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.2);font-size:10px;padding:2px 8px;border-radius:999px;font-weight:700}
+.table-actions{display:flex;gap:6px}
+.tbl-btn{padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;border:1px solid;transition:all .2s}
+
+/* Bildirim geçmişi */
+.notif-item{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--s2);border-radius:10px;margin-bottom:8px}
+.notif-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.notif-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.notif-sub{font-size:11px;color:var(--muted)}
+
+/* Parking önizleme */
+.parking-preview{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;margin-top:12px}
+.pp-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:var(--yellow);padding:4px 12px;border-radius:999px;font-size:10px;font-weight:700;margin-bottom:10px}
+.pp-dot{width:5px;height:5px;border-radius:50%;background:var(--yellow);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* Log */
+.log-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--border);font-size:12px}
+.log-time{color:var(--muted);min-width:80px;font-family:monospace}
+.log-badge{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700}
+.log-info{background:rgba(99,102,241,.1);color:var(--a2)}
+.log-warn{background:rgba(245,158,11,.1);color:var(--yellow)}
+.log-err{background:rgba(248,113,113,.1);color:var(--red)}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:13px;opacity:0;z-index:9999;transition:all .3s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:300px}
+.toast.show{opacity:1}
+.toast.ok{border-color:var(--green);color:var(--green)}
+.toast.err{border-color:var(--red);color:var(--red)}
+.toast.warn{border-color:var(--yellow);color:var(--yellow)}
+
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="n-left">
+    <div class="n-mark">🛡</div>
+    <span class="n-title">Admin Panel</span>
+    <span class="n-badge">HIGHLY</span>
+  </div>
+  <div class="n-right">
+    <a href="highly-profil.html" class="n-avatar" id="navAvatar">?</a>
+    <a href="dashboard.html" class="n-btn">⌂ Dashboard</a>
+    <button class="n-btn danger" onclick="adminLogout()">Çıkış</button>
+  </div>
+</nav>
+
+<main>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('genel')">📊 Genel Bakış</button>
+    <button class="tab" onclick="switchTab('parking')">🔧 Parking</button>
+    <button class="tab" onclick="switchTab('bildirim')">🔔 Bildirimler</button>
+    <button class="tab" onclick="switchTab('kullanicilar')">👥 Kullanıcılar</button>
+    <button class="tab" onclick="switchTab('ban')">🚫 Banlar</button>
+    <button class="tab" onclick="switchTab('log')">📋 Log</button>
+  </div>
+
+  <!-- Genel Bakış -->
+  <div class="panel show" id="panel-genel">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="sc-icon">👥</div><div class="sc-val" id="statUsers">—</div><div class="sc-lbl">Toplam Kullanıcı</div></div>
+      <div class="stat-card"><div class="sc-icon">💬</div><div class="sc-val" id="statMsgs">—</div><div class="sc-lbl">Toplam Mesaj</div></div>
+      <div class="stat-card"><div class="sc-icon">🤝</div><div class="sc-val" id="statFriends">—</div><div class="sc-lbl">Arkadaşlık</div></div>
+      <div class="stat-card"><div class="sc-icon">🚫</div><div class="sc-val" id="statBans">—</div><div class="sc-lbl">Banlı Kullanıcı</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">⚡</span>Hızlı İşlemler</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <button class="btn btn-warn" onclick="switchTab('parking')">🔧 Parking Modu</button>
+        <button class="btn btn-primary" onclick="switchTab('bildirim')">🔔 Bildirim Gönder</button>
+        <button class="btn btn-danger" onclick="switchTab('ban')">🚫 Kullanıcı Banla</button>
+        <button class="btn btn-success" onclick="loadStats()">🔄 Yenile</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">📋</span>Son Kayıtlar</div>
+      <div id="recentUsers" style="font-size:13px;color:var(--muted)">Yükleniyor...</div>
+    </div>
+  </div>
+
+  <!-- Parking -->
+  <div class="panel" id="panel-parking">
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🔧</span>Parking Modu</div>
+
+      <div class="form-group">
+        <div class="toggle-wrap">
+          <div class="toggle" id="parkingToggle" onclick="toggleParking()"></div>
+          <span class="toggle-label">Parking Modu <span id="parkingStatus" style="color:var(--muted);font-size:12px">(Kapalı)</span></span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Başlık</label>
+        <input class="form-input" id="parkingTitle" type="text" placeholder="Kısa Süreliğine Hizmet Dışıyız"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Açıklama</label>
+        <textarea class="form-input" id="parkingDesc" placeholder="Highly ekosistemini güncelliyoruz..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Başlangıç Saati</label>
+          <input class="form-input" id="parkingStart" type="time"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bitiş Saati</label>
+          <input class="form-input" id="parkingEnd" type="time"/>
+        </div>
+      </div>
+
+      <!-- İlerleme önizleme -->
+      <div class="progress-wrap">
+        <label class="form-label">İlerleme Önizleme</label>
+        <div class="progress-bar"><div class="progress-fill" id="progressPreview" style="width:0%"></div></div>
+        <div class="progress-info">
+          <span id="progressStartLbl">Başlangıç</span>
+          <span id="progressPctLbl">%0</span>
+          <span id="progressEndLbl">Bitiş</span>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn btn-primary" onclick="saveParking()">💾 Kaydet</button>
+        <button class="btn btn-success" onclick="calcProgress()">🔄 Önizle</button>
+      </div>
+
+      <!-- Parking önizleme -->
+      <div class="parking-preview" id="parkingPreview" style="display:none">
+        <div class="pp-badge"><div class="pp-dot"></div><span id="pvBadge">Sistem Güncelleniyor</span></div>
+        <div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;margin-bottom:8px" id="pvTitle">—</div>
+        <div style="font-size:13px;color:var(--muted)" id="pvDesc">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bildirimler -->
+  <div class="panel" id="panel-bildirim">
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🔔</span>Bildirim Gönder</div>
+
+      <div class="form-group">
+        <label class="form-label">Alıcı</label>
+        <select class="form-input" id="notifTarget">
+          <option value="all">📢 Tüm Kullanıcılar</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Başlık</label>
+        <input class="form-input" id="notifTitle" type="text" placeholder="Bildirim başlığı..."/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mesaj</label>
+        <textarea class="form-input" id="notifMsg" placeholder="Bildirim içeriği..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tür</label>
+        <select class="form-input" id="notifType">
+          <option value="info">ℹ️ Bilgi</option>
+          <option value="success">✅ Başarı</option>
+          <option value="warning">⚠️ Uyarı</option>
+          <option value="error">❌ Hata</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" onclick="sendNotif()">🔔 Gönder</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">📋</span>Gönderilen Bildirimler</div>
+      <div id="notifHistory" style="font-size:13px;color:var(--muted)">Yükleniyor...</div>
+    </div>
+  </div>
+
+  <!-- Kullanıcılar -->
+  <div class="panel" id="panel-kullanicilar">
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">👥</span>Kullanıcı Listesi</div>
+      <div style="overflow-x:auto">
+        <table class="user-table">
+          <thead>
+            <tr>
+              <th>Kullanıcı</th>
+              <th>E-posta</th>
+              <th>Kullanıcı Adı</th>
+              <th>Durum</th>
+              <th>İşlemler</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted)">Yükleniyor...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ban -->
+  <div class="panel" id="panel-ban">
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🚫</span>Kullanıcı Banla</div>
+      <div class="form-group">
+        <label class="form-label">Kullanıcı ID veya E-posta</label>
+        <input class="form-input" id="banTarget" type="text" placeholder="ID veya e-posta..."/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ban Sebebi</label>
+        <textarea class="form-input" id="banReason" placeholder="Ban sebebini açıkla..."></textarea>
+      </div>
+      <button class="btn btn-danger" onclick="banUser()">🚫 Banla</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">📋</span>Banlı Kullanıcılar</div>
+      <div id="banList" style="font-size:13px;color:var(--muted)">Yükleniyor...</div>
+    </div>
+  </div>
+
+  <!-- Log -->
+  <div class="panel" id="panel-log">
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">📋</span>Sistem Logu</div>
+      <div id="logList">
+        <div class="log-item"><span class="log-time">--:--:--</span><span class="log-badge log-info">INFO</span><span>Admin panel yüklendi</span></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB  = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0';
+const H   = { 'Content-Type':'application/json', 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
+
+// ===== YETKİ KONTROLÜ =====
+const saved = localStorage.getItem('highly_user');
+if (!saved) { location.href = 'highly-id.html'; }
+const user = JSON.parse(saved || '{}');
+
+// Admin ID kontrolü
+(async function checkAdmin() {
+  try {
+    const res  = await fetch(SB+'/rest/v1/admin_settings?key=eq.admin_ids&select=value', {headers:H});
+    const data = await res.json();
+    if (!data || !data.length) { location.href = 'highly-403.html'; return; }
+    const adminIds = data[0].value.split(',').map(function(x){return parseInt(x.trim());});
+    if (!adminIds.includes(user.id)) { location.href = 'highly-403.html'; return; }
+    // Yetkiliyse devam
+    initAdmin();
+  } catch(e) { location.href = 'highly-403.html'; }
+})();
+
+function initAdmin() {
+  // Avatar
+  var av = document.getElementById('navAvatar');
+  if (user.avatarEmoji) { av.textContent = user.avatarEmoji; av.style.background = 'transparent'; av.style.fontSize = '18px'; }
+  else { av.textContent = (user.name||'?')[0].toUpperCase(); if (user.avatarBg) av.style.background = user.avatarBg; }
+
+  addLog('INFO', 'Admin panel açıldı — ' + user.name);
+  loadStats();
+  loadParking();
+  loadUsers();
+  loadBans();
+  loadNotifHistory();
+}
+
+// ===== TOAST =====
+function toast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + (type||'ok');
+  setTimeout(function(){t.classList.remove('show');}, 3500);
+}
+
+// ===== TAB =====
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(function(t,i){
+    t.classList.toggle('active', ['genel','parking','bildirim','kullanicilar','ban','log'][i]===tab);
+  });
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('show');});
+  document.getElementById('panel-'+tab).classList.add('show');
+}
+
+// ===== LOG =====
+function addLog(type, msg) {
+  var el = document.getElementById('logList');
+  var now = new Date().toLocaleTimeString('tr-TR');
+  var cls = type==='INFO'?'log-info':type==='WARN'?'log-warn':'log-err';
+  var div = document.createElement('div');
+  div.className = 'log-item';
+  div.innerHTML = '<span class="log-time">'+now+'</span><span class="log-badge '+cls+'">'+type+'</span><span>'+msg+'</span>';
+  el.insertBefore(div, el.firstChild);
+}
+
+// ===== İSTATİSTİKLER =====
+async function loadStats() {
+  try {
+    var [r1,r2,r3,r4] = await Promise.all([
+      fetch(SB+'/rest/v1/users?select=id', {headers:Object.assign({},H,{'Prefer':'count=exact','Range':'0-0'})}),
+      fetch(SB+'/rest/v1/messages?select=id', {headers:Object.assign({},H,{'Prefer':'count=exact','Range':'0-0'})}),
+      fetch(SB+'/rest/v1/friendships?select=id', {headers:Object.assign({},H,{'Prefer':'count=exact','Range':'0-0'})}),
+      fetch(SB+'/rest/v1/bans?select=id', {headers:Object.assign({},H,{'Prefer':'count=exact','Range':'0-0'})})
+    ]);
+    document.getElementById('statUsers').textContent   = r1.headers.get('content-range')?.split('/')[1] || '—';
+    document.getElementById('statMsgs').textContent    = r2.headers.get('content-range')?.split('/')[1] || '—';
+    document.getElementById('statFriends').textContent = r3.headers.get('content-range')?.split('/')[1] || '—';
+    document.getElementById('statBans').textContent    = r4.headers.get('content-range')?.split('/')[1] || '—';
+
+    // Son kayıtlar
+    var uRes = await fetch(SB+'/rest/v1/users?order=created_at.desc&limit=5&select=id,name,email,created_at', {headers:H});
+    var users = await uRes.json()||[];
+    document.getElementById('recentUsers').innerHTML = users.map(function(u){
+      return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">'+
+        '<div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#a78bfa);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:12px;color:#fff;flex-shrink:0">'+(u.name||'?')[0].toUpperCase()+'</div>'+
+        '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+u.name+'</div><div style="font-size:11px;color:var(--muted)">'+u.email+'</div></div>'+
+        '<div style="font-size:11px;color:var(--muted)">'+new Date(u.created_at).toLocaleDateString('tr-TR')+'</div>'+
+        '</div>';
+    }).join('') || '<div style="color:var(--muted);font-size:13px">Kullanıcı yok</div>';
+
+    addLog('INFO', 'İstatistikler güncellendi');
+  } catch(e) { addLog('ERR', 'İstatistik yüklenemedi: '+e.message); }
+}
+
+// ===== PARKING =====
+var parkingOn = false;
+
+async function loadParking() {
+  try {
+    var res = await fetch(SB+'/rest/v1/admin_settings?key=in.(parking_enabled,parking_title,parking_desc,parking_start,parking_end)&select=key,value', {headers:H});
+    var data = await res.json()||[];
+    data.forEach(function(d){
+      if(d.key==='parking_enabled') { parkingOn = d.value==='true'; updateParkingToggle(); }
+      if(d.key==='parking_title')   document.getElementById('parkingTitle').value = d.value||'';
+      if(d.key==='parking_desc')    document.getElementById('parkingDesc').value  = d.value||'';
+      if(d.key==='parking_start')   document.getElementById('parkingStart').value = d.value||'';
+      if(d.key==='parking_end')     document.getElementById('parkingEnd').value   = d.value||'';
+    });
+    calcProgress();
+  } catch(e) {}
+}
+
+function updateParkingToggle() {
+  var t = document.getElementById('parkingToggle');
+  var s = document.getElementById('parkingStatus');
+  t.classList.toggle('on', parkingOn);
+  s.textContent = parkingOn ? '(Aktif 🔴)' : '(Kapalı)';
+  s.style.color = parkingOn ? '#f87171' : 'var(--muted)';
+}
+
+async function toggleParking() {
+  parkingOn = !parkingOn;
+  updateParkingToggle();
+  await setSetting('parking_enabled', parkingOn ? 'true' : 'false');
+  toast(parkingOn ? '🔴 Parking modu aktif!' : '✅ Parking modu kapatıldı', parkingOn ? 'err' : 'ok');
+  addLog(parkingOn?'WARN':'INFO', 'Parking modu '+(parkingOn?'açıldı':'kapatıldı'));
+}
+
+async function saveParking() {
+  var title = document.getElementById('parkingTitle').value;
+  var desc  = document.getElementById('parkingDesc').value;
+  var start = document.getElementById('parkingStart').value;
+  var end   = document.getElementById('parkingEnd').value;
+  await Promise.all([
+    setSetting('parking_title', title),
+    setSetting('parking_desc',  desc),
+    setSetting('parking_start', start),
+    setSetting('parking_end',   end)
+  ]);
+  toast('Parking ayarları kaydedildi! ✅', 'ok');
+  addLog('INFO', 'Parking ayarları güncellendi');
+  calcProgress();
+  // Önizleme güncelle
+  document.getElementById('parkingPreview').style.display = 'block';
+  document.getElementById('pvTitle').textContent = title || '—';
+  document.getElementById('pvDesc').textContent  = desc  || '—';
+}
+
+function calcProgress() {
+  var start = document.getElementById('parkingStart').value;
+  var end   = document.getElementById('parkingEnd').value;
+  if (!start || !end) return;
+  var now   = new Date();
+  var nowMin = now.getHours()*60 + now.getMinutes();
+  var sParts = start.split(':'); var startMin = parseInt(sParts[0])*60 + parseInt(sParts[1]);
+  var eParts = end.split(':');   var endMin   = parseInt(eParts[0])*60 + parseInt(eParts[1]);
+  var total  = endMin - startMin;
+  var elapsed = nowMin - startMin;
+  var pct = total > 0 ? Math.max(0, Math.min(100, Math.round((elapsed/total)*100))) : 0;
+  document.getElementById('progressPreview').style.width = pct + '%';
+  document.getElementById('progressPctLbl').textContent = '%' + pct;
+  document.getElementById('progressStartLbl').textContent = start;
+  document.getElementById('progressEndLbl').textContent = end;
+}
+
+async function setSetting(key, value) {
+  try {
+    // Önce var mı kontrol et
+    var check = await fetch(SB+'/rest/v1/admin_settings?key=eq.'+key+'&select=id', {headers:H});
+    var exist = await check.json();
+    if (exist && exist.length) {
+      await fetch(SB+'/rest/v1/admin_settings?key=eq.'+key, {method:'PATCH', headers:H, body:JSON.stringify({value:value, updated_at:new Date().toISOString()})});
+    } else {
+      await fetch(SB+'/rest/v1/admin_settings', {method:'POST', headers:Object.assign({},H,{'Prefer':'return=representation'}), body:JSON.stringify({key:key, value:value})});
+    }
+  } catch(e) {}
+}
+
+// ===== BİLDİRİMLER =====
+async function loadUserSelect() {
+  try {
+    var res = await fetch(SB+'/rest/v1/users?select=id,name&order=name.asc', {headers:H});
+    var users = await res.json()||[];
+    var sel = document.getElementById('notifTarget');
+    users.forEach(function(u){
+      var opt = document.createElement('option');
+      opt.value = u.id; opt.textContent = '👤 '+u.name;
+      sel.appendChild(opt);
+    });
+  } catch(e) {}
+}
+
+async function sendNotif() {
+  var target  = document.getElementById('notifTarget').value;
+  var title   = document.getElementById('notifTitle').value.trim();
+  var msg     = document.getElementById('notifMsg').value.trim();
+  var type    = document.getElementById('notifType').value;
+  if (!title || !msg) return toast('Başlık ve mesaj gir!', 'err');
+
+  try {
+    var userIds = [];
+    if (target === 'all') {
+      var res = await fetch(SB+'/rest/v1/users?select=id', {headers:H});
+      var users = await res.json()||[];
+      userIds = users.map(function(u){return u.id;});
+    } else {
+      userIds = [parseInt(target)];
+    }
+    // Herkese bildirim ekle
+    var notifs = userIds.map(function(uid){
+      return {user_id:uid, title:title, message:msg, type:type, read:false};
+    });
+    // Toplu insert — 50'şer
+    for (var i=0; i<notifs.length; i+=50) {
+      await fetch(SB+'/rest/v1/notifications', {
+        method:'POST', headers:Object.assign({},H,{'Prefer':'return=minimal'}),
+        body:JSON.stringify(notifs.slice(i,i+50))
+      });
+    }
+    toast('Bildirim gönderildi! 🔔 ('+userIds.length+' kullanıcı)', 'ok');
+    addLog('INFO', 'Bildirim gönderildi: "'+title+'" → '+userIds.length+' kişi');
+    document.getElementById('notifTitle').value = '';
+    document.getElementById('notifMsg').value = '';
+    loadNotifHistory();
+  } catch(e) { toast('Hata: '+e.message, 'err'); }
+}
+
+async function loadNotifHistory() {
+  try {
+    var res = await fetch(SB+'/rest/v1/notifications?order=created_at.desc&limit=10&select=id,title,message,type,created_at', {headers:H});
+    var data = await res.json()||[];
+    var el = document.getElementById('notifHistory');
+    if (!data.length) { el.innerHTML='<div style="color:var(--muted);font-size:13px">Henüz bildirim gönderilmedi.</div>'; return; }
+    var icons = {info:'ℹ️',success:'✅',warning:'⚠️',error:'❌'};
+    el.innerHTML = data.map(function(n){
+      return '<div class="notif-item">'+
+        '<div class="notif-icon" style="background:var(--s1)">'+(icons[n.type]||'🔔')+'</div>'+
+        '<div><div class="notif-title">'+n.title+'</div>'+
+        '<div class="notif-sub">'+n.message.slice(0,60)+(n.message.length>60?'...':'')+'</div>'+
+        '<div class="notif-sub" style="margin-top:2px">'+new Date(n.created_at).toLocaleString('tr-TR')+'</div></div>'+
+        '</div>';
+    }).join('');
+  } catch(e) {}
+}
+
+// ===== KULLANICILAR =====
+async function loadUsers() {
+  try {
+    var res = await fetch(SB+'/rest/v1/users?order=created_at.desc&select=id,name,email,username,created_at', {headers:H});
+    var users = await res.json()||[];
+    var banRes = await fetch(SB+'/rest/v1/bans?select=user_id', {headers:H});
+    var bans = await banRes.json()||[];
+    var bannedIds = bans.map(function(b){return b.user_id;});
+
+    // Select'e ekle
+    var sel = document.getElementById('notifTarget');
+    sel.innerHTML = '<option value="all">📢 Tüm Kullanıcılar</option>';
+    users.forEach(function(u){
+      var opt = document.createElement('option');
+      opt.value = u.id; opt.textContent = '👤 '+u.name;
+      sel.appendChild(opt);
+    });
+
+    var tbody = document.getElementById('userTableBody');
+    tbody.innerHTML = users.map(function(u){
+      var isBanned = bannedIds.includes(u.id);
+      var avStyle = 'width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#a78bfa);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:12px;color:#fff';
+      return '<tr>'+
+        '<td style="display:flex;align-items:center;gap:8px"><div style="'+avStyle+'">'+(u.name||'?')[0].toUpperCase()+'</div>'+u.name+'</td>'+
+        '<td style="color:var(--muted)">'+u.email+'</td>'+
+        '<td style="color:var(--muted)">@'+(u.username||'—')+'</td>'+
+        '<td>'+(isBanned?'<span class="badge-banned">Banlı</span>':'<span class="badge-active">Aktif</span>')+'</td>'+
+        '<td><div class="table-actions">'+
+        (isBanned
+          ? '<button class="tbl-btn" style="color:#34d399;border-color:rgba(52,211,153,.3)" onclick="unbanUser('+u.id+')">Banı Kaldır</button>'
+          : '<button class="tbl-btn" style="color:#f87171;border-color:rgba(248,113,113,.3)" onclick="quickBan('+u.id+',\''+u.name+'\')">Banla</button>')+
+        '<button class="tbl-btn" style="color:#a78bfa;border-color:rgba(167,139,250,.3)" onclick="quickNotif('+u.id+',\''+u.name+'\')">Bildirim</button>'+
+        '</div></td>'+
+        '</tr>';
+    }).join('');
+  } catch(e) { addLog('ERR', 'Kullanıcılar yüklenemedi'); }
+}
+
+function quickBan(id, name) {
+  document.getElementById('banTarget').value = id;
+  switchTab('ban');
+  toast(name+' için ban paneli açıldı', 'warn');
+}
+
+function quickNotif(id, name) {
+  document.getElementById('notifTarget').value = id;
+  switchTab('bildirim');
+  toast(name+' seçildi', 'ok');
+}
+
+// ===== BAN =====
+async function banUser() {
+  var target = document.getElementById('banTarget').value.trim();
+  var reason = document.getElementById('banReason').value.trim();
+  if (!target) return toast('Kullanıcı gir!', 'err');
+  if (!reason) return toast('Sebep gir!', 'err');
+  try {
+    // ID mi email mi?
+    var userId;
+    if (/^\d+$/.test(target)) {
+      userId = parseInt(target);
+    } else {
+      var res = await fetch(SB+'/rest/v1/users?email=eq.'+encodeURIComponent(target)+'&select=id', {headers:H});
+      var data = await res.json();
+      if (!data||!data.length) return toast('Kullanıcı bulunamadı!', 'err');
+      userId = data[0].id;
+    }
+    await fetch(SB+'/rest/v1/bans', {method:'POST', headers:Object.assign({},H,{'Prefer':'return=minimal'}), body:JSON.stringify({user_id:userId, reason:reason})});
+    toast('Kullanıcı banlandı! 🚫', 'ok');
+    addLog('WARN', 'Kullanıcı banlandı: ID '+userId+' — '+reason);
+    document.getElementById('banTarget').value = '';
+    document.getElementById('banReason').value = '';
+    loadBans(); loadUsers();
+  } catch(e) { toast('Hata: '+e.message, 'err'); }
+}
+
+async function unbanUser(userId) {
+  if (!confirm('Banı kaldırmak istiyor musun?')) return;
+  try {
+    await fetch(SB+'/rest/v1/bans?user_id=eq.'+userId, {method:'DELETE', headers:H});
+    toast('Ban kaldırıldı! ✅', 'ok');
+    addLog('INFO', 'Ban kaldırıldı: ID '+userId);
+    loadBans(); loadUsers();
+  } catch(e) { toast('Hata.', 'err'); }
+}
+
+async function loadBans() {
+  try {
+    var res = await fetch(SB+'/rest/v1/bans?order=banned_at.desc&select=id,user_id,reason,banned_at', {headers:H});
+    var data = await res.json()||[];
+    var el = document.getElementById('banList');
+    if (!data.length) { el.innerHTML='<div style="color:var(--muted);font-size:13px">Banlı kullanıcı yok.</div>'; return; }
+    // Kullanıcı isimlerini çek
+    var ids = data.map(function(b){return b.user_id;});
+    var uRes = await fetch(SB+'/rest/v1/users?id=in.('+ids.join(',')+')'+'&select=id,name,email', {headers:H});
+    var users = await uRes.json()||[];
+    el.innerHTML = data.map(function(b){
+      var u = users.find(function(x){return x.id==b.user_id;})||{};
+      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">'+
+        '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+(u.name||'ID: '+b.user_id)+'</div>'+
+        '<div style="font-size:11px;color:var(--muted)">'+b.reason+'</div>'+
+        '<div style="font-size:10px;color:var(--muted);margin-top:2px">'+new Date(b.banned_at).toLocaleString('tr-TR')+'</div></div>'+
+        '<button class="tbl-btn" style="color:#34d399;border-color:rgba(52,211,153,.3)" onclick="unbanUser('+b.user_id+')">Kaldır</button>'+
+        '</div>';
+    }).join('');
+  } catch(e) {}
+}
+
+// ===== LOGOUT =====
+function adminLogout() {
+  if (confirm('Admin panelinden çıkmak istiyor musun?')) {
+    location.href = 'dashboard.html';
+  }
+}
+
+// İlerleme her dakika güncelle
+setInterval(calcProgress, 60000);
+</script>
+</body>
+</html>
