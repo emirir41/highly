@@ -1,110 +1,137 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Highly Arama</title>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1842711344931829"
-     crossorigin="anonymous"></script>
+<title>Highly — Arama</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--a1:#6366f1;--a2:#4f46e5;--text:#e8e8ff;--muted:#4a4d6a}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse at 50% 20%,rgba(99,102,241,0.08) 0%,transparent 50%)}
-nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
-    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
+
+[data-theme="dark"]{
+  --bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#e8e8ff;--muted:#4a4d6a;--text2:#9ca3c8;
+  --nav:rgba(6,7,15,0.95);--a1:#6366f1;--a2:#a78bfa;
+  --link:#a78bfa;--link-hover:#c4b5fd;
+}
+[data-theme="glass"]{
+  --bg:linear-gradient(135deg,#0a0f2e,#0d1635);
+  --s1:rgba(255,255,255,0.06);--s2:rgba(255,255,255,0.1);
+  --border:rgba(255,255,255,0.12);--border2:rgba(255,255,255,0.2);
+  --text:#f0f4ff;--muted:rgba(255,255,255,0.45);--text2:rgba(255,255,255,0.7);
+  --nav:rgba(10,15,46,0.8);--a1:#818cf8;--a2:#c4b5fd;
+  --link:#c4b5fd;--link-hover:#e9d5ff;
+}
+[data-theme="light"]{
+  --bg:#f5f6fa;--s1:#ffffff;--s2:#f0f1f8;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1a1b2e;--muted:#9095b0;--text2:#6b6f8e;
+  --nav:rgba(245,246,250,0.95);--a1:#6366f1;--a2:#4f46e5;
+  --link:#4f46e5;--link-hover:#6366f1;
+}
+
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;transition:background .3s,color .3s}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 10%,rgba(99,102,241,.07) 0%,transparent 50%)}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:11px 24px;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);transition:background .3s}
 .n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
-.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:15px}
 .n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
-.n-right{display:flex;align-items:center;gap:10px}
-.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
-.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px}
-.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
-.n-back:hover{color:var(--text)}
+.n-right{display:flex;align-items:center;gap:8px}
+.n-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:#fff;text-decoration:none}
+.n-btn{color:var(--muted);text-decoration:none;font-size:12px;padding:6px 12px;border:1px solid var(--border);border-radius:8px;transition:all .2s}
+.n-btn:hover{color:var(--text);border-color:var(--border2)}
 
-main{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:40px 24px 80px}
+main{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:32px 20px 80px}
 
-/* Search box */
-.search-wrap{margin-bottom:28px}
-.search-box{display:flex;align-items:center;gap:10px;background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:14px 18px;transition:border-color .2s;margin-bottom:14px}
-.search-box:focus-within{border-color:rgba(99,102,241,.4)}
+/* ARAMA KUTUSU */
+.search-wrap{margin-bottom:24px}
+.search-box{display:flex;align-items:center;gap:10px;background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:13px 16px;transition:border-color .2s,box-shadow .2s;margin-bottom:12px}
+.search-box:focus-within{border-color:rgba(99,102,241,.4);box-shadow:0 0 0 3px rgba(99,102,241,.08)}
 .search-icon{font-size:18px;flex-shrink:0;color:var(--muted)}
 .search-input{flex:1;background:none;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;outline:none}
 .search-input::placeholder{color:var(--muted)}
-.search-btn{padding:9px 22px;background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:10px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap}
-.search-btn:hover{opacity:.85}
+.search-btn{padding:9px 20px;background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:10px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap;flex-shrink:0}
+.search-btn:hover{opacity:.9}
 .search-btn:disabled{opacity:.5;cursor:not-allowed}
 
-/* Tabs */
-.tabs{display:flex;gap:6px;background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content}
-.tab{padding:8px 18px;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;border-radius:9px;cursor:pointer;transition:all .2s}
-.tab.active{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content}
+.tab{padding:7px 16px;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;border-radius:9px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab.active{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 4px 12px rgba(99,102,241,.25)}
 
-/* Results */
-.results{margin-top:28px}
-.results-meta{font-size:12px;color:var(--muted);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+/* SONUÇLAR */
+.results{margin-top:24px}
+.results-meta{font-size:12px;color:var(--muted);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 
-/* Web results */
-.web-result{padding:18px 0;border-bottom:1px solid var(--border)}
+/* Web sonuçları */
+.web-result{padding:18px 0;border-bottom:1px solid var(--border);transition:background .2s}
 .web-result:last-child{border-bottom:none}
-.wr-source{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.wr-favicon{width:16px;height:16px;border-radius:3px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.web-result:hover{background:rgba(99,102,241,.02);margin:0 -12px;padding:18px 12px;border-radius:10px}
+.wr-source{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.wr-favicon{width:16px;height:16px;border-radius:3px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
 .wr-domain{font-size:12px;color:var(--muted)}
-.wr-title{font-size:16px;font-weight:600;color:#a78bfa;text-decoration:none;display:block;margin-bottom:5px;line-height:1.4;transition:color .2s}
-.wr-title:hover{color:#c4b5fd}
-.wr-snippet{font-size:13px;color:var(--muted);line-height:1.6}
+.wr-title{font-size:17px;font-weight:600;color:var(--link);text-decoration:none;display:block;margin-bottom:5px;line-height:1.4;transition:color .2s}
+.wr-title:hover{color:var(--link-hover);text-decoration:underline}
+.wr-snippet{font-size:13px;color:var(--muted);line-height:1.65}
 .wr-snippet em{color:var(--text);font-style:normal;font-weight:500}
 
-/* News results */
+/* Haber sonuçları */
 .news-result{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}
 .news-result:last-child{border-bottom:none}
-.nr-img{width:80px;height:60px;border-radius:10px;background:var(--s2);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px}
+.nr-img{width:88px;height:64px;border-radius:10px;background:var(--s2);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px}
 .nr-img img{width:100%;height:100%;object-fit:cover}
 .nr-info{flex:1;min-width:0}
-.nr-title{font-size:14px;font-weight:600;color:#a78bfa;text-decoration:none;display:block;margin-bottom:5px;line-height:1.4;transition:color .2s}
-.nr-title:hover{color:#c4b5fd}
-.nr-meta{font-size:11px;color:var(--muted);margin-bottom:4px}
+.nr-title{font-size:14px;font-weight:600;color:var(--link);text-decoration:none;display:block;margin-bottom:5px;line-height:1.4;transition:color .2s}
+.nr-title:hover{color:var(--link-hover)}
+.nr-meta{font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.nr-source{background:var(--s2);padding:2px 8px;border-radius:4px;font-weight:600}
 .nr-snippet{font-size:12px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* Image results */
-.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-.img-item{aspect-ratio:4/3;border-radius:10px;overflow:hidden;cursor:pointer;background:var(--s2);transition:transform .2s}
-.img-item:hover{transform:scale(1.03)}
+/* Görsel sonuçları */
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.img-item{aspect-ratio:4/3;border-radius:10px;overflow:hidden;cursor:pointer;background:var(--s2);transition:transform .2s,box-shadow .2s;position:relative}
+.img-item:hover{transform:scale(1.03);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .img-item img{width:100%;height:100%;object-fit:cover}
 
-/* Empty / Loading */
+/* Boş / Yükleniyor */
 .state-center{text-align:center;padding:60px 20px;color:var(--muted)}
-.state-icon{font-size:48px;margin-bottom:16px;opacity:.5}
+.state-icon{font-size:48px;margin-bottom:14px;display:block;opacity:.5}
 .state-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
-.state-sub{font-size:13px;line-height:1.6}
+.state-sub{font-size:13px;line-height:1.6;max-width:320px;margin:0 auto}
 .loading-dots{display:flex;justify-content:center;gap:6px;margin-top:20px}
 .loading-dots span{width:8px;height:8px;border-radius:50%;background:var(--a1);animation:ld .7s ease-in-out infinite}
 .loading-dots span:nth-child(2){animation-delay:.15s}
 .loading-dots span:nth-child(3){animation-delay:.3s}
 @keyframes ld{0%,60%,100%{transform:scale(.6);opacity:.4}30%{transform:scale(1);opacity:1}}
 
-/* Related */
-.related{margin-top:28px}
-.related-title{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-weight:700}
+/* İlgili aramalar */
+.related{margin-top:28px;padding-top:20px;border-top:1px solid var(--border)}
+.related-title{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;font-weight:700}
 .related-chips{display:flex;flex-wrap:wrap;gap:8px}
-.related-chip{padding:7px 14px;background:var(--s1);border:1px solid var(--border);border-radius:999px;font-size:12px;cursor:pointer;transition:all .2s}
-.related-chip:hover{border-color:rgba(99,102,241,.3);color:#a78bfa;background:rgba(99,102,241,.06)}
+.related-chip{padding:7px 14px;background:var(--s1);border:1px solid var(--border);border-radius:999px;font-size:12px;cursor:pointer;transition:all .2s;color:var(--text2)}
+.related-chip:hover{border-color:rgba(99,102,241,.3);color:var(--a2);background:rgba(99,102,241,.06)}
+
+/* Hızlı erişim */
+.quick-searches{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;justify-content:center}
+.quick-chip{padding:8px 16px;background:var(--s1);border:1px solid var(--border);border-radius:999px;font-size:13px;cursor:pointer;transition:all .2s;color:var(--muted)}
+.quick-chip:hover{border-color:rgba(99,102,241,.3);color:var(--a2)}
+
+@media(max-width:480px){.search-btn{padding:9px 14px;font-size:12px}.wr-title{font-size:15px}}
 </style>
 </head>
 <body>
+
 <nav>
   <a href="dashboard.html" class="n-logo">
     <div class="n-icon">🔍</div>
-    <span class="n-title">Highly Arama</span>
+    <span class="n-title">Arama</span>
   </a>
   <div class="n-right">
-    <a href="dashboard.html" class="n-user">
-      <div class="n-avatar" id="navAvatar">?</div>
-      <span id="navName">...</span>
-    </a>
-    <a href="dashboard.html" class="n-back">← Dashboard</a>
+    <a href="highly-profil.html" class="n-avatar" id="navAvatar">?</a>
+    <a href="dashboard.html" class="n-btn">⌂ Dashboard</a>
   </div>
 </nav>
 
@@ -113,7 +140,7 @@ main{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:40px 24px
     <div class="search-box">
       <span class="search-icon">🔍</span>
       <input class="search-input" id="searchInput" placeholder="Ne aramak istiyorsun?" autofocus/>
-      <button class="search-btn" id="searchBtn">Ara</button>
+      <button class="search-btn" id="searchBtn" onclick="doSearch()">Ara</button>
     </div>
     <div class="tabs">
       <button class="tab active" data-type="search">🌐 Web</button>
@@ -124,160 +151,145 @@ main{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:40px 24px
 
   <div id="resultsArea">
     <div class="state-center">
-      <div class="state-icon">🔍</div>
+      <span class="state-icon">🔍</span>
       <div class="state-title">Highly Arama</div>
-      <div class="state-sub">Web'de, haberlerde ve görsellerde ara.<br>Cloudflare Worker ile güvenli.</div>
+      <div class="state-sub">Web'de, haberlerde ve görsellerde ara.</div>
+      <div class="quick-searches">
+        <div class="quick-chip" onclick="quickSearch('Bugünün haberleri')">📰 Haberler</div>
+        <div class="quick-chip" onclick="quickSearch('Hava durumu')">🌤 Hava</div>
+        <div class="quick-chip" onclick="quickSearch('Dolar kuru')">💵 Döviz</div>
+        <div class="quick-chip" onclick="quickSearch('Teknoloji haberleri')">💻 Teknoloji</div>
+        <div class="quick-chip" onclick="quickSearch('Spor')">⚽ Spor</div>
+      </div>
     </div>
   </div>
 </main>
 
 <script>
+// Tema
+document.documentElement.setAttribute('data-theme', localStorage.getItem('highly_theme')||'dark');
+
 const WORKER = 'https://highly-ai-proxy.emrir41.workers.dev/search';
 
 const saved = localStorage.getItem('highly_user');
 if (!saved) location.href = 'highly-id.html';
 const user = JSON.parse(saved || '{"name":"?"}');
-document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
-document.getElementById('navName').textContent   = user.name.split(' ')[0];
+
+const navAv = document.getElementById('navAvatar');
+if (user.avatarEmoji) { navAv.textContent = user.avatarEmoji; navAv.style.background = 'transparent'; navAv.style.fontSize = '16px'; }
+else { navAv.textContent = user.name[0].toUpperCase(); if (user.avatarBg) navAv.style.background = user.avatarBg; }
 
 let activeType = 'search';
 
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+// Tab değiştir
+document.querySelectorAll('.tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
     tab.classList.add('active');
     activeType = tab.dataset.type;
-    const q = document.getElementById('searchInput').value.trim();
-    if (q) doSearch(q, activeType);
+    var q = document.getElementById('searchInput').value.trim();
+    if (q) doSearch();
   });
 });
 
-document.getElementById('searchBtn').addEventListener('click', () => {
-  const q = document.getElementById('searchInput').value.trim();
-  if (q) doSearch(q, activeType);
+// Enter
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doSearch();
 });
 
-document.getElementById('searchInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const q = e.target.value.trim();
-    if (q) doSearch(q, activeType);
-  }
-});
-
-function showLoading() {
-  document.getElementById('resultsArea').innerHTML = `
-    <div class="state-center">
-      <div class="state-icon">🔍</div>
-      <div class="state-title">Aranıyor...</div>
-      <div class="loading-dots"><span></span><span></span><span></span></div>
-    </div>`;
+function quickSearch(q) {
+  document.getElementById('searchInput').value = q;
+  doSearch();
 }
 
-async function doSearch(q, type) {
+function showLoading() {
+  document.getElementById('resultsArea').innerHTML =
+    '<div class="state-center"><span class="state-icon">🔍</span><div class="state-title">Aranıyor...</div><div class="loading-dots"><span></span><span></span><span></span></div></div>';
+}
+
+async function doSearch() {
+  var q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
   showLoading();
   document.getElementById('searchBtn').disabled = true;
   try {
-    const body = { q };
-    if (type === 'images') body.type = 'images';
-    if (type === 'news')   body.type = 'news';
-
-    const res  = await fetch(WORKER, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json();
-
-    if (type === 'search') renderWeb(data, q);
-    else if (type === 'news') renderNews(data, q);
-    else if (type === 'images') renderImages(data, q);
+    var body = { q: q };
+    if (activeType === 'images') body.type = 'images';
+    if (activeType === 'news')   body.type = 'news';
+    var res  = await fetch(WORKER, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    var data = await res.json();
+    if (activeType === 'search') renderWeb(data, q);
+    else if (activeType === 'news') renderNews(data, q);
+    else if (activeType === 'images') renderImages(data, q);
   } catch(e) {
-    document.getElementById('resultsArea').innerHTML = `
-      <div class="state-center">
-        <div class="state-icon">❌</div>
-        <div class="state-title">Hata oluştu</div>
-        <div class="state-sub">Worker'a bağlanılamadı.<br>Serper API key'i kontrol et.</div>
-      </div>`;
+    document.getElementById('resultsArea').innerHTML =
+      '<div class="state-center"><span class="state-icon">❌</span><div class="state-title">Bağlantı hatası</div><div class="state-sub">Lütfen tekrar dene.</div></div>';
   } finally {
     document.getElementById('searchBtn').disabled = false;
   }
 }
 
 function renderWeb(data, q) {
-  const results = data.organic || [];
-  const related = data.relatedSearches || [];
+  var results = data.organic || [];
+  var related = data.relatedSearches || [];
   if (!results.length) { showEmpty(); return; }
 
-  let html = `<div class="results-meta">~${data.searchInformation?.totalResults || results.length} sonuç</div>`;
-  results.forEach(r => {
-    const domain = r.link ? new URL(r.link).hostname.replace('www.','') : '';
-    html += `
-      <div class="web-result">
-        <div class="wr-source">
-          <div class="wr-favicon">🌐</div>
-          <span class="wr-domain">${domain}</span>
-        </div>
-        <a href="${r.link}" target="_blank" class="wr-title">${r.title || ''}</a>
-        <div class="wr-snippet">${r.snippet || ''}</div>
-      </div>`;
+  var html = '<div class="results-meta"><span>' + results.length + ' sonuç bulundu</span></div>';
+  results.forEach(function(r) {
+    var domain = '';
+    try { domain = new URL(r.link).hostname.replace('www.',''); } catch(e){}
+    html += '<div class="web-result">' +
+      '<div class="wr-source"><div class="wr-favicon">🌐</div><span class="wr-domain">' + domain + '</span></div>' +
+      '<a href="' + r.link + '" target="_blank" class="wr-title">' + (r.title||'') + '</a>' +
+      '<div class="wr-snippet">' + (r.snippet||'') + '</div>' +
+      '</div>';
   });
 
   if (related.length) {
-    html += `<div class="related"><div class="related-title">İlgili aramalar</div><div class="related-chips">`;
-    related.slice(0,8).forEach(r => {
-      html += `<div class="related-chip" onclick="relSearch('${r.query}')">${r.query}</div>`;
+    html += '<div class="related"><div class="related-title">İlgili aramalar</div><div class="related-chips">';
+    related.slice(0,8).forEach(function(r){
+      html += '<div class="related-chip" onclick="quickSearch(\'' + r.query.replace(/'/g,"\\'") + '\')">' + r.query + '</div>';
     });
-    html += `</div></div>`;
+    html += '</div></div>';
   }
 
-  document.getElementById('resultsArea').innerHTML = `<div class="results">${html}</div>`;
+  document.getElementById('resultsArea').innerHTML = '<div class="results">' + html + '</div>';
 }
 
 function renderNews(data, q) {
-  const results = data.news || [];
+  var results = data.news || [];
   if (!results.length) { showEmpty(); return; }
 
-  let html = `<div class="results-meta">${results.length} haber bulundu</div>`;
-  results.forEach(r => {
-    html += `
-      <div class="news-result">
-        <div class="nr-img">${r.imageUrl ? `<img src="${r.imageUrl}" alt="" onerror="this.parentElement.textContent='📰'"/>` : '📰'}</div>
-        <div class="nr-info">
-          <a href="${r.link}" target="_blank" class="nr-title">${r.title || ''}</a>
-          <div class="nr-meta">${r.source || ''} · ${r.date || ''}</div>
-          <div class="nr-snippet">${r.snippet || ''}</div>
-        </div>
-      </div>`;
+  var html = '<div class="results-meta"><span>' + results.length + ' haber bulundu</span></div>';
+  results.forEach(function(r) {
+    html += '<div class="news-result">' +
+      '<div class="nr-img">' + (r.imageUrl ? '<img src="'+r.imageUrl+'" alt="" onerror="this.parentElement.textContent=\'📰\'"/>' : '📰') + '</div>' +
+      '<div class="nr-info">' +
+      '<a href="' + r.link + '" target="_blank" class="nr-title">' + (r.title||'') + '</a>' +
+      '<div class="nr-meta"><span class="nr-source">' + (r.source||'') + '</span><span>' + (r.date||'') + '</span></div>' +
+      '<div class="nr-snippet">' + (r.snippet||'') + '</div>' +
+      '</div></div>';
   });
 
-  document.getElementById('resultsArea').innerHTML = `<div class="results">${html}</div>`;
+  document.getElementById('resultsArea').innerHTML = '<div class="results">' + html + '</div>';
 }
 
 function renderImages(data, q) {
-  const results = data.images || [];
+  var results = data.images || [];
   if (!results.length) { showEmpty(); return; }
 
-  let html = `<div class="results-meta">${results.length} görsel bulundu</div><div class="img-grid">`;
-  results.forEach(r => {
-    html += `<div class="img-item"><img src="${r.imageUrl || r.thumbnailUrl}" alt="${r.title||''}" loading="lazy" onerror="this.parentElement.style.display='none'" onclick="window.open('${r.link}','_blank')"/></div>`;
+  var html = '<div class="results-meta"><span>' + results.length + ' görsel bulundu</span></div><div class="img-grid">';
+  results.forEach(function(r) {
+    html += '<div class="img-item"><img src="' + (r.imageUrl||r.thumbnailUrl) + '" alt="' + (r.title||'') + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'" onclick="window.open(\'' + r.link + '\',\'_blank\')"/></div>';
   });
-  html += `</div>`;
+  html += '</div>';
 
-  document.getElementById('resultsArea').innerHTML = `<div class="results">${html}</div>`;
+  document.getElementById('resultsArea').innerHTML = '<div class="results">' + html + '</div>';
 }
 
 function showEmpty() {
-  document.getElementById('resultsArea').innerHTML = `
-    <div class="state-center">
-      <div class="state-icon">🤷</div>
-      <div class="state-title">Sonuç bulunamadı</div>
-      <div class="state-sub">Farklı bir arama terimi dene.</div>
-    </div>`;
-}
-
-function relSearch(q) {
-  document.getElementById('searchInput').value = q;
-  doSearch(q, activeType);
+  document.getElementById('resultsArea').innerHTML =
+    '<div class="state-center"><span class="state-icon">🤷</span><div class="state-title">Sonuç bulunamadı</div><div class="state-sub">Farklı bir arama terimi dene.</div></div>';
 }
 </script>
 </body>
