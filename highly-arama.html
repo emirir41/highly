@@ -120,58 +120,9 @@ main{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:32px 20px
 .quick-chip:hover{border-color:rgba(99,102,241,.3);color:var(--a2)}
 
 @media(max-width:480px){.search-btn{padding:9px 14px;font-size:12px}.wr-title{font-size:15px}}
-
-/* Görsel panel */
-.img-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);padding:16px}
-.img-overlay.show{display:flex}
-.img-panel{background:var(--s1);border:1px solid var(--border);border-radius:20px;max-width:680px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:slideUp .3s ease}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-.img-panel-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.img-panel-title{font-family:Syne,sans-serif;font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;margin-right:12px}
-.img-panel-close{width:32px;height:32px;background:var(--s2);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0}
-.img-panel-img{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000;max-height:400px}
-.img-panel-img img{max-width:100%;max-height:100%;object-fit:contain}
-.img-panel-actions{padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
-.img-action-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;font-size:13px;cursor:pointer;text-decoration:none;transition:all .2s;font-family:DM Sans,sans-serif;font-weight:500}
-.img-action-primary{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border:none}
-.img-action-secondary{background:var(--s2);border:1px solid var(--border);color:var(--text)}
-.img-action-secondary:hover{border-color:var(--border2)}
-.img-source{font-size:11px;color:var(--muted);padding:0 18px 14px}
-
-/* Featured snippet */
-.featured-card{background:var(--s1);border:1px solid rgba(99,102,241,.2);border-radius:16px;padding:18px;margin-bottom:20px;position:relative;overflow:hidden}
-.featured-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--a1),var(--a2))}
-.featured-label{font-size:10px;font-weight:700;color:var(--a2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.featured-content{display:flex;align-items:center;gap:16px}
-.featured-icon{font-size:40px;flex-shrink:0}
-.featured-data{flex:1}
-.featured-main{font-family:Syne,sans-serif;font-size:24px;font-weight:800;margin-bottom:4px}
-.featured-sub{font-size:13px;color:var(--muted);line-height:1.5}
-.featured-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 14px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:8px;color:var(--a2);font-size:12px;text-decoration:none;transition:all .2s}
-.featured-link:hover{background:rgba(99,102,241,.15)}
-.featured-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:10px}
-.featured-stat{background:var(--s2);border-radius:10px;padding:10px;text-align:center}
-.fs-val{font-family:Syne,sans-serif;font-size:16px;font-weight:800}
-.fs-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
 </style>
 </head>
 <body>
-
-<!-- Görsel overlay -->
-<div class="img-overlay" id="imgOverlay" onclick="closeImgPanel(event)">
-  <div class="img-panel" id="imgPanel">
-    <div class="img-panel-head">
-      <div class="img-panel-title" id="imgPanelTitle">—</div>
-      <button class="img-panel-close" onclick="closeImgOverlay()">✕</button>
-    </div>
-    <div class="img-panel-img"><img id="imgPanelImg" src="" alt=""/></div>
-    <div class="img-source" id="imgPanelSource"></div>
-    <div class="img-panel-actions">
-      <a class="img-action-btn img-action-primary" id="imgDownloadBtn" href="#" download target="_blank">⬇️ İndir</a>
-      <a class="img-action-btn img-action-secondary" id="imgSourceBtn" href="#" target="_blank">🔗 Kaynağa Git</a>
-    </div>
-  </div>
-</div>
 
 <nav>
   <a href="dashboard.html" class="n-logo">
@@ -267,11 +218,7 @@ async function doSearch() {
     if (activeType === 'news')   body.type = 'news';
     var res  = await fetch(WORKER, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
     var data = await res.json();
-    // Featured snippet
-    var featured = null;
-    if (activeType === 'search') featured = await getFeaturedSnippet(q);
-
-    if (activeType === 'search') renderWeb(data, q, featured);
+    if (activeType === 'search') renderWeb(data, q);
     else if (activeType === 'news') renderNews(data, q);
     else if (activeType === 'images') renderImages(data, q);
   } catch(e) {
@@ -282,12 +229,12 @@ async function doSearch() {
   }
 }
 
-function renderWeb(data, q, featured) {
+function renderWeb(data, q) {
   var results = data.organic || [];
   var related = data.relatedSearches || [];
-  if (!results.length && !featured) { showEmpty(); return; }
+  if (!results.length) { showEmpty(); return; }
 
-  var html = (featured || '') + '<div class="results-meta"><span>' + results.length + ' sonuç bulundu</span></div>';
+  var html = '<div class="results-meta"><span>' + results.length + ' sonuç bulundu</span></div>';
   results.forEach(function(r) {
     var domain = '';
     try { domain = new URL(r.link).hostname.replace('www.',''); } catch(e){}
@@ -338,112 +285,6 @@ function renderImages(data, q) {
   html += '</div>';
 
   document.getElementById('resultsArea').innerHTML = '<div class="results">' + html + '</div>';
-}
-
-// ============================================================
-// GÖRSEL PANELİ
-// ============================================================
-function openImgPanel(imageUrl, title, sourceLink, domain) {
-  document.getElementById('imgOverlay').classList.add('show');
-  document.getElementById('imgPanelImg').src = imageUrl;
-  document.getElementById('imgPanelTitle').textContent = title || 'Görsel';
-  document.getElementById('imgPanelSource').textContent = domain ? '🌐 Kaynak: ' + domain : '';
-  document.getElementById('imgDownloadBtn').href = imageUrl;
-  document.getElementById('imgSourceBtn').href = sourceLink || imageUrl;
-  document.body.style.overflow = 'hidden';
-}
-function closeImgOverlay() {
-  document.getElementById('imgOverlay').classList.remove('show');
-  document.getElementById('imgPanelImg').src = '';
-  document.body.style.overflow = '';
-}
-function closeImgPanel(e) {
-  if (e.target === document.getElementById('imgOverlay')) closeImgOverlay();
-}
-document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeImgOverlay(); });
-
-// ============================================================
-// FEATURED SNIPPETS — Hava & Döviz
-// ============================================================
-var WICONS = {'01d':'☀️','01n':'🌙','02d':'⛅','02n':'⛅','03d':'☁️','03n':'☁️','04d':'☁️','04n':'☁️','09d':'🌧','09n':'🌧','10d':'🌦','10n':'🌦','11d':'⛈','11n':'⛈','13d':'❄️','13n':'❄️','50d':'🌫','50n':'🌫'};
-
-function isHavaQuery(q) {
-  return /hava\s*durumu|kaç\s*derece|bugün\s*hava|hava\s*nasıl|sıcaklık/i.test(q);
-}
-function isDovizQuery(q) {
-  return /dolar|euro|sterlin|döviz|kur\s*(nedir|kaç)|kaç\s*tl|tl\s*kaç|frank|yen/i.test(q);
-}
-
-async function getFeaturedSnippet(q) {
-  if (isHavaQuery(q)) return await getHavaSnippet(q);
-  if (isDovizQuery(q)) return await getDovizSnippet(q);
-  return null;
-}
-
-async function getHavaSnippet(q) {
-  try {
-    // Şehir adı çıkar
-    var cityMatch = q.match(/([A-Za-zğüşıöçĞÜŞİÖÇ]{2,})\s+hava/i) || q.match(/hava[^a-z]*([A-Za-zğüşıöçĞÜŞİÖÇ]{2,})/i);
-    var city = cityMatch ? cityMatch[1] : null;
-    var url;
-    if (city && !/(hava|bugün|durumu|nasıl|derece)/i.test(city)) {
-      url = 'https://api.openweathermap.org/data/2.5/weather?q='+encodeURIComponent(city)+'&appid=bd5e378503939ddaee76f12ad7a97608&units=metric&lang=tr';
-    } else {
-      var geo = await (await fetch('https://ipapi.co/json/')).json();
-      url = 'https://api.openweathermap.org/data/2.5/weather?lat='+geo.latitude+'&lon='+geo.longitude+'&appid=bd5e378503939ddaee76f12ad7a97608&units=metric&lang=tr';
-    }
-    var d = await (await fetch(url)).json();
-    if (!d || d.cod !== 200) return null;
-    var icon = WICONS[d.weather[0].icon] || '🌤';
-    return '<div class="featured-card">' +
-      '<div class="featured-label">⚡ Highly Hava — ' + d.name + '</div>' +
-      '<div class="featured-content">' +
-      '<div class="featured-icon">' + icon + '</div>' +
-      '<div class="featured-data">' +
-      '<div class="featured-main">' + Math.round(d.main.temp) + '°C</div>' +
-      '<div class="featured-sub">' + d.weather[0].description + ' · Hissedilen: ' + Math.round(d.main.feels_like) + '°C</div>' +
-      '</div></div>' +
-      '<div class="featured-grid">' +
-      '<div class="featured-stat"><div class="fs-val">' + d.main.humidity + '%</div><div class="fs-lbl">Nem</div></div>' +
-      '<div class="featured-stat"><div class="fs-val">' + Math.round(d.wind.speed*3.6) + '</div><div class="fs-lbl">km/s Rüzgar</div></div>' +
-      '<div class="featured-stat"><div class="fs-val">' + Math.round(d.main.temp_min) + '°</div><div class="fs-lbl">Min</div></div>' +
-      '<div class="featured-stat"><div class="fs-val">' + Math.round(d.main.temp_max) + '°</div><div class="fs-lbl">Max</div></div>' +
-      '</div>' +
-      '<a href="highly-hava.html" class="featured-link">🌤 Highly Hava'da aç →</a>' +
-      '</div>';
-  } catch(e) { return null; }
-}
-
-async function getDovizSnippet(q) {
-  try {
-    var data = await (await fetch('https://api.frankfurter.app/latest?from=USD&to=TRY,EUR,GBP,CHF')).json();
-    var TRY = data.rates.TRY;
-    var EUR = TRY / data.rates.EUR;
-    var GBP = TRY / data.rates.GBP;
-    var saat = new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'});
-
-    // Hangi döviz soruldu?
-    var mainVal, mainLbl, mainIcon;
-    if (/euro|eur/i.test(q)) { mainVal = EUR.toFixed(2); mainLbl = '1 Euro'; mainIcon = '💶'; }
-    else if (/sterlin|gbp/i.test(q)) { mainVal = GBP.toFixed(2); mainLbl = '1 Sterlin'; mainIcon = '💷'; }
-    else { mainVal = TRY.toFixed(2); mainLbl = '1 Dolar'; mainIcon = '💵'; }
-
-    return '<div class="featured-card">' +
-      '<div class="featured-label">⚡ Highly Döviz — Canlı Kur · ' + saat + '</div>' +
-      '<div class="featured-content">' +
-      '<div class="featured-icon">' + mainIcon + '</div>' +
-      '<div class="featured-data">' +
-      '<div class="featured-main">' + mainVal + ' TL</div>' +
-      '<div class="featured-sub">' + mainLbl + ' = ' + mainVal + ' Türk Lirası</div>' +
-      '</div></div>' +
-      '<div class="featured-grid">' +
-      '<div class="featured-stat"><div class="fs-val">' + TRY.toFixed(2) + '</div><div class="fs-lbl">💵 Dolar</div></div>' +
-      '<div class="featured-stat"><div class="fs-val">' + EUR.toFixed(2) + '</div><div class="fs-lbl">💶 Euro</div></div>' +
-      '<div class="featured-stat"><div class="fs-val">' + GBP.toFixed(2) + '</div><div class="fs-lbl">💷 Sterlin</div></div>' +
-      '</div>' +
-      '<a href="highly-doviz.html" class="featured-link">💵 Highly Döviz'de aç →</a>' +
-      '</div>';
-  } catch(e) { return null; }
 }
 
 function showEmpty() {
