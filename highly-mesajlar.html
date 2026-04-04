@@ -239,29 +239,36 @@ function avHtml(u,size){
 }
 
 // Saat formatlama — Türkiye saati
+var TZ={timeZone:'Europe/Istanbul'};
 function fmtTime(ts){
   var d=new Date(ts);
   var now=new Date();
   var diff=now-d;
   if(diff<60000) return 'şimdi';
   if(diff<3600000) return Math.floor(diff/60000)+'dk';
-  // Bugün mü?
-  var dLocal=new Date(d.getTime());
-  var nLocal=new Date(now.getTime());
-  if(dLocal.toLocaleDateString('tr-TR')===nLocal.toLocaleDateString('tr-TR')){
+  // Bugün mü? (Istanbul timezone ile karşılaştır)
+  if(d.toLocaleDateString('tr-TR',TZ)===now.toLocaleDateString('tr-TR',TZ)){
     return d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'});
   }
-  return d.getDate()+'/'+(d.getMonth()+1);
+  // Değilse gün/ay (Istanbul saatiyle)
+  var parts=new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'numeric',timeZone:'Europe/Istanbul'}).formatToParts(d);
+  var day=parts.find(function(p){return p.type==='day';}).value;
+  var month=parts.find(function(p){return p.type==='month';}).value;
+  return day+'/'+month;
 }
 
 function fmtDay(ts){
   var d=new Date(ts);
   var now=new Date();
-  if(d.toLocaleDateString('tr-TR')===now.toLocaleDateString('tr-TR')) return 'Bugün';
+  // Istanbul timezone ile karşılaştır
+  if(d.toLocaleDateString('tr-TR',TZ)===now.toLocaleDateString('tr-TR',TZ)) return 'Bugün';
   var y=new Date(now-86400000);
-  if(d.toLocaleDateString('tr-TR')===y.toLocaleDateString('tr-TR')) return 'Dün';
+  if(d.toLocaleDateString('tr-TR',TZ)===y.toLocaleDateString('tr-TR',TZ)) return 'Dün';
   var M=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-  return d.getDate()+' '+M[d.getMonth()];
+  // Ayı da Istanbul saatiyle al
+  var istMonth=parseInt(new Intl.DateTimeFormat('tr-TR',{month:'numeric',timeZone:'Europe/Istanbul'}).format(d))-1;
+  var istDay=parseInt(new Intl.DateTimeFormat('tr-TR',{day:'numeric',timeZone:'Europe/Istanbul'}).format(d));
+  return istDay+' '+M[istMonth];
 }
 
 function fmtMsgTime(ts){
@@ -317,7 +324,7 @@ function renderList(list){
     var isAct=activeUid==f.id;
     var avStyle=f.avatarEmoji?'background:transparent;font-size:20px':'background:'+(f.avatarBg||'#6366f1');
     var avContent=f.avatarEmoji||((f.name||'?')[0].toUpperCase());
-    return '<div class="conv'+(isAct?' active':'')+'" onclick=\'openChatById('+f.id+')\'>'
+    return '<div class="conv'+(isAct?' active':'')+'" onclick="openChatById('+f.id+')">'
       +'<div class="conv-av" style="'+avStyle+'">'+avContent+'</div>'
       +'<div class="conv-info"><div class="conv-name">'+f.name+'</div><div class="conv-last">'+escH(lastTxt)+'</div></div>'
       +'<div class="conv-meta"><span class="conv-time">'+t+'</span>'+(f.unread>0?'<span class="unread">'+f.unread+'</span>':'')+'</div>'
