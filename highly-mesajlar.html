@@ -15,6 +15,7 @@
   --nav:#06070f;--a1:#6366f1;--a2:#a78bfa;
   --mine-bg:linear-gradient(135deg,#6366f1,#4f46e5);
   --other-bg:#0b0d1c;
+  --menu-bg:#12142a;
 }
 [data-theme="glass"]{
   --bg:linear-gradient(135deg,#0a0f2e,#0d1635);
@@ -24,6 +25,7 @@
   --nav:rgba(10,15,46,0.8);--a1:#818cf8;--a2:#c4b5fd;
   --mine-bg:linear-gradient(135deg,#818cf8,#6366f1);
   --other-bg:rgba(255,255,255,0.08);
+  --menu-bg:rgba(15,20,50,0.95);
 }
 [data-theme="light"]{
   --bg:#f5f6fa;--s1:#ffffff;--s2:#f0f1f8;
@@ -32,16 +34,14 @@
   --nav:#ffffff;--a1:#6366f1;--a2:#4f46e5;
   --mine-bg:linear-gradient(135deg,#6366f1,#4f46e5);
   --other-bg:#ffffff;
+  --menu-bg:#ffffff;
 }
 
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;transition:background .3s,color .3s}
-
 .app{display:flex;height:100%;position:relative;z-index:2}
 
-/* ===== SOL: SOHBET LİSTESİ ===== */
+/* ===== SIDEBAR ===== */
 .sidebar{width:320px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;transition:all .3s}
-
-/* Sidebar header */
 .sb-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--nav);backdrop-filter:blur(20px)}
 .sb-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff;text-decoration:none;flex-shrink:0}
 .sb-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;flex:1}
@@ -49,15 +49,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .sb-dash:hover{color:var(--text);border-color:var(--border2)}
 .sb-friends-btn{width:32px;height:32px;background:var(--s2);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--muted);font-size:15px;transition:all .2s;flex-shrink:0}
 .sb-friends-btn:hover{color:var(--a1);border-color:rgba(99,102,241,.3)}
-
-/* Arama */
 .sb-search{padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
 .sb-search-box{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;transition:border-color .2s}
 .sb-search-box:focus-within{border-color:rgba(99,102,241,.3)}
 .sb-search-box input{flex:1;background:none;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none}
 .sb-search-box input::placeholder{color:var(--muted)}
-
-/* Sohbet listesi */
 .sb-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
 .conv{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .2s;position:relative}
 .conv::after{content:'';position:absolute;bottom:0;left:16px;right:16px;height:1px;background:var(--border);opacity:.5}
@@ -75,57 +71,94 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .sb-empty a{color:var(--a2);text-decoration:none;font-weight:600}
 .sb-empty-icon{font-size:40px;margin-bottom:12px;display:block}
 
-/* ===== SAĞ: CHAT ===== */
+/* ===== CHAT ===== */
 .chat{flex:1;display:flex;flex-direction:column;height:100%;overflow:hidden;background:var(--bg)}
-
-/* Chat header */
-.chat-head{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--nav);backdrop-filter:blur(20px);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.chat-head{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--nav);backdrop-filter:blur(20px);display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative}
 .chat-back{width:32px;height:32px;background:var(--s2);border:1px solid var(--border);border-radius:9px;display:none;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:14px;flex-shrink:0;transition:all .2s}
 .chat-back:hover{color:var(--text)}
-.chat-head-av{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-family:'Syne',sans-serif;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2))}
-.chat-head-info{flex:1}
+.chat-head-av{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-family:'Syne',sans-serif;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2));cursor:pointer;transition:opacity .2s}
+.chat-head-av:hover{opacity:.85}
+.chat-head-info{flex:1;cursor:pointer}
 .chat-head-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
 .chat-head-user{font-size:11px;color:var(--muted);margin-top:1px}
 .chat-head-actions{display:flex;gap:6px}
-.chat-action-btn{width:32px;height:32px;background:var(--s1);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:14px;transition:all .2s}
+.chat-action-btn{width:32px;height:32px;background:var(--s1);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:18px;font-weight:700;transition:all .2s;letter-spacing:1px}
 .chat-action-btn:hover{color:var(--text);border-color:var(--border2)}
+
+/* Chat dropdown menü */
+.chat-menu{position:absolute;top:58px;right:16px;background:var(--menu-bg);border:1px solid var(--border2);border-radius:12px;padding:6px;min-width:185px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:500;display:none;backdrop-filter:blur(20px)}
+.chat-menu.show{display:block}
+.chat-menu-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);transition:background .15s;white-space:nowrap}
+.chat-menu-item:hover{background:rgba(99,102,241,.1)}
+.chat-menu-item.red{color:#f87171}
+.chat-menu-item.red:hover{background:rgba(248,113,113,.1)}
+.chat-menu-sep{height:1px;background:var(--border);margin:4px 0}
 
 /* Mesajlar */
 .chat-msgs{flex:1;overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-
-/* Gün ayırıcı */
 .day-sep{display:flex;align-items:center;gap:10px;margin:8px 0;color:var(--muted);font-size:11px}
 .day-sep::before,.day-sep::after{content:'';flex:1;height:1px;background:var(--border)}
 .day-sep span{background:var(--s1);border:1px solid var(--border);padding:3px 10px;border-radius:999px;white-space:nowrap}
+
+/* 30 gün uyarısı */
+.expire-warn{display:flex;align-items:center;gap:8px;padding:9px 14px;margin-bottom:8px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:10px;font-size:12px;color:#fbbf24;line-height:1.5}
 
 /* Mesaj satırı */
 .msg-row{display:flex;gap:8px;max-width:72%}
 .msg-row.mine{flex-direction:row-reverse;margin-left:auto}
 .msg-row.other{margin-right:auto}
-
-/* Avatar */
 .msg-av{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:auto;font-family:'Syne',sans-serif;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2))}
-
-/* Balon */
 .msg-body{display:flex;flex-direction:column;gap:2px}
 .msg-row.mine .msg-body{align-items:flex-end}
-.bubble{padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.55;word-break:break-word;max-width:100%}
+.bubble{padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.55;word-break:break-word;max-width:100%;cursor:default}
 .mine .bubble{background:var(--mine-bg);color:#fff;border-radius:16px 4px 16px 16px}
 .other .bubble{background:var(--other-bg);border:1px solid var(--border);border-radius:4px 16px 16px 16px;color:var(--text)}
+.edited-label{font-size:10px;opacity:.55;margin-left:4px;font-style:italic}
 .msg-meta{display:flex;align-items:center;gap:4px;padding:0 2px}
 .msg-time{font-size:10px;color:var(--muted)}
 .msg-tick{font-size:11px;color:rgba(167,139,250,.7)}
 .msg-tick.read{color:#34d399}
+.expire-badge{font-size:9px;color:#fbbf24;margin-left:2px}
 
-/* Hoş geldin ekranı */
+/* Mesaj context menü */
+.msg-menu{position:fixed;background:var(--menu-bg);border:1px solid var(--border2);border-radius:12px;padding:6px;min-width:160px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:1000;display:none;backdrop-filter:blur(20px)}
+.msg-menu.show{display:block}
+.msg-menu-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);transition:background .15s;white-space:nowrap}
+.msg-menu-item:hover{background:rgba(99,102,241,.1)}
+.msg-menu-item.red{color:#f87171}
+.msg-menu-item.red:hover{background:rgba(248,113,113,.1)}
+.msg-menu-sep{height:1px;background:var(--border);margin:4px 0}
+
+/* Düzenleme bar */
+.edit-bar{display:none;align-items:center;gap:8px;padding:7px 16px;background:rgba(99,102,241,.08);border-top:1px solid rgba(99,102,241,.2);font-size:12px;color:var(--a2)}
+.edit-bar.show{display:flex}
+.edit-bar span{flex:1}
+.edit-cancel{cursor:pointer;font-size:18px;color:var(--muted);line-height:1;transition:color .2s}
+.edit-cancel:hover{color:var(--text)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal{background:var(--menu-bg);border:1px solid var(--border2);border-radius:16px;padding:24px;max-width:300px;width:90%;text-align:center}
+.modal h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px}
+.modal-btns{display:flex;gap:8px}
+.modal-btn{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.modal-btn.danger{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.3);color:#f87171}
+.modal-btn:hover{border-color:var(--border2)}
+.modal-btn.danger:hover{background:rgba(248,113,113,.22)}
+
+/* Welcome */
 .welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:14px}
 .welcome-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 8px 24px rgba(99,102,241,.3)}
 .welcome h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
 .welcome p{font-size:13px;color:var(--muted);max-width:260px;line-height:1.6}
 
 /* Input */
-.chat-input{padding:12px 16px;background:var(--nav);border-top:1px solid var(--border);flex-shrink:0;backdrop-filter:blur(20px)}
-.input-row{display:flex;align-items:flex-end;gap:8px;background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:10px 12px;transition:border-color .2s}
+.chat-input{background:var(--nav);border-top:1px solid var(--border);flex-shrink:0;backdrop-filter:blur(20px)}
+.edit-bar{display:none;align-items:center;gap:8px;padding:7px 16px;background:rgba(99,102,241,.08);border-top:1px solid rgba(99,102,241,.2);font-size:12px;color:var(--a2)}
+.edit-bar.show{display:flex}
+.input-row{display:flex;align-items:flex-end;gap:8px;background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:10px 12px;transition:border-color .2s;margin:10px 14px}
 .input-row:focus-within{border-color:rgba(99,102,241,.4)}
 .msg-ta{flex:1;background:none;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;outline:none;resize:none;max-height:100px;min-height:22px}
 .msg-ta::placeholder{color:var(--muted)}
@@ -138,8 +171,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{border-color:#34d399;color:#34d399}
 .toast.err{border-color:#f87171;color:#f87171}
+.toast.warn{border-color:#fbbf24;color:#fbbf24}
 
-/* ===== MOBİL ===== */
+/* Mobil */
 @media(max-width:640px){
   .sidebar{position:fixed;inset:0;z-index:20;width:100%;transform:translateX(0);transition:transform .3s}
   .sidebar.hidden{transform:translateX(-100%)}
@@ -175,10 +209,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   <div class="chat" id="chat">
     <div class="chat-head" id="chatHead" style="display:none">
       <button class="chat-back" onclick="backToList()">←</button>
-      <div class="chat-head-av" id="chatAv">?</div>
-      <div class="chat-head-info">
+      <div class="chat-head-av" id="chatAv" onclick="goProfile()">?</div>
+      <div class="chat-head-info" onclick="goProfile()">
         <div class="chat-head-name" id="chatName">—</div>
         <div class="chat-head-user" id="chatUser">—</div>
+      </div>
+      <div class="chat-head-actions">
+        <button class="chat-action-btn" id="menuToggleBtn" onclick="toggleChatMenu(event)" title="Menü">⋯</button>
+      </div>
+      <!-- Dropdown menü -->
+      <div class="chat-menu" id="chatMenu">
+        <div class="chat-menu-item" onclick="goProfile()">👤 Profile Bak</div>
+        <div class="chat-menu-sep"></div>
+        <div class="chat-menu-item" onclick="closeConv()">✕ Sohbeti Kapat</div>
+        <div class="chat-menu-item red" onclick="confirmDeleteConv()">🗑️ Sohbeti Sil</div>
       </div>
     </div>
 
@@ -191,103 +235,243 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="chat-msgs" id="chatMsgs" style="display:none"></div>
 
     <div class="chat-input" id="chatInput" style="display:none">
+      <div class="edit-bar" id="editBar">
+        <span>✏️ Mesaj düzenleniyor</span>
+        <span class="edit-cancel" onclick="cancelEdit()">✕</span>
+      </div>
       <div class="input-row">
         <textarea class="msg-ta" id="msgTa" placeholder="Mesaj yaz..." rows="1"></textarea>
-        <button class="send-btn" id="sendBtn" onclick="sendMsg()">↑</button>
+        <button class="send-btn" id="sendBtn" onclick="sendOrEdit()">↑</button>
       </div>
     </div>
   </div>
 
 </div>
+
+<!-- Mesaj sağ tık menüsü -->
+<div class="msg-menu" id="msgMenu">
+  <div class="msg-menu-item" id="menuEditItem" onclick="startEdit()">✏️ Düzenle</div>
+  <div class="msg-menu-sep" id="menuEditSep"></div>
+  <div class="msg-menu-item red" onclick="confirmDeleteMsg()">🗑️ Mesajı Sil</div>
+</div>
+
+<!-- Onay modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">Emin misin?</h3>
+    <p id="modalDesc">Bu işlem geri alınamaz.</p>
+    <div class="modal-btns">
+      <button class="modal-btn" onclick="closeModal()">İptal</button>
+      <button class="modal-btn danger" id="modalOkBtn">Sil</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-// Tema
+// ===== TEMA =====
 document.documentElement.setAttribute('data-theme', localStorage.getItem('highly_theme')||'dark');
 
 const SB  = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0';
-const H   = { 'Content-Type':'application/json', 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
+const H   = {'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY};
 
 const saved = localStorage.getItem('highly_user');
-if (!saved) location.href = 'highly-id.html';
-const me = JSON.parse(saved || '{}');
+if(!saved) location.href='highly-id.html';
+const me = JSON.parse(saved||'{}');
 
-// Avatar
-var sbAv = document.getElementById('sbAvatar');
-if (me.avatarEmoji) { sbAv.textContent = me.avatarEmoji; sbAv.style.background = 'transparent'; sbAv.style.fontSize = '20px'; }
-else { sbAv.textContent = (me.name||'?')[0].toUpperCase(); if (me.avatarBg) sbAv.style.background = me.avatarBg; }
+var sbAv=document.getElementById('sbAvatar');
+if(me.avatarEmoji){sbAv.textContent=me.avatarEmoji;sbAv.style.background='transparent';sbAv.style.fontSize='20px';}
+else{sbAv.textContent=(me.name||'?')[0].toUpperCase();if(me.avatarBg)sbAv.style.background=me.avatarBg;}
 
-let friends    = [];
-let activeUid  = null;
-let activeFriend = null;
-let pollTimer  = null;
+let friends=[], activeUid=null, activeFriend=null, pollTimer=null;
+let editingMsgId=null, activeMenuMsgId=null;
 
-// Textarea auto resize
-const msgTa = document.getElementById('msgTa');
-msgTa.addEventListener('input', function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,100)+'px'; });
-msgTa.addEventListener('keydown', function(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} });
+// Textarea
+const msgTa=document.getElementById('msgTa');
+msgTa.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
+msgTa.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendOrEdit();}});
 
-function toast(msg,type){ var t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+(type||'ok'); setTimeout(function(){t.classList.remove('show');},3000); }
-
-// Avatar HTML
-function avHtml(u,size){
-  var s=size||44, bg=u.avatarBg||'#6366f1';
-  var base='width:'+s+'px;height:'+s+'px;border-radius:'+Math.round(s*.3)+'px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:Syne,sans-serif;font-weight:800;color:#fff;';
-  if(u.avatarEmoji) return '<div style="'+base+'background:transparent;font-size:'+Math.round(s*.55)+'px">'+u.avatarEmoji+'</div>';
-  return '<div style="'+base+'background:'+bg+';font-size:'+Math.round(s*.38)+'px">'+(u.name?u.name[0].toUpperCase():'?')+'</div>';
+// ===== TOAST =====
+function toast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+(type||'ok');
+  setTimeout(function(){t.classList.remove('show');},3000);
 }
 
-// Saat formatlama — Türkiye saati
-var TZ={timeZone:'Europe/Istanbul'};
-function fmtTime(ts){
-  var d=new Date(ts);
-  var now=new Date();
-  var diff=now-d;
-  if(diff<60000) return 'şimdi';
-  if(diff<3600000) return Math.floor(diff/60000)+'dk';
-  // Bugün mü? (Istanbul timezone ile karşılaştır)
-  if(d.toLocaleDateString('tr-TR',TZ)===now.toLocaleDateString('tr-TR',TZ)){
-    return d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'});
-  }
-  // Değilse gün/ay (Istanbul saatiyle)
-  var parts=new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'numeric',timeZone:'Europe/Istanbul'}).formatToParts(d);
-  var day=parts.find(function(p){return p.type==='day';}).value;
-  var month=parts.find(function(p){return p.type==='month';}).value;
-  return day+'/'+month;
+// ===== SAAT — TÜRKİYE UTC+3 (offset ile, Intl'e güvenmeden) =====
+// Supabase UTC döndürür. Türkiye daima UTC+3'tür.
+// UTC ms'e +3*3600*1000 ekleyip UTC metodlarıyla okuyoruz → browser timezone'dan bağımsız.
+function toTR(ts){
+  return new Date(new Date(ts).getTime() + 3*60*60*1000);
+}
+function pad2(n){return n<10?'0'+n:String(n);}
+
+function fmtMsgTime(ts){
+  var d=toTR(ts);
+  return pad2(d.getUTCHours())+':'+pad2(d.getUTCMinutes());
+}
+
+function sameUTCDay(a,b){
+  return a.getUTCFullYear()===b.getUTCFullYear()&&a.getUTCMonth()===b.getUTCMonth()&&a.getUTCDate()===b.getUTCDate();
 }
 
 function fmtDay(ts){
-  var d=new Date(ts);
-  var now=new Date();
-  // Istanbul timezone ile karşılaştır
-  if(d.toLocaleDateString('tr-TR',TZ)===now.toLocaleDateString('tr-TR',TZ)) return 'Bugün';
-  var y=new Date(now-86400000);
-  if(d.toLocaleDateString('tr-TR',TZ)===y.toLocaleDateString('tr-TR',TZ)) return 'Dün';
+  var d=toTR(ts);
+  var now=toTR(new Date());
+  var yest=toTR(new Date(Date.now()-86400000));
+  if(sameUTCDay(d,now)) return 'Bugün';
+  if(sameUTCDay(d,yest)) return 'Dün';
   var M=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-  // Ayı da Istanbul saatiyle al
-  var istMonth=parseInt(new Intl.DateTimeFormat('tr-TR',{month:'numeric',timeZone:'Europe/Istanbul'}).format(d))-1;
-  var istDay=parseInt(new Intl.DateTimeFormat('tr-TR',{day:'numeric',timeZone:'Europe/Istanbul'}).format(d));
-  return istDay+' '+M[istMonth];
+  return d.getUTCDate()+' '+M[d.getUTCMonth()];
 }
 
-function fmtMsgTime(ts){
-  var d=new Date(ts);
-  return d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'});
+function fmtTime(ts){
+  var d=toTR(ts);
+  var now=toTR(new Date());
+  var diff=Date.now()-new Date(ts).getTime();
+  if(diff<60000) return 'şimdi';
+  if(diff<3600000) return Math.floor(diff/60000)+'dk';
+  if(sameUTCDay(d,now)) return pad2(d.getUTCHours())+':'+pad2(d.getUTCMinutes());
+  var M=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  return d.getUTCDate()+'/'+M[d.getUTCMonth()];
 }
 
-function escH(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+// 30 gün hesaplama
+function daysLeft(ts){
+  var exp=new Date(new Date(ts).getTime()+30*24*60*60*1000);
+  return Math.max(0,Math.ceil((exp-Date.now())/(24*60*60*1000)));
+}
 
+function escH(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+
+// ===== PROFİL =====
+function goProfile(){
+  closeChatMenu();
+  if(activeFriend) location.href='highly-sosyal.html?uid='+activeFriend.id;
+}
+
+// ===== CHAT DROPDOWN MENÜ =====
+function toggleChatMenu(e){
+  e&&e.stopPropagation();
+  document.getElementById('chatMenu').classList.toggle('show');
+}
+function closeChatMenu(){document.getElementById('chatMenu').classList.remove('show');}
+
+// Global click — menüleri kapat
+document.addEventListener('click',function(e){
+  // Chat menü
+  var cm=document.getElementById('chatMenu');
+  if(cm.classList.contains('show')&&!cm.contains(e.target)&&e.target.id!=='menuToggleBtn'){
+    cm.classList.remove('show');
+  }
+  // Mesaj menü
+  var mm=document.getElementById('msgMenu');
+  if(mm.classList.contains('show')&&!mm.contains(e.target)){
+    mm.classList.remove('show');activeMenuMsgId=null;
+  }
+});
+
+function closeConv(){
+  closeChatMenu();
+  backToList();
+}
+
+function confirmDeleteConv(){
+  closeChatMenu();
+  showModal('Sohbeti Sil','Bu sohbetteki TÜM mesajlar kalıcı olarak silinecek!',async function(){
+    closeModal();
+    if(!activeUid)return;
+    try{
+      await fetch(SB+'/rest/v1/messages?or=(and(sender_id.eq.'+me.id+',receiver_id.eq.'+activeUid+'),and(sender_id.eq.'+activeUid+',receiver_id.eq.'+me.id+'))',{method:'DELETE',headers:H});
+      toast('Sohbet silindi');
+      backToList();
+      await loadFriends();
+    }catch(e){toast('Silinemedi!','err');}
+  });
+}
+
+// ===== MESAJ SAĞ TIK MENÜ =====
+function showMsgMenu(e,msgId,isMine){
+  e.preventDefault();e.stopPropagation();
+  activeMenuMsgId=msgId;
+  var menu=document.getElementById('msgMenu');
+  var ei=document.getElementById('menuEditItem');
+  var es=document.getElementById('menuEditSep');
+  ei.style.display=isMine?'flex':'none';
+  es.style.display=isMine?'block':'none';
+  var x=e.clientX, y=e.clientY;
+  menu.style.left=x+'px';menu.style.top=y+'px';
+  menu.classList.add('show');
+  requestAnimationFrame(function(){
+    var r=menu.getBoundingClientRect();
+    if(r.right>window.innerWidth) menu.style.left=(x-r.width)+'px';
+    if(r.bottom>window.innerHeight) menu.style.top=(y-r.height)+'px';
+  });
+}
+
+// ===== DÜZENLEME =====
+function startEdit(){
+  document.getElementById('msgMenu').classList.remove('show');
+  if(!activeMenuMsgId)return;
+  var el=document.querySelector('[data-mid="'+activeMenuMsgId+'"]');
+  if(!el)return;
+  var raw=el.getAttribute('data-raw')||'';
+  editingMsgId=activeMenuMsgId;
+  msgTa.value=raw;
+  msgTa.style.height='auto';
+  msgTa.style.height=Math.min(msgTa.scrollHeight,100)+'px';
+  document.getElementById('editBar').classList.add('show');
+  document.getElementById('sendBtn').textContent='✓';
+  msgTa.focus();
+}
+
+function cancelEdit(){
+  editingMsgId=null;
+  msgTa.value='';msgTa.style.height='auto';
+  document.getElementById('editBar').classList.remove('show');
+  document.getElementById('sendBtn').textContent='↑';
+}
+
+function confirmDeleteMsg(){
+  document.getElementById('msgMenu').classList.remove('show');
+  var id=activeMenuMsgId;
+  showModal('Mesajı Sil','Bu mesaj kalıcı olarak silinecek.',async function(){
+    closeModal();
+    if(!id)return;
+    try{
+      await fetch(SB+'/rest/v1/messages?id=eq.'+id,{method:'DELETE',headers:H});
+      toast('Mesaj silindi');
+      activeMenuMsgId=null;
+      await loadMsgs();
+    }catch(e){toast('Silinemedi!','err');}
+  });
+}
+
+// ===== MODAL =====
+var _modalCb=null;
+function showModal(title,desc,cb){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalDesc').textContent=desc;
+  _modalCb=cb;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');_modalCb=null;}
+document.getElementById('modalOkBtn').onclick=function(){if(_modalCb)_modalCb();};
+document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// ===== GERİ =====
 function backToList(){
   document.getElementById('sidebar').classList.remove('hidden');
   document.getElementById('chat').classList.remove('active');
   if(pollTimer){clearInterval(pollTimer);pollTimer=null;}
-  activeUid=null;activeFriend=null;
+  activeUid=null;activeFriend=null;cancelEdit();
 }
 
-// Arkadaşları yükle
+// ===== ARKADAŞLARI YÜKLE =====
 async function loadFriends(){
-  try {
+  try{
     var r1=await fetch(SB+'/rest/v1/friendships?sender_id=eq.'+me.id+'&status=eq.accepted&select=*',{headers:H});
     var r2=await fetch(SB+'/rest/v1/friendships?receiver_id=eq.'+me.id+'&status=eq.accepted&select=*',{headers:H});
     var fs=[...(await r1.json()||[]),...(await r2.json()||[])];
@@ -312,7 +496,7 @@ async function loadFriends(){
     renderList(friends);
     var uid=new URLSearchParams(location.search).get('uid');
     if(uid){var f=friends.find(function(x){return x.id==uid;});if(f)openChat(f);}
-  } catch(e){toast('Yüklenemedi','err');}
+  }catch(e){toast('Yüklenemedi','err');}
 }
 
 function renderList(list){
@@ -332,10 +516,7 @@ function renderList(list){
   }).join('');
 }
 
-function openChatById(id){
-  var f=friends.find(function(x){return x.id==id;});
-  if(f) openChat(f);
-}
+function openChatById(id){var f=friends.find(function(x){return x.id==id;});if(f)openChat(f);}
 
 function filterList(q){
   if(!q){renderList(friends);return;}
@@ -362,10 +543,11 @@ async function openChat(friend){
   pollTimer=setInterval(loadMsgs,3000);
 }
 
+// ===== MESAJLARI YÜKLE =====
 async function loadMsgs(){
   if(!activeUid)return;
-  try {
-    var r=await fetch(SB+'/rest/v1/messages?or=(and(sender_id.eq.'+me.id+',receiver_id.eq.'+activeUid+'),and(sender_id.eq.'+activeUid+',receiver_id.eq.'+me.id+'))&order=created_at.asc&limit=100&select=id,sender_id,receiver_id,content,read,created_at',{headers:H});
+  try{
+    var r=await fetch(SB+'/rest/v1/messages?or=(and(sender_id.eq.'+me.id+',receiver_id.eq.'+activeUid+'),and(sender_id.eq.'+activeUid+',receiver_id.eq.'+me.id+'))&order=created_at.asc&limit=200&select=id,sender_id,receiver_id,content,read,created_at,updated_at',{headers:H});
     var msgs=await r.json()||[];
     renderMsgs(msgs);
     var unread=msgs.filter(function(m){return m.sender_id==activeUid&&!m.read;});
@@ -374,33 +556,79 @@ async function loadMsgs(){
       var f=friends.find(function(x){return x.id==activeUid;});if(f)f.unread=0;
       renderList(friends);
     }
-  } catch(e){}
+  }catch(e){}
 }
 
+// ===== RENDER MESAJLAR =====
 function renderMsgs(msgs){
   var el=document.getElementById('chatMsgs');
   var atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<80;
-  if(!msgs.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">Henüz mesaj yok. İlk mesajı sen gönder! 👋</div>';return;}
-  var html='',lastDay='';
+
+  if(!msgs.length){
+    el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">Henüz mesaj yok. İlk mesajı sen gönder! 👋</div>';
+    return;
+  }
+
+  // 30 gün uyarısı — en eski mesajın kaç günü kaldı
+  var warnHtml='';
+  var oldest=msgs[0];
+  var days=daysLeft(oldest.created_at);
+  if(days<=7){
+    warnHtml='<div class="expire-warn">⚠️ Bu sohbetteki en eski mesajların <strong>&nbsp;'+days+' gün&nbsp;</strong> içinde silineceğini unutma! Mesajlar 30 gün sonra otomatik temizlenir.</div>';
+  }
+
+  var html=warnHtml, lastDay='';
   msgs.forEach(function(m){
     var isMine=m.sender_id==me.id;
     var day=fmtDay(m.created_at);
     var time=fmtMsgTime(m.created_at);
+    var isEdited=m.updated_at&&m.updated_at!==m.created_at;
+    var expDays=daysLeft(m.created_at);
+    var expBadge=expDays<=3?'<span class="expire-badge" title="'+expDays+' gün sonra silinir">⏳</span>':'';
+
     if(day!==lastDay){
       html+='<div class="day-sep"><span>'+day+'</span></div>';
       lastDay=day;
     }
-    var avStyle=isMine?(me.avatarEmoji?'background:transparent;font-size:14px':'background:'+(me.avatarBg||'#6366f1')):(activeFriend.avatarEmoji?'background:transparent;font-size:14px':'background:'+(activeFriend.avatarBg||'#6366f1'));
-    var avTxt=isMine?(me.avatarEmoji||((me.name||'?')[0].toUpperCase())):(activeFriend.avatarEmoji||((activeFriend.name||'?')[0].toUpperCase()));
+
+    var avStyle=isMine
+      ?(me.avatarEmoji?'background:transparent;font-size:14px':'background:'+(me.avatarBg||'#6366f1'))
+      :(activeFriend.avatarEmoji?'background:transparent;font-size:14px':'background:'+(activeFriend.avatarBg||'#6366f1'));
+    var avTxt=isMine
+      ?(me.avatarEmoji||((me.name||'?')[0].toUpperCase()))
+      :(activeFriend.avatarEmoji||((activeFriend.name||'?')[0].toUpperCase()));
     var tick=isMine?'<span class="msg-tick'+(m.read?' read':'')+'">'+(m.read?'✓✓':'✓')+'</span>':'';
-    html+='<div class="msg-row '+(isMine?'mine':'other')+'">'
+    var editedLabel=isEdited?'<span class="edited-label">(düzenlendi)</span>':'';
+    var rawContent=m.content.replace(/"/g,'&quot;');
+
+    html+='<div class="msg-row '+(isMine?'mine':'other')+'" oncontextmenu="showMsgMenu(event,\''+m.id+'\','+(isMine?'true':'false')+')">'
       +'<div class="msg-av" style="'+avStyle+'">'+avTxt+'</div>'
-      +'<div class="msg-body"><div class="bubble">'+escH(m.content)+'</div>'
-      +'<div class="msg-meta"><span class="msg-time">'+time+'</span>'+tick+'</div>'
+      +'<div class="msg-body">'
+      +'<div class="bubble" data-mid="'+m.id+'" data-raw="'+rawContent+'">'+escH(m.content)+editedLabel+'</div>'
+      +'<div class="msg-meta"><span class="msg-time">'+time+'</span>'+expBadge+tick+'</div>'
       +'</div></div>';
   });
+
   el.innerHTML=html;
   if(atBottom)el.scrollTop=el.scrollHeight;
+}
+
+// ===== GÖNDER / DÜZENLE =====
+async function sendOrEdit(){
+  if(editingMsgId) await doEdit();
+  else await sendMsg();
+}
+
+async function doEdit(){
+  var text=msgTa.value.trim();
+  if(!text||!editingMsgId)return;
+  var id=editingMsgId;
+  cancelEdit();
+  try{
+    await fetch(SB+'/rest/v1/messages?id=eq.'+id,{method:'PATCH',headers:H,body:JSON.stringify({content:text,updated_at:new Date().toISOString()})});
+    toast('Mesaj düzenlendi');
+    await loadMsgs();
+  }catch(e){toast('Düzenlenemedi!','err');}
 }
 
 async function sendMsg(){
@@ -408,15 +636,16 @@ async function sendMsg(){
   if(!text||!activeUid)return;
   msgTa.value='';msgTa.style.height='auto';
   document.getElementById('sendBtn').disabled=true;
-  try {
+  try{
     var r=await fetch(SB+'/rest/v1/messages',{method:'POST',headers:Object.assign({},H,{'Prefer':'return=representation'}),body:JSON.stringify({sender_id:me.id,receiver_id:activeUid,content:text,read:false})});
     var data=await r.json();
     if(data&&data[0]){
       await loadMsgs();
-      var f=friends.find(function(x){return x.id==activeUid;});if(f){f.last=data[0];f.unread=0;}
+      var f=friends.find(function(x){return x.id==activeUid;});
+      if(f){f.last=data[0];f.unread=0;}
       renderList(friends);
-    } else {toast('Gönderilemedi!','err');}
-  } catch(e){toast('Hata: '+e.message,'err');}
+    }else{toast('Gönderilemedi!','err');}
+  }catch(e){toast('Hata: '+e.message,'err');}
   document.getElementById('sendBtn').disabled=false;
   msgTa.focus();
 }
