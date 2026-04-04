@@ -10,8 +10,6 @@
 <meta property="og:description" content="Günlük ihtiyaçlarının hepsi tek çatı altında. Tamamen ücretsiz."/>
 <meta property="og:url" content="https://www.highly.com.tr"/>
 <title>Highly — Kişisel Web Ekosistemi</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1842711344931829"
-     crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -33,7 +31,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:cent
 .btn-primary:hover{opacity:.9;transform:translateY(-1px)}
 
 /* Hero */
-.hero{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 80px;text-align:center}
+.hero{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 80px;text-align:center}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);border-radius:999px;font-size:12px;color:#a78bfa;margin-bottom:28px;font-weight:500}
 .badge-dot{width:6px;height:6px;border-radius:50%;background:#a78bfa;animation:blink 1.8s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
@@ -90,6 +88,15 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
 .footer-links a:hover{color:var(--text)}
 .footer-copy{font-size:12px;color:var(--muted);text-align:center}
 
+/* Notice Banner */
+.notice-banner{position:relative;z-index:40;background:linear-gradient(90deg,rgba(245,158,11,.12),rgba(239,68,68,.10));border-bottom:1px solid rgba(245,158,11,.25);padding:12px 24px;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:62px}
+.notice-icon{font-size:16px;flex-shrink:0}
+.notice-text{font-size:13px;color:#fbbf24;font-weight:500;line-height:1.4}
+.notice-text strong{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#f59e0b;display:block;margin-bottom:2px}
+.notice-text span{color:rgba(251,191,36,.7);font-size:12px}
+.notice-close{margin-left:12px;background:none;border:none;color:rgba(251,191,36,.5);cursor:pointer;font-size:16px;line-height:1;padding:2px 6px;border-radius:4px;transition:color .2s;flex-shrink:0}
+.notice-close:hover{color:#fbbf24}
+
 @media(max-width:600px){.n-actions .btn-outline{display:none}.hero-btns{flex-direction:column;align-items:center}.stats-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -104,10 +111,21 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
     <span class="n-brand">Highly</span>
   </a>
   <div class="n-actions" id="navActions">
+    <a href="https://highly.com.tr/highly-mesajlar.html" class="btn-outline">💬 Mesajlar</a>
     <a href="highly-id.html" class="btn-outline">Giriş Yap</a>
     <a href="highly-id.html" class="btn-primary">Başla →</a>
   </div>
 </nav>
+
+<!-- Gene 1.0 Destek Sonu Bildirimi -->
+<div class="notice-banner" id="noticeBanner">
+  <span class="notice-icon">⚠️</span>
+  <div class="notice-text">
+    <strong>Gene 1.0 desteği 18 Nisan 2026 tarihinde sona ericek.</strong>
+    <span>Hala Gene 2.0, 2.5 modellerini kullanmaya devam edebilirsiniz.</span>
+  </div>
+  <button class="notice-close" onclick="document.getElementById('noticeBanner').style.display='none'" title="Kapat">✕</button>
+</div>
 
 <!-- Hero -->
 <section class="hero">
@@ -209,7 +227,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
       <a href="highly-id.html">Giriş Yap</a>
       <a href="highly-sozlesme.html">Kullanım Koşulları</a>
       <a href="highly-sozlesme.html">Gizlilik Politikası</a>
-      <a href="mailto:infoandhelphighly@gmail.com">İletişim</a>
+      <a href="/cdn-cgi/l/email-protection#2d44434b424c43494548415d45444a4541546d4a404c4441034e4240">İletişim</a>
     </div>
     <div class="footer-copy">
       © 2026 Highly. Tüm hakları saklıdır. &nbsp;·&nbsp; Tüm veriler tarayıcınızda saklanır.
@@ -217,10 +235,5 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
   </div>
 </footer>
 
-<script>
-if (localStorage.getItem('highly_user')) {
-  document.getElementById('navActions').innerHTML = '<a href="dashboard.html" class="btn-primary">Dashboard →</a>';
-}
-</script>
-</body>
-</html>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+if (localStorage.getItem('highl
