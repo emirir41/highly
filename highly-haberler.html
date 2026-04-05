@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<title>Highly — Haberler</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+[data-theme="dark"]{
+  --bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#e8e8ff;--muted:#4a4d6a;--text2:#9ca3c8;
+  --nav:#06070f;--a1:#6366f1;--a2:#a78bfa;
+  --card-shadow:0 4px 24px rgba(0,0,0,.4);
+}
+[data-theme="glass"]{
+  --bg:linear-gradient(135deg,#0a0f2e,#0d1635);
+  --s1:rgba(255,255,255,0.06);--s2:rgba(255,255,255,0.1);
+  --border:rgba(255,255,255,0.12);--border2:rgba(255,255,255,0.2);
+  --text:#f0f4ff;--muted:rgba(255,255,255,0.45);--text2:rgba(255,255,255,0.7);
+  --nav:rgba(10,15,46,0.8);--a1:#818cf8;--a2:#c4b5fd;
+  --card-shadow:0 4px 24px rgba(0,0,0,.3);
+}
+[data-theme="light"]{
+  --bg:#f5f6fa;--s1:#ffffff;--s2:#f0f1f8;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1a1b2e;--muted:#9095b0;--text2:#6b6f8e;
+  --nav:#ffffff;--a1:#6366f1;--a2:#4f46e5;
+  --card-shadow:0 4px 24px rgba(0,0,0,.08);
+}
+
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;transition:background .3s,color .3s}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:var(--nav);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 16px;height:54px;display:flex;align-items:center;gap:10px}
+.nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff;text-decoration:none;flex-shrink:0}
+.nav-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;flex:1}
+.nav-dash{width:32px;height:32px;background:var(--s2);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--muted);font-size:14px;transition:all .2s;flex-shrink:0}
+.nav-dash:hover{color:var(--text);border-color:var(--border2)}
+
+/* KATEGORİ TABS */
+.tabs-wrap{overflow-x:auto;scrollbar-width:none;background:var(--s1);border-bottom:1px solid var(--border);position:sticky;top:54px;z-index:99}
+.tabs-wrap::-webkit-scrollbar{display:none}
+.tabs{display:flex;gap:4px;padding:10px 16px;width:max-content}
+.tab{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.tab.active{background:var(--a1);border-color:var(--a1);color:#fff;font-weight:600}
+.tab:hover:not(.active){border-color:var(--border2);color:var(--text)}
+
+/* İÇERİK */
+.page{max-width:680px;margin:0 auto;padding:16px}
+
+/* FEATURED (büyük kart) */
+.featured{border-radius:16px;overflow:hidden;background:var(--s1);border:1px solid var(--border);box-shadow:var(--card-shadow);margin-bottom:16px;cursor:pointer;transition:transform .2s,box-shadow .2s;display:none}
+.featured:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(99,102,241,.2)}
+.feat-img{width:100%;height:200px;object-fit:cover;background:linear-gradient(135deg,var(--s2),var(--s1))}
+.feat-img-placeholder{width:100%;height:200px;background:linear-gradient(135deg,var(--a1)22,var(--a2)22);display:flex;align-items:center;justify-content:center;font-size:48px}
+.feat-body{padding:16px}
+.feat-source{font-size:11px;color:var(--a1);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.feat-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;line-height:1.35;margin-bottom:8px}
+.feat-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.feat-time{font-size:11px;color:var(--muted)}
+
+/* HABER KARTI */
+.news-list{display:flex;flex-direction:column;gap:10px}
+.news-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;gap:12px;cursor:pointer;transition:all .2s;text-decoration:none}
+.news-card:hover{border-color:rgba(99,102,241,.3);background:var(--s2);transform:translateX(2px)}
+.news-thumb{width:80px;height:80px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--s2)}
+.news-thumb-placeholder{width:80px;height:80px;border-radius:10px;background:linear-gradient(135deg,var(--a1)22,var(--a2)11);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.news-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.news-source{font-size:11px;color:var(--a1);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.news-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;line-height:1.35;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.news-time{font-size:11px;color:var(--muted);margin-top:auto}
+
+/* LOADING */
+.skeleton{animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{opacity:.4}50%{opacity:.8}100%{opacity:.4}}
+.skel-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;gap:12px;margin-bottom:10px}
+.skel-thumb{width:80px;height:80px;border-radius:10px;background:var(--s2);flex-shrink:0}
+.skel-lines{flex:1;display:flex;flex-direction:column;gap:8px;padding-top:4px}
+.skel-line{height:12px;border-radius:6px;background:var(--s2)}
+
+/* BOŞ / HATA */
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty p{font-size:14px;line-height:1.7}
+.retry-btn{margin-top:16px;padding:8px 20px;background:var(--a1);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;font-weight:600}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--s1);border-radius:20px 20px 0 0;width:100%;max-width:680px;max-height:85vh;overflow-y:auto;padding:20px;border:1px solid var(--border);border-bottom:none}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
+.modal-source{font-size:11px;color:var(--a1);font-weight:600;text-transform:uppercase;margin-bottom:8px}
+.modal-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1.35;margin-bottom:10px}
+.modal-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:16px}
+.modal-time{font-size:12px;color:var(--muted);margin-bottom:16px}
+.modal-open-btn{display:block;text-align:center;padding:12px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border-radius:12px;text-decoration:none;font-weight:600;font-size:14px;font-family:'Syne',sans-serif}
+
+@media(min-width:600px){
+  .feat-img,.feat-img-placeholder{height:260px}
+  .feat-title{font-size:22px}
+  .news-thumb,.news-thumb-placeholder{width:100px;height:100px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-avatar" id="navAvatar" href="highly-profil.html">?</a>
+  <span class="nav-title">📰 Haberler</span>
+  <a class="nav-dash" href="index.html" title="Dashboard">⊞</a>
+</nav>
+
+<div class="tabs-wrap">
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="page">
+  <div class="featured" id="featured"></div>
+  <div class="news-list" id="newsList"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-source" id="mSource"></div>
+    <div class="modal-title" id="mTitle"></div>
+    <div class="modal-time" id="mTime"></div>
+    <div class="modal-desc" id="mDesc"></div>
+    <a class="modal-open-btn" id="mLink" href="#" target="_blank" rel="noopener">Haberin tamamını oku →</a>
+  </div>
+</div>
+
+<script>
+// Tema
+(function(){
+  var t=localStorage.getItem('highly_theme')||'dark';
+  document.documentElement.setAttribute('data-theme',t);
+})();
+
+// Avatar
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('highly_user')||'{}');
+    var av=document.getElementById('navAvatar');
+    if(u.avatarEmoji){av.textContent=u.avatarEmoji;av.style.background='transparent';av.style.fontSize='22px';}
+    else if(u.name){av.textContent=u.name[0].toUpperCase();}
+  }catch(e){}
+})();
+
+// Kategoriler ve RSS kaynakları
+var CATEGORIES = [
+  {
+    id:'gundem', label:'🔥 Gündem',
+    feeds:[
+      'https://www.hurriyet.com.tr/rss/anasayfa',
+      'https://www.sabah.com.tr/rss/anasayfa.xml',
+      'https://www.milliyet.com.tr/rss/rssNew/gundemRss.xml'
+    ]
+  },
+  {
+    id:'spor', label:'⚽ Spor',
+    feeds:[
+      'https://www.hurriyet.com.tr/rss/spor',
+      'https://www.sabah.com.tr/rss/spor.xml'
+    ]
+  },
+  {
+    id:'teknoloji', label:'💻 Teknoloji',
+    feeds:[
+      'https://shiftdelete.net/feed',
+      'https://www.chip.com.tr/feed',
+      'https://www.webtekno.com/rss.xml'
+    ]
+  },
+  {
+    id:'ekonomi', label:'📈 Ekonomi',
+    feeds:[
+      'https://www.hurriyet.com.tr/rss/ekonomi',
+      'https://www.sabah.com.tr/rss/ekonomi.xml'
+    ]
+  },
+  {
+    id:'dunya', label:'🌍 Dünya',
+    feeds:[
+      'https://www.hurriyet.com.tr/rss/dunya',
+      'https://www.milliyet.com.tr/rss/rssNew/dunyaRss.xml'
+    ]
+  }
+];
+
+var RSS_PROXY = 'https://api.rss2json.com/v1/api.json?rss_url=';
+
+var activeCategory = 0;
+var cache = {};
+
+// Tabs oluştur
+function buildTabs(){
+  var el = document.getElementById('tabs');
+  el.innerHTML = CATEGORIES.map(function(c,i){
+    return '<button class="tab'+(i===0?' active':'')+'" onclick="switchTab('+i+')">'+c.label+'</button>';
+  }).join('');
+}
+
+function switchTab(i){
+  activeCategory = i;
+  document.querySelectorAll('.tab').forEach(function(t,idx){ t.classList.toggle('active', idx===i); });
+  loadNews();
+}
+
+// Skeleton göster
+function showSkeleton(){
+  var el = document.getElementById('newsList');
+  var html = '';
+  for(var i=0;i<5;i++){
+    html += '<div class="skel-card skeleton"><div class="skel-thumb"></div><div class="skel-lines"><div class="skel-line" style="width:40%"></div><div class="skel-line" style="width:90%"></div><div class="skel-line" style="width:70%"></div><div class="skel-line" style="width:30%;margin-top:4px"></div></div></div>';
+  }
+  el.innerHTML = html;
+  document.getElementById('featured').style.display = 'none';
+}
+
+// Haberleri yükle
+async function loadNews(){
+  var cat = CATEGORIES[activeCategory];
+  if(cache[cat.id]){
+    renderNews(cache[cat.id]);
+    return;
+  }
+  showSkeleton();
+  var allItems = [];
+  for(var i=0; i<cat.feeds.length; i++){
+    try{
+      var r = await fetch(RSS_PROXY + encodeURIComponent(cat.feeds[i]) + '&count=10');
+      var d = await r.json();
+      if(d.items && d.items.length){
+        var sourceName = d.feed && d.feed.title ? d.feed.title : cat.feeds[i].split('/')[2];
+        d.items.forEach(function(item){
+          item._source = sourceName;
+          allItems.push(item);
+        });
+      }
+    }catch(e){}
+  }
+  // Tarihe göre sırala
+  allItems.sort(function(a,b){
+    return new Date(b.pubDate||0) - new Date(a.pubDate||0);
+  });
+  if(!allItems.length){
+    showError();
+    return;
+  }
+  cache[cat.id] = allItems;
+  renderNews(allItems);
+}
+
+function timeAgo(dateStr){
+  if(!dateStr) return '';
+  var diff = (Date.now() - new Date(dateStr)) / 1000;
+  if(diff < 60) return 'Az önce';
+  if(diff < 3600) return Math.floor(diff/60) + ' dk önce';
+  if(diff < 86400) return Math.floor(diff/3600) + ' sa önce';
+  if(diff < 604800) return Math.floor(diff/86400) + ' gün önce';
+  return new Date(dateStr).toLocaleDateString('tr-TR');
+}
+
+function getImg(item){
+  if(item.thumbnail && item.thumbnail.length > 10) return item.thumbnail;
+  if(item.enclosure && item.enclosure.link) return item.enclosure.link;
+  // img tag'den çek
+  var m = (item.content||item.description||'').match(/<img[^>]+src="([^"]+)"/i);
+  if(m) return m[1];
+  return null;
+}
+
+function getEmoji(source){
+  var s = (source||'').toLowerCase();
+  if(s.includes('spor')||s.includes('sport')) return '⚽';
+  if(s.includes('tekno')||s.includes('chip')||s.includes('shift')) return '💻';
+  if(s.includes('ekonomi')||s.includes('borsa')) return '📈';
+  if(s.includes('dünya')||s.includes('world')) return '🌍';
+  return '📰';
+}
+
+function renderNews(items){
+  var featEl = document.getElementById('featured');
+  var listEl = document.getElementById('newsList');
+
+  // Featured (ilk haber)
+  var first = items[0];
+  var featImg = getImg(first);
+  featEl.style.display = 'block';
+  featEl.innerHTML = (featImg
+    ? '<img class="feat-img" src="'+featImg+'" onerror="this.parentNode.querySelector(\'.feat-img-placeholder\').style.display=\'flex\';this.style.display=\'none\'" loading="lazy"/><div class="feat-img-placeholder" style="display:none">'+getEmoji(first._source)+'</div>'
+    : '<div class="feat-img-placeholder">'+getEmoji(first._source)+'</div>'
+  ) + '<div class="feat-body">'
+    + '<div class="feat-source">'+escH(first._source||'')+'</div>'
+    + '<div class="feat-title">'+escH(first.title||'')+'</div>'
+    + '<div class="feat-desc">'+escH(strip(first.description||'').slice(0,140))+(strip(first.description||'').length>140?'...':'')+'</div>'
+    + '<div class="feat-time">'+timeAgo(first.pubDate)+'</div>'
+    + '</div>';
+  featEl.onclick = function(){ openModal(first); };
+
+  // Liste (kalan haberler)
+  var html = '';
+  for(var i=1; i<items.length; i++){
+    var item = items[i];
+    var img = getImg(item);
+    html += '<div class="news-card" onclick="openModal(newsCache[\''+activeCategory+'_'+i+'\'])">'
+      + (img
+        ? '<img class="news-thumb" src="'+img+'" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'" loading="lazy"/><div class="news-thumb-placeholder" style="display:none">'+getEmoji(item._source)+'</div>'
+        : '<div class="news-thumb-placeholder">'+getEmoji(item._source)+'</div>'
+      )
+      + '<div class="news-content">'
+      + '<div class="news-source">'+escH(item._source||'')+'</div>'
+      + '<div class="news-title">'+escH(item.title||'')+'</div>'
+      + '<div class="news-time">'+timeAgo(item.pubDate)+'</div>'
+      + '</div></div>';
+    newsCache[activeCategory+'_'+i] = item;
+  }
+  listEl.innerHTML = html || '<div class="empty"><div class="empty-icon">📭</div><p>Haber bulunamadı.</p></div>';
+}
+
+var newsCache = {};
+
+function showError(){
+  document.getElementById('newsList').innerHTML = '<div class="empty"><div class="empty-icon">😕</div><p>Haberler yüklenemedi.<br>İnternet bağlantını kontrol et.</p><button class="retry-btn" onclick="loadNews()">Tekrar dene</button></div>';
+  document.getElementById('featured').style.display = 'none';
+}
+
+// Modal
+function openModal(item){
+  document.getElementById('mSource').textContent = item._source||'';
+  document.getElementById('mTitle').textContent = item.title||'';
+  document.getElementById('mTime').textContent = timeAgo(item.pubDate);
+  document.getElementById('mDesc').textContent = strip(item.description||item.content||'').slice(0,400)+(strip(item.description||item.content||'').length>400?'...':'');
+  document.getElementById('mLink').href = item.link||'#';
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e){
+  if(e.target === document.getElementById('modalOverlay')){
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function strip(html){
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  return d.textContent || d.innerText || '';
+}
+
+function escH(t){
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+buildTabs();
+loadNews();
+</script>
+</body>
+</html>
