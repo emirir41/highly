@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Highly · Feed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --surface2: #1c1c28;
+      --border: #2a2a3a;
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+      --text: #e8e8f0;
+      --text2: #888899;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --radius: 16px;
+    }
+    [data-theme="light"] {
+      --bg: #f4f4f8;
+      --surface: #ffffff;
+      --surface2: #ececf4;
+      --border: #dcdce8;
+      --text: #111118;
+      --text2: #666677;
+    }
+    [data-theme="glass"] {
+      --bg: #090912;
+      --surface: rgba(255,255,255,0.05);
+      --surface2: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.1);
+      --text: #f0f0ff;
+      --text2: #9999bb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: white;
+      cursor: pointer;
+    }
+    .nav-home-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-home-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* LAYOUT */
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* COMPOSE BOX */
+    .compose {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+    .compose:focus-within { border-color: var(--accent); }
+    .compose-top {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .compose-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .compose-textarea {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      resize: none;
+      min-height: 60px;
+      line-height: 1.5;
+    }
+    .compose-textarea::placeholder { color: var(--text2); }
+    .compose-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .char-counter {
+      font-size: 0.8rem;
+      color: var(--text2);
+      font-variant-numeric: tabular-nums;
+    }
+    .char-counter.warn { color: #f59e0b; }
+    .char-counter.over { color: var(--danger); }
+    .post-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      border: none;
+      padding: 8px 22px;
+      border-radius: 20px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .post-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .post-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* FEED TABS */
+    .feed-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+    }
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text2);
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      padding: 8px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    /* POST CARD */
+    .post-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+      animation: slideIn 0.3s ease;
+      transition: border-color 0.2s;
+    }
+    .post-card:hover { border-color: var(--border); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .post-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .post-meta { flex: 1; }
+    .post-username {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .post-time {
+      font-size: 0.75rem;
+      color: var(--text2);
+      margin-top: 1px;
+    }
+    .post-content {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+    .post-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--text2);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .action-btn:hover { background: var(--surface2); }
+    .action-btn.liked { color: #f43f5e; }
+    .action-btn.liked svg { fill: #f43f5e; }
+    .action-btn.delete-btn:hover { color: var(--danger); background: rgba(239,68,68,0.08); }
+    .action-btn svg { width: 15px; height: 15px; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text2);
+    }
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* LOADING */
+    .loading {
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+    .spinner {
+      width: 28px; height: 28px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* AUTH GATE */
+    .auth-gate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+      gap: 12px;
+    }
+    .auth-gate h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .auth-gate p { color: var(--text2); font-size: 0.9rem; }
+    .auth-gate a {
+      display: inline-block;
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      text-decoration: none;
+      padding: 10px 28px;
+      border-radius: 20px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: transform 0.3s ease;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* LOAD MORE */
+    .load-more-btn {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 12px;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .load-more-btn:hover { border-color: var(--accent); color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">highly</a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-home-btn">← Ana Sayfa</a>
+    <div class="nav-avatar" id="navAvatar">?</div>
+  </div>
+</nav>
+
+<div class="container">
+  <!-- AUTH GATE -->
+  <div class="auth-gate" id="authGate" style="display:none">
+    <div style="font-size:2rem">💬</div>
+    <h2>Feed'e katıl</h2>
+    <p>Gönderi paylaşmak için giriş yapman gerekiyor.</p>
+    <a href="highly-giris.html">Giriş Yap</a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="mainContent" style="display:none">
+    <!-- COMPOSE -->
+    <div class="compose" id="composeBox">
+      <div class="compose-top">
+        <div class="compose-avatar" id="composeAvatar">?</div>
+        <textarea
+          class="compose-textarea"
+          id="postTextarea"
+          placeholder="Ne düşünüyorsun?"
+          rows="3"
+          maxlength="280"
+        ></textarea>
+      </div>
+      <div class="compose-bottom">
+        <span class="char-counter" id="charCounter">280</span>
+        <button class="post-btn" id="postBtn" disabled>Paylaş</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="feed-tabs">
+      <button class="tab-btn active" id="tabAll" onclick="switchTab('all')">Herkesten</button>
+      <button class="tab-btn" id="tabFriends" onclick="switchTab('friends')">Arkadaşlar</button>
+      <button class="tab-btn" id="tabMine" onclick="switchTab('mine')">Benim</button>
+    </div>
+
+    <!-- FEED -->
+    <div id="feedContainer">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // =====================
+  // SUPABASE CONFIG
+  // =====================
+  const SUPABASE_URL = 'SUPABASE_URL_BURAYA';
+  const SUPABASE_KEY = 'SUPABASE_ANON_KEY_BURAYA';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // =====================
+  // STATE
+  // =====================
+  let currentUser = null;
+  let currentTab = 'all';
+  let friendIds = [];
+  let likedPosts = new Set();
+  let page = 0;
+  const PAGE_SIZE = 20;
+  const MAX_CHARS = 280;
+
+  // =====================
+  // UTILS
+  // =====================
+  function formatTR(dateStr) {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diff = Math.floor((now - d) / 1000);
+    if (diff < 60) return 'şimdi';
+    if (diff < 3600) return `${Math.floor(diff/60)} dk önce`;
+    if (diff < 86400) return `${Math.floor(diff/3600)} sa önce`;
+    return d.toLocaleString('tr-TR', {
+      timeZone: 'Europe/Istanbul',
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function getInitial(email) {
+    return (email || '?')[0].toUpperCase();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // =====================
+  // THEME
+  // =====================
+  const savedTheme = localStorage.getItem('highly-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+
+  // =====================
+  // AUTH
+  // =====================
+  async function init() {
+    const { data: { session } } = await supabase.auth.getSession();
+    currentUser = session?.user || null;
+
+    if (!currentUser) {
+      document.getElementById('authGate').style.display = 'flex';
+      return;
+    }
+
+    document.getElementById('mainContent').style.display = 'block';
+    const initial = getInitial(currentUser.email);
+    document.getElementById('navAvatar').textContent = initial;
+    document.getElementById('composeAvatar').textContent = initial;
+
+    await loadFriends();
+    await loadLiked();
+    await loadFeed();
+    setupCompose();
+  }
+
+  // =====================
+  // FRIENDS
+  // =====================
+  async function loadFriends() {
+    const { data } = await supabase
+      .from('friends')
+      .select('friend_id, user_id')
+      .or(`user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`)
+      .eq('status', 'accepted');
+
+    if (data) {
+      friendIds = data.map(f =>
+        f.user_id === currentUser.id ? f.friend_id : f.user_id
+      );
+    }
+  }
+
+  // =====================
+  // LIKES (local cache)
+  // =====================
+  async function loadLiked() {
+    const cached = localStorage.getItem('highly-liked-posts');
+    if (cached) likedPosts = new Set(JSON.parse(cached));
+  }
+
+  function saveLiked() {
+    localStorage.setItem('highly-liked-posts', JSON.stringify([...likedPosts]));
+  }
+
+  // =====================
+  // FEED
+  // =====================
+  async function loadFeed(append = false) {
+    if (!append) {
+      page = 0;
+      document.getElementById('feedContainer').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+    }
+
+    let query = supabase
+      .from('posts')
+      .select('id, user_id, content, likes_count, created_at')
+      .order('created_at', { ascending: false })
+      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+
+    if (currentTab === 'friends') {
+      const ids = [...friendIds, currentUser.id];
+      query = query.in('user_id', ids);
+    } else if (currentTab === 'mine') {
+      query = query.eq('user_id', currentUser.id);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      document.getElementById('feedContainer').innerHTML = '<div class="empty-state"><p>Yüklenemedi 😕</p></div>';
+      return;
+    }
+
+    // Kullanıcı emaillerini çek
+    const userIds = [...new Set(data.map(p => p.user_id))];
+    let userMap = {};
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, email, username')
+        .in('id', userIds);
+      if (profiles) profiles.forEach(p => userMap[p.id] = p);
+    }
+
+    const container = document.getElementById('feedContainer');
+
+    if (!append) container.innerHTML = '';
+
+    if (data.length === 0 && !append) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🌿</div>
+          <p>Henüz gönderi yok. İlk paylaşımı sen yap!</p>
+        </div>`;
+      return;
+    }
+
+    data.forEach(post => {
+      const profile = userMap[post.user_id];
+      const displayName = profile?.username || profile?.email?.split('@')[0] || 'kullanıcı';
+      const initial = getInitial(profile?.email || displayName);
+      const isOwn = post.user_id === currentUser.id;
+      const isLiked = likedPosts.has(post.id);
+
+      const card = document.createElement('div');
+      card.className = 'post-card';
+      card.id = `post-${post.id}`;
+      card.innerHTML = `
+        <div class="post-header">
+          <div class="post-avatar">${initial}</div>
+          <div class="post-meta">
+            <div class="post-username">@${displayName}</div>
+            <div class="post-time">${formatTR(post.created_at)}</div>
+          </div>
+        </div>
+        <div class="post-content">${escapeHtml(post.content)}</div>
+        <div class="post-actions">
+          <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', ${post.likes_count})">
+            <svg viewBox="0 0 24 24" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span id="like-count-${post.id}">${post.likes_count}</span>
+          </button>
+          ${isOwn ? `
+          <button class="action-btn delete-btn" onclick="deletePost('${post.id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+            </svg>
+            Sil
+          </button>` : ''}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    // Load more butonu
+    const existingBtn = document.getElementById('loadMoreBtn');
+    if (existingBtn) existingBtn.remove();
+
+    if (data.length === PAGE_SIZE) {
+      const btn = document.createElement('button');
+      btn.className = 'load-more-btn';
+      btn.id = 'loadMoreBtn';
+      btn.textContent = 'Daha fazla yükle';
+      btn.onclick = () => {
+        page++;
+        loadFeed(true);
+      };
+      container.appendChild(btn);
+    }
+  }
+
+  // =====================
+  // TABS
+  // =====================
+  function switchTab(tab) {
+    currentTab = tab;
+    ['all', 'friends', 'mine'].forEach(t => {
+      document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`).classList.toggle('active', t === tab);
+    });
+    loadFeed();
+  }
+
+  // =====================
+  // COMPOSE
+  // =====================
+  function setupCompose() {
+    const textarea = document.getElementById('postTextarea');
+    const counter = document.getElementById('charCounter');
+    const btn = document.getElementById('postBtn');
+
+    textarea.addEventListener('input', () => {
+      const remaining = MAX_CHARS - textarea.value.length;
+      counter.textContent = remaining;
+      counter.className = 'char-counter' + (remaining < 20 ? ' warn' : '') + (remaining < 0 ? ' over' : '');
+      btn.disabled = textarea.value.trim().length === 0 || remaining < 0;
+    });
+
+    btn.addEventListener('click', submitPost);
+  }
+
+  async function submitPost() {
+    const textarea = document.getElementById('postTextarea');
+    const content = textarea.value.trim();
+    if (!content || content.length > MAX_CHARS) return;
+
+    const btn = document.getElementById('postBtn');
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    const { error } = await supabase.from('posts').insert({
+      user_id: currentUser.id,
+      content: content
+    });
+
+    btn.textContent = 'Paylaş';
+
+    if (error) {
+      showToast('Gönderilemedi 😕');
+      btn.disabled = false;
+      return;
+    }
+
+    textarea.value = '';
+    document.getElementById('charCounter').textContent = MAX_CHARS;
+    document.getElementById('charCounter').className = 'char-counter';
+    showToast('Paylaşıldı! 🎉');
+
+    if (currentTab !== 'friends') loadFeed();
+    else { currentTab = 'all'; switchTab('all'); }
+  }
+
+  // =====================
+  // LIKE
+  // =====================
+  async function toggleLike(postId, currentCount) {
+    const isLiked = likedPosts.has(postId);
+    const newCount = isLiked ? currentCount - 1 : currentCount + 1;
+
+    // Optimistic UI
+    const countEl = document.getElementById(`like-count-${postId}`);
+    const btn = countEl?.parentElement;
+    if (countEl) countEl.textContent = newCount;
+    if (btn) {
+      btn.classList.toggle('liked', !isLiked);
+      const svg = btn.querySelector('svg');
+      if (svg) svg.setAttribute('fill', !isLiked ? 'currentColor' : 'none');
+    }
+
+    if (isLiked) likedPosts.delete(postId);
+    else likedPosts.add(postId);
+    saveLiked();
+
+    await supabase.from('posts').update({ likes_count: Math.max(0, newCount) }).eq('id', postId);
+  }
+
+  // =====================
+  // DELETE
+  // =====================
+  async function deletePost(postId) {
+    if (!confirm('Bu gönderiyi silmek istediğine emin misin?')) return;
+
+    const { error } = await supabase.from('posts').delete().eq('id', postId).eq('user_id', currentUser.id);
+
+    if (error) { showToast('Silinemedi 😕'); return; }
+
+    const card = document.getElementById(`post-${postId}`);
+    if (card) {
+      card.style.opacity = '0';
+      card.style.transform = 'translateX(-10px)';
+      card.style.transition = 'all 0.25s ease';
+      setTimeout(() => card.remove(), 250);
+    }
+    showToast('Silindi.');
+  }
+
+  // =====================
+  // ESCAPE HTML
+  // =====================
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/\n/g, '<br>');
+  }
+
+  // =====================
+  // START
+  // =====================
+  init();
+</script>
+</body>
+</html>
