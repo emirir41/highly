@@ -446,7 +446,7 @@ document.getElementById('snakeCanvas') && document.getElementById('snakeCanvas')
 document.getElementById('snakeCanvas') && document.getElementById('snakeCanvas').addEventListener('touchend',function(e){ var dx=e.changedTouches[0].clientX-snakeSwipe.x,dy=e.changedTouches[0].clientY-snakeSwipe.y; if(Math.abs(dx)<15&&Math.abs(dy)<15){snakeStart();return;} if(Math.abs(dx)>Math.abs(dy)) snakeDir(dx>0?'RIGHT':'LEFT'); else snakeDir(dy>0?'DOWN':'UP'); },{passive:true});
 
 /* ===================== KELİME BUL ===================== */
-var WORDS=['KALEM','MASA','KAPI','ARABA','DENIZ','BULUT','YILDIZ','NEHIR','KITAP','OYUN','BALIK','KUZEY','GUNEY','DOĞU','BATI','ŞEKER','ELMA','ARMUT','LIMON','PORTAKAL','BEBEK','ÇIÇEK','YORUM','SALON','MUTFAK','BAHÇE','SOKAK','CADDE','ASFALT','TOPRAK','YAPRAK','DALGA','RÜZGAR','FIRTINA','YAĞMUR','KARLAR','BAHAR','YAZ','KIS','SONBAHAR'].filter(function(w){return w.length===5;});
+var WORDS=['KALEM','MASA','KAPI','ARABA','DENIZ','BULUT','YILDIZ','NEHIR','KITAP','OYUN','BALIK','KUZEY','GUNEY','DOGU','BATI','SEKER','ELMA','ARMUT','LIMON','PORTAKAL','BEBEK','CICEK','YORUM','SALON','MUTFAK','BAHCE','SOKAK','CADDE','ASFALT','TOPRAK','YAPRAK','DALGA','RUZGAR','FIRTINA','YAGMUR','KARLAR','BAHAR','YAZ','KIS','SONBAHAR'].filter(function(w){return w.length===5;});
 var wordTarget, wordGuesses, wordCurrent, wordDone;
 
 function initWord(){
