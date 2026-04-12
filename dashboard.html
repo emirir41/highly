@@ -491,6 +491,16 @@ footer a:hover{color:var(--text)}
 
 
 <script>
+// ===== PARKING KONTROLU =====
+(async function(){
+  var _H = {'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0'};
+  try {
+    var res  = await fetch('https://ttuxfivcwdpyvhmybbna.supabase.co/rest/v1/admin_settings?key=eq.parking_enabled&select=value', {headers:_H});
+    var data = await res.json();
+    if (data && data.length && data[0].value === 'true') { location.href = 'parking.html'; return; }
+  } catch(e) {}
+})();
+
 // Kullanıcı
 const saved = localStorage.getItem('highly_user');
 if (!saved) location.href = 'highly-id.html';

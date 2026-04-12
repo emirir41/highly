@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<title>Highly — Bakım Modu</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+[data-theme="dark"]{
+  --bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#e8e8ff;--muted:#4a4d6a;--text2:#9ca3c8;
+  --nav:#06070f;--a1:#6366f1;--a2:#a78bfa;
+}
+[data-theme="glass"]{
+  --bg:linear-gradient(135deg,#0a0f2e,#0d1635);
+  --s1:rgba(255,255,255,0.06);--s2:rgba(255,255,255,0.1);
+  --border:rgba(255,255,255,0.12);--border2:rgba(255,255,255,0.2);
+  --text:#f0f4ff;--muted:rgba(255,255,255,0.45);--text2:rgba(255,255,255,0.7);
+  --nav:rgba(10,15,46,0.8);--a1:#818cf8;--a2:#c4b5fd;
+}
+[data-theme="light"]{
+  --bg:#f5f6fa;--s1:#ffffff;--s2:#f0f1f8;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1a1b2e;--muted:#9095b0;--text2:#6b6f8e;
+  --nav:#ffffff;--a1:#6366f1;--a2:#4f46e5;
+}
+
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse at 20% 20%,rgba(99,102,241,.08) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 80%,rgba(167,139,250,.06) 0%,transparent 50%);
+}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:var(--nav);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 16px;height:54px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;flex:1;background:linear-gradient(135deg,var(--a1),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none}
+.nav-badge{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25);font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;font-family:'Syne',sans-serif;letter-spacing:.5px}
+
+/* PAGE */
+.page{max-width:680px;margin:0 auto;padding:16px;position:relative;z-index:2}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(99,102,241,.15));border:1px solid rgba(245,158,11,.2);border-radius:24px;padding:36px 24px;margin-bottom:20px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'🔧';position:absolute;right:20px;top:16px;font-size:56px;opacity:.12}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#f59e0b;padding:5px 14px;border-radius:999px;font-size:11px;font-weight:700;font-family:'Syne',sans-serif;letter-spacing:.5px;margin-bottom:16px}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:#f59e0b;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:10px;line-height:1.2}
+.hero-desc{font-size:14px;color:var(--text2);line-height:1.6;max-width:400px;margin:0 auto}
+
+/* PROGRESS CARD */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px}
+.card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+.progress-bar{height:10px;background:var(--s2);border-radius:5px;overflow:hidden;margin-bottom:8px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:5px;transition:width .8s ease}
+.progress-info{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.progress-pct{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+
+/* TIME ROW */
+.time-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.time-box{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
+.time-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;background:linear-gradient(135deg,var(--a1),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.time-lbl{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
+
+/* INFO CARD */
+.info-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none}
+.info-icon{font-size:18px;width:32px;text-align:center;flex-shrink:0}
+.info-text{font-size:13px;color:var(--text2)}
+.info-text strong{color:var(--text);font-weight:600}
+
+/* FOOTER */
+.footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">highly</span>
+  <span class="nav-badge" id="navBadge">BAKIM</span>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge"><span class="hero-dot"></span><span id="heroBadgeText">BAKIM MODU</span></div>
+    <div class="hero-title" id="heroTitle">Kısa Süreliğine Hizmet Dışıyız</div>
+    <div class="hero-desc" id="heroDesc">Highly ekosistemini güncelliyoruz. Birazdan geri döneceğiz!</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="progressSection" style="display:none">
+    <div class="card">
+      <div class="card-title">İlerleme Durumu</div>
+      <div class="progress-pct" id="progressPct">%0</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-info">
+        <span id="progressStart">—</span>
+        <span id="progressEnd">—</span>
+      </div>
+    </div>
+
+    <div class="time-row">
+      <div class="time-box">
+        <div class="time-val" id="timeStart">—</div>
+        <div class="time-lbl">Başlangıç</div>
+      </div>
+      <div class="time-box">
+        <div class="time-val" id="timeEnd">—</div>
+        <div class="time-lbl">Bitiş</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BİLGİ -->
+  <div class="card">
+    <div class="card-title">Bilgi</div>
+    <div class="info-row">
+      <div class="info-icon">📧</div>
+      <div class="info-text">Sorularınız için: <strong>infoandhelphighly@gmail.com</strong></div>
+    </div>
+    <div class="info-row">
+      <div class="info-icon">⏱️</div>
+      <div class="info-text" id="infoCountdown"><strong>Bakım devam ediyor...</strong></div>
+    </div>
+    <div class="info-row">
+      <div class="info-icon">🔔</div>
+      <div class="info-text">Highly hazır olduğunda bildirim alacaksınız.</div>
+    </div>
+  </div>
+
+  <div class="footer">highly &copy; 2026 — Tüm hakları saklıdır</div>
+</div>
+
+<script>
+var SB  = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0';
+var H   = {'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY};
+
+// Tema
+(function(){
+  var t = localStorage.getItem('highly_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+
+async function loadParking() {
+  try {
+    var res  = await fetch(SB+'/rest/v1/admin_settings?key=in.(parking_enabled,parking_title,parking_desc,parking_start,parking_end)&select=key,value', {headers:H});
+    var data = await res.json() || [];
+    var cfg  = {};
+    data.forEach(function(d){ cfg[d.key] = d.value; });
+
+    // Başlık & açıklama
+    if (cfg.parking_title) document.getElementById('heroTitle').textContent   = cfg.parking_title;
+    if (cfg.parking_desc)  document.getElementById('heroDesc').textContent    = cfg.parking_desc;
+
+    // Zaman
+    var start = cfg.parking_start;
+    var end   = cfg.parking_end;
+
+    if (start && end) {
+      document.getElementById('progressSection').style.display = 'block';
+      document.getElementById('timeStart').textContent = start;
+      document.getElementById('timeEnd').textContent   = end;
+      document.getElementById('progressStart').textContent = start;
+      document.getElementById('progressEnd').textContent   = end;
+      calcProgress(start, end);
+      setInterval(function(){ calcProgress(start, end); }, 30000);
+    }
+  } catch(e) {}
+}
+
+function calcProgress(start, end) {
+  var now     = new Date();
+  var nowMin  = now.getHours()*60 + now.getMinutes();
+  var sP      = start.split(':'); var startMin = parseInt(sP[0])*60 + parseInt(sP[1]);
+  var eP      = end.split(':');   var endMin   = parseInt(eP[0])*60 + parseInt(eP[1]);
+  var total   = endMin - startMin;
+  var elapsed = nowMin - startMin;
+  var pct     = total > 0 ? Math.max(0, Math.min(100, Math.round((elapsed/total)*100))) : 0;
+
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent  = '%' + pct;
+
+  // Kalan süre
+  var remaining = endMin - nowMin;
+  var cd = document.getElementById('infoCountdown');
+  if (remaining <= 0) {
+    cd.innerHTML = '<strong>Bakım tamamlanmak üzere!</strong>';
+  } else {
+    var h = Math.floor(remaining / 60);
+    var m = remaining % 60;
+    var txt = h > 0 ? h + ' saat ' + m + ' dakika kaldı' : m + ' dakika kaldı';
+    cd.innerHTML = 'Tahminen <strong>' + txt + '</strong>';
+  }
+}
+
+loadParking();
+</script>
+</body>
+</html>
