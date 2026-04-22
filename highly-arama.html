@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Highly — Arama</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script async src="https://cse.google.com/cse.js?cx=d31ebc2045edc439f"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 [data-theme="dark"]{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);--text:#e8e8ff;--muted:#4a4d6a;--nav:rgba(6,7,15,.95);--a1:#6366f1;--a2:#a78bfa;--link:#a78bfa;--link2:#c4b5fd}
@@ -95,6 +96,38 @@ main{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:32px 20px
 .m-btn-s{background:var(--s2);border:1px solid var(--border);color:var(--text)}
 .m-btn-s:hover{border-color:var(--border2)}
 @media(max-width:480px){.s-btn{padding:9px 14px;font-size:12px}.featured-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ===== Google CSE Highly Tema Override ===== */
+#gcse-results-wrap{margin-top:0}
+.gsc-control-cse{background:transparent!important;border:none!important;padding:0!important;font-family:'DM Sans',sans-serif!important}
+.gsc-above-wrapper-area,.gsc-adBlock,.gsc-resultsHeader{display:none!important}
+.gsc-results .gsc-cursor-box{display:none}
+/* Sonuc satirlari */
+.gsc-webResult.gsc-result,.gsc-results .gsc-imageResult{background:transparent!important;border:none!important;border-bottom:1px solid var(--border)!important;padding:14px 0!important;margin:0!important}
+.gsc-webResult.gsc-result:last-child{border-bottom:none!important}
+/* Baslik linkleri */
+.gs-title,.gs-title *{color:var(--link)!important;font-size:16px!important;font-weight:600!important;font-family:'DM Sans',sans-serif!important;text-decoration:none!important}
+.gs-title:hover,.gs-title:hover *{color:var(--link2)!important;text-decoration:underline!important}
+/* URL / domain */
+.gs-visibleUrl,.gs-visibleUrl-short,.gsc-url-top,.gs-visibleUrl-breadcrumb{color:var(--muted)!important;font-size:12px!important}
+/* Snippet metni */
+.gs-snippet,.gsc-table-result .gs-snippet{color:var(--muted)!important;font-size:13px!important;line-height:1.6!important}
+/* Thumbnail */
+.gsc-table-result{background:transparent!important}
+/* Gorsel grid */
+.gsc-imageResult-column,.gsc-imageResult-popup{border-radius:10px!important;overflow:hidden!important;border:none!important}
+/* Sayfalama */
+.gsc-cursor-page{background:var(--s1)!important;border:1px solid var(--border)!important;color:var(--muted)!important;border-radius:8px!important;padding:6px 12px!important;font-family:'DM Sans',sans-serif!important;font-size:13px!important}
+.gsc-cursor-current-page{background:linear-gradient(135deg,var(--a1),var(--a2))!important;color:#fff!important;border-color:transparent!important}
+.gsc-cursor-box{text-align:center;margin-top:20px;display:flex!important;gap:6px!important;justify-content:center!important;flex-wrap:wrap!important}
+/* Araclari gizle */
+.gcsc-find-more-on-google-branding,.gcsc-find-more-on-google,.gsc-search-button,.gsc-input-box{display:none!important}
+table.gsc-search-box{display:none!important}
+/* Haber gorselleri */
+.gs-image-box{border-radius:10px!important;overflow:hidden!important}
+/* Genel arka planlar */
+.gsc-result-info,.gsc-tabHeader,.gsc-tabsArea,.gsc-selected-option-container,.gsc-option-menu{display:none!important}
+td.gsc-table-cell-thumbnail{padding-right:12px!important}
 </style>
 </head>
 <body>
@@ -125,23 +158,24 @@ main{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:32px 20px
   </div>
 </nav>
 
+<!-- Google CSE sonuc alani (searchresults-only widget burada render olur) -->
+
 <main>
   <div class="search-wrap">
     <div class="search-box">
       <input class="s-input" id="sInput" placeholder="Ne aramak istiyorsun?" autofocus/>
       <button class="s-btn" id="sBtn">Ara</button>
     </div>
-    <div class="tabs">
-      <button class="tab active" data-type="search">&#127760; Web</button>
-      <button class="tab" data-type="news">&#128240; Haberler</button>
-      <button class="tab" data-type="images">&#128444; Gorseller</button>
-    </div>
+  </div>
+  <div id="snippet-area"></div>
+  <div id="gcse-results-wrap">
+    <div class="gcse-searchresults-only" id="gcseResults" data-queryParameterName="gq" data-enableHistory="false" data-noResultsString="Sonuç bulunamadı"></div>
   </div>
   <div id="area">
     <div class="state">
       <span class="state-ico">&#128269;</span>
       <div class="state-title">Highly Arama</div>
-      <div class="state-sub">Web, haberler ve gorsellerde ara.</div>
+      <div class="state-sub">Web aramak için yaz ve Enter'a bas.</div>
       <div class="quick-chips">
         <div class="q-chip" onclick="qs('haberler')">Haberler</div>
         <div class="q-chip" onclick="qs('hava durumu')">Hava</div>
@@ -163,18 +197,43 @@ var av = document.getElementById('navAv');
 if (usr.avatarEmoji) { av.textContent = usr.avatarEmoji; av.style.background = 'transparent'; av.style.fontSize = '16px'; }
 else { av.textContent = (usr.name || '?')[0].toUpperCase(); if (usr.avatarBg) av.style.background = usr.avatarBg; }
 
-var WORKER = 'https://highly-ai-proxy.emrir41.workers.dev/search';
-var activeType = 'search';
+var gcseReady = false;
+var pendingQuery = null;
 
-document.querySelectorAll('.tab').forEach(function(t) {
-  t.addEventListener('click', function() {
-    document.querySelectorAll('.tab').forEach(function(x) { x.classList.remove('active'); });
-    t.classList.add('active');
-    activeType = t.dataset.type;
-    var q = document.getElementById('sInput').value.trim();
-    if (q) run(q);
-  });
-});
+// Google CSE hazir olunca cagrilir
+window.__gcse = {
+  parsetags: 'explicit',
+  callback: function() {
+    gcseReady = true;
+    if (pendingQuery) { doGCSE(pendingQuery); pendingQuery = null; }
+  }
+};
+
+// CSE script yuklendikten sonra elementi render et
+function initGCSE() {
+  if (window.google && window.google.search && window.google.search.cse) {
+    window.google.search.cse.element.render({
+      div: document.getElementById('gcseResults'),
+      tag: 'searchresults-only',
+      gname: 'highly_cse'
+    });
+    gcseReady = true;
+    if (pendingQuery) { doGCSE(pendingQuery); pendingQuery = null; }
+  } else {
+    setTimeout(initGCSE, 200);
+  }
+}
+initGCSE();
+
+function doGCSE(q) {
+  try {
+    var el = window.google.search.cse.element.getElement('highly_cse');
+    if (el) { el.execute(q); return; }
+  } catch(e) {}
+  // Fallback: gname ile tekrar dene
+  try { window.google.search.cse.element.getElement('highly_cse').execute(q); } catch(e2) {}
+}
+
 document.getElementById('sBtn').addEventListener('click', function() {
   var q = document.getElementById('sInput').value.trim();
   if (q) run(q);
@@ -184,31 +243,24 @@ document.getElementById('sInput').addEventListener('keydown', function(e) {
 });
 function qs(q) { document.getElementById('sInput').value = q; run(q); }
 
-function loading() {
-  document.getElementById('area').innerHTML =
-    '<div class="state"><span class="state-ico">&#128269;</span><div class="state-title">Araniyor...</div>' +
-    '<div class="dots"><span></span><span></span><span></span></div></div>';
-}
-
 async function run(q) {
-  loading();
-  document.getElementById('sBtn').disabled = true;
+  // Baslangic state'ini gizle
+  document.getElementById('area').style.display = 'none';
+  document.getElementById('gcse-results-wrap').style.display = 'block';
+
+  // Snippet (hava/doviz) varsa once goster
+  document.getElementById('snippet-area').innerHTML = '';
   try {
-    var body = { q: q };
-    if (activeType === 'images') body.type = 'images';
-    if (activeType === 'news')   body.type = 'news';
-    var featured = null;
-    if (activeType === 'search') featured = await getSnippet(q);
-    var res  = await fetch(WORKER, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    var data = await res.json();
-    if (activeType === 'search')  renderWeb(data, featured);
-    if (activeType === 'news')    renderNews(data);
-    if (activeType === 'images')  renderImgs(data);
-  } catch(e) {
-    document.getElementById('area').innerHTML =
-      '<div class="state"><span class="state-ico">&#10060;</span><div class="state-title">Baglanti hatasi</div></div>';
+    var snippet = await getSnippet(q);
+    if (snippet) document.getElementById('snippet-area').innerHTML = snippet;
+  } catch(e) {}
+
+  // Google CSE'ye sorguyu gonder
+  if (gcseReady) {
+    doGCSE(q);
+  } else {
+    pendingQuery = q;
   }
-  document.getElementById('sBtn').disabled = false;
 }
 
 // Featured snippet
@@ -269,74 +321,7 @@ async function dovizSnippet(q) {
     '<a href="highly-doviz.html" class="featured-link">&#128181; Doviz sayfasini ac</a></div>';
 }
 
-function renderWeb(data, featured) {
-  var results = data.organic || [];
-  var related = data.relatedSearches || [];
-  if (!results.length && !featured) { empty(); return; }
-  var html = (featured || '') + '<div class="results-meta">' + results.length + ' sonuc bulundu</div>';
-  results.forEach(function(r) {
-    var domain = '';
-    try { domain = new URL(r.link).hostname.replace('www.', ''); } catch(e) {}
-    html += '<div class="web-result">' +
-      '<div class="wr-src"><span style="font-size:12px">&#127760;</span><span class="wr-domain">' + domain + '</span></div>' +
-      '<a href="' + r.link + '" target="_blank" class="wr-title">' + (r.title || '') + '</a>' +
-      '<div class="wr-snip">' + (r.snippet || '') + '</div></div>';
-  });
-  if (related.length) {
-    html += '<div class="related"><div class="related-lbl">Ilgili aramalar</div><div class="related-chips">';
-    related.slice(0, 8).forEach(function(r) {
-      html += '<div class="rel-chip" onclick="qs(this.textContent)">' + r.query + '</div>';
-    });
-    html += '</div></div>';
-  }
-  document.getElementById('area').innerHTML = html;
-}
-
-function renderNews(data) {
-  var results = data.news || [];
-  if (!results.length) { empty(); return; }
-  var html = '<div class="results-meta">' + results.length + ' haber bulundu</div>';
-  results.forEach(function(r) {
-    html += '<div class="news-item">' +
-      '<div class="ni-img">' + (r.imageUrl ? '<img src="' + r.imageUrl + '" alt="" onerror="this.parentElement.textContent=\'&#128240;\'" />' : '&#128240;') + '</div>' +
-      '<div style="flex:1;min-width:0">' +
-      '<a href="' + r.link + '" target="_blank" class="ni-title">' + (r.title || '') + '</a>' +
-      '<div class="ni-meta">' + (r.source || '') + ' &middot; ' + (r.date || '') + '</div>' +
-      '<div class="ni-snip">' + (r.snippet || '') + '</div>' +
-      '</div></div>';
-  });
-  document.getElementById('area').innerHTML = html;
-}
-
-function renderImgs(data) {
-  var results = data.images || [];
-  if (!results.length) { empty(); return; }
-  var html = '<div class="results-meta">' + results.length + ' gorsel bulundu</div><div class="img-grid">';
-  results.forEach(function(r) {
-    var src    = r.imageUrl || r.thumbnailUrl || '';
-    var title  = (r.title || '').replace(/"/g, '').replace(/'/g, '');
-    var link   = r.link || src;
-    var domain = '';
-    try { domain = new URL(link).hostname.replace('www.', ''); } catch(e) {}
-    html += '<div class="img-item" onclick="openModal(' +
-      JSON.stringify(src) + ',' +
-      JSON.stringify(title) + ',' +
-      JSON.stringify(link) + ',' +
-      JSON.stringify(domain) +
-      ')">' +
-      '<img src="' + src + '" alt="" loading="lazy" onerror="this.parentElement.style.display=\'none\'"/>' +
-      '</div>';
-  });
-  html += '</div>';
-  document.getElementById('area').innerHTML = html;
-}
-
-function empty() {
-  document.getElementById('area').innerHTML =
-    '<div class="state"><span class="state-ico">&#129335;</span><div class="state-title">Sonuc bulunamadi</div></div>';
-}
-
-// Gorsel modal
+// Gorsel modal (gorsel arama icin hala kullanilabilir)
 function openModal(src, title, link, domain) {
   document.getElementById('modalImg').src = src;
   document.getElementById('modalTitle').textContent = title || 'Gorsel';
@@ -354,5 +339,6 @@ function closeModal() {
 function modalBg(e) { if (e.target === document.getElementById('imgModal')) closeModal(); }
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 </script>
+
 </body>
 </html>
