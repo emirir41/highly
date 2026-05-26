@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+[data-theme="dark"]{
+  --bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+  --text:#e8e8ff;--muted:#4a4d6a;--text2:#9ca3c8;
+  --nav-bg:rgba(6,7,15,0.95);
+  --accent:#6366f1;--accent2:#a78bfa;
+  --orb1:rgba(99,102,241,0.1);--orb2:rgba(52,211,153,0.06);
+  --card-bg:#0b0d1c;
+}
+[data-theme="glass"]{
+  --bg:linear-gradient(135deg,#0a0f2e 0%,#0d1635 50%,#0a1628 100%);
+  --s1:rgba(255,255,255,0.06);--s2:rgba(255,255,255,0.1);
+  --border:rgba(255,255,255,0.12);--border2:rgba(255,255,255,0.2);
+  --text:#f0f4ff;--muted:rgba(255,255,255,0.45);--text2:rgba(255,255,255,0.7);
+  --nav-bg:rgba(10,15,46,0.7);
+  --accent:#818cf8;--accent2:#c4b5fd;
+  --orb1:rgba(99,102,241,0.15);--orb2:rgba(139,92,246,0.1);
+  --card-bg:rgba(255,255,255,0.05);
+}
+[data-theme="light"]{
+  --bg:#f0f2f8;--s1:#ffffff;--s2:#f5f6fa;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1a1b2e;--muted:#9095b0;--text2:#6b6f8e;
+  --nav-bg:rgba(240,242,248,0.95);
+  --accent:#6366f1;--accent2:#4f46e5;
+  --orb1:rgba(99,102,241,0.06);--orb2:rgba(52,211,153,0.04);
+  --card-bg:#ffffff;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  transition:background .3s,color .3s;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse at 20% 10%,var(--orb1) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 85%,var(--orb2) 0%,transparent 55%);
+}
+
+/* ===== NAV ===== */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 24px;
+  background:var(--nav-bg);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  transition:background .3s;
+}
+[data-theme="glass"] nav{backdrop-filter:blur(30px);box-shadow:0 4px 24px rgba(0,0,0,.3)}
+
+.n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.n-logomark{
+  width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(135deg,#6366f1,#4f46e5);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#fff;flex-shrink:0;
+}
+.n-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+
+.n-right{display:flex;align-items:center;gap:8px}
+.n-icon-btn{
+  width:36px;height:36px;
+  background:var(--s1);border:1px solid var(--border);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;transition:all .2s;color:var(--text);
+}
+.n-icon-btn:hover{background:var(--s2);border-color:var(--border2)}
+
+.n-avatar-btn{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,#6366f1,#4f46e5);
+  border:2px solid transparent;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#fff;
+  cursor:pointer;transition:all .2s;flex-shrink:0;
+}
+.n-avatar-btn:hover{border-color:var(--accent);transform:scale(1.05)}
+
+/* Profil Dropdown */
+.profile-overlay{position:fixed;inset:0;z-index:150;pointer-events:none;opacity:0;transition:opacity .2s}
+.profile-overlay.show{opacity:1;pointer-events:all}
+
+.profile-dropdown{
+  position:fixed;top:56px;right:24px;width:240px;
+  border:1px solid var(--border2);border-radius:16px;
+  z-index:160;
+  transform:translateY(-8px) scale(.97);
+  opacity:0;pointer-events:none;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 16px 48px rgba(0,0,0,.4);
+  overflow:hidden;
+}
+[data-theme="dark"] .profile-dropdown{background:#0d0f20}
+[data-theme="glass"] .profile-dropdown{background:rgba(8,12,40,0.85);backdrop-filter:blur(32px)}
+[data-theme="light"] .profile-dropdown{background:#ffffff}
+.profile-dropdown.show{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+
+.pd-head{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.pd-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,#6366f1,#4f46e5);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#fff;flex-shrink:0;
+}
+.pd-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800}
+.pd-email{font-size:11px;color:var(--muted);margin-top:1px}
+
+.pd-item{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 16px;cursor:pointer;
+  transition:background .15s;color:var(--text);
+  font-size:13px;font-weight:500;
+  text-decoration:none;
+}
+.pd-item:hover{background:rgba(99,102,241,.07)}
+.pd-item-icon{font-size:16px;width:20px;text-align:center}
+.pd-divider{height:1px;background:var(--border);margin:4px 0}
+.pd-item.danger{color:#f87171}
+.pd-item.danger:hover{background:rgba(248,113,113,.07)}
+
+/* Tema butonu nav'da */
+.n-theme-btn{
+  width:36px;height:36px;
+  background:var(--s1);border:1px solid var(--border);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:15px;transition:all .2s;
+}
+.n-theme-btn:hover{background:var(--s2);border-color:var(--border2)}
+
+/* ===== ANA İÇERİK ===== */
+.page{
+  display:flex;align-items:center;justify-content:center;
+  min-height:calc(100vh - 57px);
+  padding:40px 24px;
+  position:relative;z-index:2;
+}
+
+/* ===== KART ===== */
+.card{
+  width:100%;max-width:640px;
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:40px;
+  box-shadow:0 8px 40px rgba(0,0,0,.18);
+  transition:background .3s,border .3s;
+  animation:fadeUp .4s ease both;
+}
+[data-theme="glass"] .card{
+  backdrop-filter:blur(20px);
+  border-color:var(--border2);
+  box-shadow:0 8px 40px rgba(0,0,0,.3);
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* İnce accent çizgi üstte */
+.card::before{
+  content:'';
+  display:block;
+  height:2px;
+  width:60px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#6366f1,#a78bfa);
+  margin-bottom:28px;
+}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:#6366f1;color:#fff;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;
+  padding:10px 20px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:all .3s;z-index:999;
+  white-space:nowrap;box-shadow:0 4px 20px rgba(99,102,241,.4);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- Profil Overlay -->
+<div class="profile-overlay" id="profileOverlay" onclick="closeProfileMenu()"></div>
+
+<!-- Profil Dropdown -->
+<div class="profile-dropdown" id="profileDropdown">
+  <div class="pd-head">
+    <div class="pd-avatar" id="pdAvatar">E</div>
+    <div>
+      <div class="pd-name" id="pdName">Kullanıcı</div>
+      <div class="pd-email">highly.com.tr</div>
+    </div>
+  </div>
+  <a href="highly-profil.html" class="pd-item"><span class="pd-item-icon">👤</span> Profilim</a>
+  <a href="#" class="pd-item" onclick="openSettings();closeProfileMenu()"><span class="pd-item-icon">⚙️</span> Ayarlar</a>
+  <div class="pd-divider"></div>
+  <a href="#" class="pd-item danger" onclick="logout()"><span class="pd-item-icon">🚪</span> Çıkış Yap</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="n-logo" href="dashboard.html">
+    <div class="n-logomark">H</div>
+    <span class="n-brand">Highly</span>
+  </a>
+  <div class="n-right">
+    <div class="n-theme-btn" onclick="cycleTheme()" title="Tema değiştir" id="themeBtn">🌑</div>
+    <div class="n-avatar-btn" id="navAvatar" onclick="toggleProfileMenu()">E</div>
+  </div>
+</nav>
+
+<!-- SAYFA -->
+<div class="page">
+  <div class="card" id="mainCard">
+    <!-- BURAYA YAZ -->
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== KULLANICI =====
+const u = JSON.parse(localStorage.getItem('highly_user') || '{}');
+const name = u.name || 'Kullanıcı';
+const initial = name.charAt(0).toUpperCase();
+document.getElementById('pdName').textContent = name;
+document.getElementById('pdAvatar').textContent = initial;
+document.getElementById('navAvatar').textContent = initial;
+
+// ===== PROFİL DROPDOWN =====
+function toggleProfileMenu() {
+  const dd = document.getElementById('profileDropdown');
+  const ov = document.getElementById('profileOverlay');
+  const open = dd.classList.contains('show');
+  if (open) { dd.classList.remove('show'); ov.classList.remove('show'); }
+  else { dd.classList.add('show'); ov.classList.add('show'); }
+}
+function closeProfileMenu() {
+  document.getElementById('profileDropdown').classList.remove('show');
+  document.getElementById('profileOverlay').classList.remove('show');
+}
+function openSettings() { /* ayarlar paneli bağlanacak */ }
+function logout() {
+  if (!confirm('Çıkış yapmak istiyor musun?')) return;
+  localStorage.removeItem('highly_user');
+  location.href = 'index.html';
+}
+
+// ===== TEMA =====
+const themes = ['dark','glass','light'];
+const themeIcons = { dark:'🌑', glass:'🪟', light:'☀️' };
+let currentTheme = localStorage.getItem('highly_theme') || 'dark';
+document.documentElement.setAttribute('data-theme', currentTheme);
+document.getElementById('themeBtn').textContent = themeIcons[currentTheme];
+
+function cycleTheme() {
+  const idx = themes.indexOf(currentTheme);
+  currentTheme = themes[(idx + 1) % themes.length];
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  localStorage.setItem('highly_theme', currentTheme);
+  document.getElementById('themeBtn').textContent = themeIcons[currentTheme];
+  showToast('Tema: ' + currentTheme);
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeProfileMenu();
+});
+</script>
+</body>
+</html>
