@@ -233,7 +233,123 @@ nav{
 <!-- SAYFA -->
 <div class="page">
   <div class="card" id="mainCard">
-    <!-- BURAYA YAZ -->
+    <h1>Merhaba Dünya</h1>
+<p>import subprocess
+import json
+from flask import Flask, jsonify, render_template_string
+
+app = Flask(__name__)
+
+# Robotun merkezi veri deposu (Gebze varsayılan koordinatları ile başlıyor)
+robot_verisi = {
+    "enlem": 40.7952,
+    "boylam": 29.4310,
+    "jiroskop_x": 0.0,
+    "jiroskop_y": 0.0,
+    "jiroskop_z": 0.0,
+    "durum": "Sistem Aktif (LineageOS)"
+}
+
+def telefon_sensörlerini_oku():
+    global robot_verisi
+    try:
+        # 1. Termux:API ile Canlı GPS Konumunu çekiyoruz
+        gps_raw = subprocess.check_output(["termux-location"], text=True)
+        gps_data = json.loads(gps_raw)
+        robot_verisi["enlem"] = gps_data.get("latitude", robot_verisi["enlem"])
+        robot_verisi["boylam"] = gps_data.get("longitude", robot_verisi["boylam"])
+        
+        # 2. Termux:API ile Canlı Jiroskop verisini çekiyoruz
+        sensor_raw = subprocess.check_output(["termux-sensor", "-n", "1", "-s", "gyroscope"], text=True)
+        sensor_data = json.loads(sensor_raw)
+        
+        gyro = sensor_data.get("gyroscope", {}).get("values", [0.0, 0.0, 0.0])
+        robot_verisi["jiroskop_x"] = gyro[0]
+        robot_verisi["jiroskop_y"] = gyro[1]
+        robot_verisi["jiroskop_z"] = gyro[2]
+        
+        # Kaza Kontrolü (Robot devrilirse)
+        if abs(gyro[0]) > 5.0 or abs(gyro[1]) > 5.0:
+            robot_verisi["durum"] = "⚠️ TEHLİKE: ROBOT DEVRİLDİ VEYA KAZA YAPTI!"
+        else:
+            robot_verisi["durum"] = "Robot Aktif / Yolda"
+            
+    except Exception as e:
+        robot_verisi["durum"] = "Sensör verisi bekleniyor..."
+
+# MÜŞTERİNİN GÖRECEĞİ HARİTA ARAYÜZÜ (HTML/CSS)
+HTML_SABLONU = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Highly - Canlı Robot Takip</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body class="bg-slate-900 text-white p-4 font-sans">
+    <header class="bg-slate-800 p-4 rounded-xl shadow-md flex justify-between items-center border border-indigo-500/30">
+        <h1 class="text-xl font-black text-indigo-400 tracking-wider">HIGHLY OTONOM BEYİN</h1>
+        <div id="durum" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500 text-slate-950">Yükleniyor...</div>
+    </header>
+    
+    <main class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-2 bg-slate-800 p-3 rounded-xl border border-slate-700">
+            <div id="map" class="h-[400px] w-full rounded-lg"></div>
+        </div>
+        <div class="space-y-4">
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                <h3 class="text-xs font-bold text-indigo-300 uppercase tracking-wider">📍 Konum Bilgisi</h3>
+                <p class="font-mono text-sm mt-2">Lat: <span id="lat">0</span></p>
+                <p class="font-mono text-sm">Lng: <span id="lng">0</span></p>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                <h3 class="text-xs font-bold text-emerald-300 uppercase tracking-wider">📐 Jiroskop (Eksenler)</h3>
+                <p class="font-mono text-sm mt-2 text-slate-400">X: <span id="gx" class="text-white">0</span></p>
+                <p class="font-mono text-sm text-slate-400">Y: <span id="gy" class="text-white">0</span></p>
+                <p class="font-mono text-sm text-slate-400">Z: <span id="gz" class="text-white">0</span></p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        var map = L.map('map').setView([40.7952, 29.4310], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        var marker = L.marker([40.7952, 29.4310]).addTo(map);
+
+        setInterval(function() {
+            fetch('/api/data')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('durum').innerText = data.durum;
+                    document.getElementById('lat').innerText = data.enlem.toFixed(5);
+                    document.getElementById('lng').innerText = data.boylam.toFixed(5);
+                    document.getElementById('gx').innerText = data.jiroskop_x.toFixed(2);
+                    document.getElementById('gy').innerText = data.jiroskop_y.toFixed(2);
+                    document.getElementById('gz').innerText = data.jiroskop_z.toFixed(2);
+                    
+                    var yeniKonum = new L.LatLng(data.enlem, data.boylam);
+                    marker.setLatLng(yeniKonum);
+                });
+        }, 1000);
+    </script>
+</body>
+</html>
+"""
+
+@app.route('/')
+def ana_sayfa():
+    return render_template_string(HTML_SABLONU)
+
+@app.route('/api/data')
+def api_verisi():
+    telefon_sensörlerini_oku()
+    return jsonify(robot_verisi)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080, debug=False)
+</p>
   </div>
 </div>
 
