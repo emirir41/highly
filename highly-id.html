@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Highly ID</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#07080f;--surface:#0d0f1e;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--accent:#6366f1;--accent2:#a78bfa;--accent3:#34d399;--text:#f0f0ff;--muted:#6b6e8e;--error:#f87171;--success:#34d399;}
@@ -73,6 +74,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .toast.ok{border-color:var(--success);color:var(--success);}
 .toast.err{border-color:var(--error);color:var(--error);}
 @media(max-width:480px){.card-inner{padding:28px 22px 24px;}.card{border-radius:20px;}}
+.divider{display:flex;align-items:center;gap:12px;margin:4px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider span{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
+.btn-google{width:100%;padding:13px 16px;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s,border-color .2s;}
+.btn-google:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);}
+.btn-google:disabled{opacity:.5;cursor:not-allowed;}
+.btn-google svg{width:18px;height:18px;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -130,6 +138,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           </div>
         </div>
         <button class="btn" id="girisBtn" onclick="login()">Giriş Yap →</button>
+        <div class="divider"><span>veya</span></div>
+        <button class="btn-google" id="googleGirisBtn" onclick="loginWithGoogle()">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Google ile Devam Et
+        </button>
       </div>
 
       <!-- Kayıt -->
@@ -181,6 +194,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         </div>
 
         <button class="btn" id="kayitBtn" onclick="register()">Hesap Oluştur →</button>
+        <div class="divider"><span>veya</span></div>
+        <button class="btn-google" id="googleKayitBtn" onclick="loginWithGoogle()">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Google ile Kayıt Ol
+        </button>
       </div>
     </div>
 
@@ -194,9 +212,34 @@ var SB_URL = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0';
 var H = { 'Content-Type':'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
 
-window.addEventListener('load', function() {
+// Supabase JS client (Google OAuth için)
+var supabase = window.supabase.createClient(SB_URL, SB_KEY);
+
+window.addEventListener('load', async function() {
+  // Google OAuth callback kontrolü
+  var { data: { session } } = await supabase.auth.getSession();
+  if (session && session.user) {
+    var u = session.user;
+    var meta = u.user_metadata || {};
+    var userData = {
+      id: u.id,
+      name: meta.full_name || meta.name || u.email.split('@')[0],
+      email: u.email,
+      avatar_url: meta.avatar_url || meta.picture || null,
+      provider: 'google'
+    };
+    localStorage.setItem('highly_user', JSON.stringify(userData));
+    location.href = 'dashboard.html';
+    return;
+  }
+
   var s = localStorage.getItem('highly_user');
-  if (s) { try { JSON.parse(s); location.href = 'dashboard.html'; } catch(e) { localStorage.removeItem('highly_user'); } }
+  if (s) {
+    try {
+      var u = JSON.parse(s);
+      if (u && u.email) { showBadge(u); return; }
+    } catch(e) { localStorage.removeItem('highly_user'); }
+  }
 });
 
 function switchTab(tab) {
@@ -216,7 +259,7 @@ function toast(msg, type) {
 function setLoading(id, on, label) {
   var b = document.getElementById(id);
   b.disabled = on;
-  b.innerHTML = on ? '<span class="spinner"></span>Yükleniyor...' : label;
+  b.innerHTML = on ? '<span class="spinner"></span>Y&uuml;kleniyor...' : label;
 }
 
 function togglePass(id, btn) {
@@ -234,7 +277,7 @@ function checkStrength(val) {
   if (/[A-Z]/.test(val) && /[0-9]/.test(val)) s++;
   if (/[^A-Za-z0-9]/.test(val)) s++;
   var cls = s <= 1 ? 'sb-weak' : s <= 2 ? 'sb-med' : 'sb-strong';
-  var lbls = { 'sb-weak':'Zayıf 😬', 'sb-med':'Orta 👍', 'sb-strong':'Güçlü 💪' };
+  var lbls = { 'sb-weak':'Zay&#305;f 😬', 'sb-med':'Orta 👍', 'sb-strong':'G&uuml;&ccedil;l&uuml; 💪' };
   var colors = { 'sb-weak':'#f87171', 'sb-med':'#fbbf24', 'sb-strong':'#34d399' };
   for (var i = 0; i < s; i++) bars[i].className = cls;
   var lbl = document.getElementById('strengthLbl');
@@ -242,23 +285,44 @@ function checkStrength(val) {
   lbl.style.color = colors[cls] || '';
 }
 
+async function loginWithGoogle() {
+  var btns = document.querySelectorAll('.btn-google');
+  btns.forEach(function(b){ b.disabled = true; b.style.opacity = '.5'; });
+  try {
+    var { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.href
+      }
+    });
+    if (error) {
+      toast('Google giri&#351;i ba&#351;ar&#305;s&#305;z: ' + error.message, 'err');
+      btns.forEach(function(b){ b.disabled = false; b.style.opacity = ''; });
+    }
+    // Başarılıysa Google sayfasına yönlendirir, buton disabled kalır
+  } catch(e) {
+    toast('Ba&#287;lant&#305; hatas&#305;.', 'err');
+    btns.forEach(function(b){ b.disabled = false; b.style.opacity = ''; });
+  }
+}
+
 async function login() {
   var email = document.getElementById('girisEmail').value.trim();
   var pass  = document.getElementById('girisPass').value;
-  if (!email || !pass) return toast('Lütfen tüm alanları doldurun.', 'err');
-  setLoading('girisBtn', true, 'Giriş Yap →');
+  if (!email || !pass) return toast('L&uuml;tfen t&uuml;m alanlar&#305; doldurun.', 'err');
+  setLoading('girisBtn', true, 'Giri&#351; Yap &rarr;');
   try {
     var res  = await fetch(SB_URL + '/rest/v1/users?email=eq.' + encodeURIComponent(email) + '&password=eq.' + encodeURIComponent(pass) + '&select=*', { headers: H });
     var data = await res.json();
     if (!data || !data.length) {
-      toast('E-posta veya şifre hatalı.', 'err');
+      toast('E-posta veya &#351;ifre hatal&#305;.', 'err');
     } else {
       localStorage.setItem('highly_user', JSON.stringify(data[0]));
-      toast('Hoş geldin, ' + data[0].name.split(' ')[0] + '! ✦', 'ok');
+      toast('Ho&#351; geldin, ' + data[0].name.split(' ')[0] + '! ✦', 'ok');
       setTimeout(function(){ location.href = 'dashboard.html'; }, 1000);
     }
-  } catch(e) { toast('Bağlantı hatası.', 'err'); }
-  setLoading('girisBtn', false, 'Giriş Yap →');
+  } catch(e) { toast('Ba&#287;lant&#305; hatas&#305;.', 'err'); }
+  setLoading('girisBtn', false, 'Giri&#351; Yap &rarr;');
 }
 
 async function register() {
@@ -268,23 +332,23 @@ async function register() {
   var uname = document.getElementById('kayitUsername').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
   var terms = document.getElementById('termsCheck').checked;
 
-  if (!name || !email || !pass || !uname) return toast('Lütfen tüm alanları doldurun.', 'err');
-  if (uname.length < 3) return toast('Kullanıcı adı en az 3 karakter olmalı.', 'err');
+  if (!name || !email || !pass || !uname) return toast('L&uuml;tfen t&uuml;m alanlar&#305; doldurun.', 'err');
+  if (uname.length < 3) return toast('Kullan&#305;c&#305; ad&#305; en az 3 karakter olmal&#305;.', 'err');
   if (!terms) {
     document.getElementById('termsErr').classList.add('show');
-    return toast('Kullanım koşullarını kabul etmelisiniz.', 'err');
+    return toast('Kullan&#305;m ko&#351;ullar&#305;n&#305; kabul etmelisiniz.', 'err');
   }
-  if (pass.length < 6) return toast('Şifre en az 6 karakter olmalı.', 'err');
+  if (pass.length < 6) return toast('&#350;ifre en az 6 karakter olmal&#305;.', 'err');
 
   document.getElementById('termsErr').classList.remove('show');
-  setLoading('kayitBtn', true, 'Hesap Oluştur →');
+  setLoading('kayitBtn', true, 'Hesap Olu&#351;tur &rarr;');
   try {
     var chk  = await fetch(SB_URL + '/rest/v1/users?email=eq.' + encodeURIComponent(email) + '&select=id', { headers: H });
     var exist = await chk.json();
-    if (exist && exist.length) { toast('Bu e-posta zaten kayıtlı.', 'err'); setLoading('kayitBtn', false, 'Hesap Oluştur →'); return; }
+    if (exist && exist.length) { toast('Bu e-posta zaten kay&#305;tl&#305;.', 'err'); setLoading('kayitBtn', false, 'Hesap Olu&#351;tur &rarr;'); return; }
     var uchk = await fetch(SB_URL + '/rest/v1/users?username=eq.' + encodeURIComponent(uname) + '&select=id', { headers: H });
     var uexist = await uchk.json();
-    if (uexist && uexist.length) { toast('@' + uname + ' kullanıcı adı alınmış!', 'err'); setLoading('kayitBtn', false, 'Hesap Oluştur →'); return; }
+    if (uexist && uexist.length) { toast('@' + uname + ' kullan&#305;c&#305; ad&#305; al&#305;nm&#305;&#351;!', 'err'); setLoading('kayitBtn', false, 'Hesap Olu&#351;tur &rarr;'); return; }
     var res  = await fetch(SB_URL + '/rest/v1/users', {
       method: 'POST',
       headers: Object.assign({}, H, { 'Prefer': 'return=representation' }),
@@ -293,31 +357,39 @@ async function register() {
     var data = await res.json();
     if (data && data[0]) {
       localStorage.setItem('highly_user', JSON.stringify(data[0]));
-      toast('Hesap oluşturuldu! 🎉', 'ok');
+      toast('Hesap olu&#351;turuldu! 🎉', 'ok');
       setTimeout(function(){ location.href = 'dashboard.html'; }, 1000);
-    } else { toast('Bir hata oluştu. Tekrar dene.', 'err'); }
-  } catch(e) { toast('Bağlantı hatası.', 'err'); }
-  setLoading('kayitBtn', false, 'Hesap Oluştur →');
+    } else { toast('Bir hata olu&#351;tu. Tekrar dene.', 'err'); }
+  } catch(e) { toast('Ba&#287;lant&#305; hatas&#305;.', 'err'); }
+  setLoading('kayitBtn', false, 'Hesap Olu&#351;tur &rarr;');
 }
 
 function showBadge(u) {
   document.getElementById('authArea').style.display = 'none';
   document.getElementById('badgeWrap').classList.add('show');
   var av = document.getElementById('badgeAv');
-  if (u.avatarEmoji) { av.textContent = u.avatarEmoji; av.style.background = 'transparent'; av.style.fontSize = '40px'; }
-  else { av.textContent = u.name[0].toUpperCase(); if (u.avatarBg) av.style.background = u.avatarBg; }
+  if (u.avatar_url) {
+    av.innerHTML = '<img src="' + u.avatar_url + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"/>';
+    av.style.background = 'transparent';
+  } else if (u.avatarEmoji) {
+    av.textContent = u.avatarEmoji; av.style.background = 'transparent'; av.style.fontSize = '40px';
+  } else {
+    av.textContent = u.name[0].toUpperCase();
+    if (u.avatarBg) av.style.background = u.avatarBg;
+  }
   document.getElementById('badgeName').textContent  = u.name;
   document.getElementById('badgeEmail').textContent = u.email;
 }
 
-function logout() {
+async function logout() {
+  await supabase.auth.signOut();
   localStorage.removeItem('highly_user');
   document.getElementById('badgeWrap').classList.remove('show');
   document.getElementById('authArea').style.display = 'block';
   document.getElementById('girisEmail').value = '';
   document.getElementById('girisPass').value  = '';
   switchTab('giris');
-  toast('Çıkış yapıldı.', 'ok');
+  toast('&Ccedil;&#305;k&#305;&#351; yap&#305;ld&#305;.', 'ok');
 }
 
 document.addEventListener('keydown', function(e) {
