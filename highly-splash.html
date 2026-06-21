@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>highly</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d0f1f;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .logo-wrap {
+    position: relative;
+    display: inline-block;
+    user-select: none;
+  }
+
+  /* Base gradient text — matches the logo colors */
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(72px, 16vw, 160px);
+    font-weight: 800;
+    letter-spacing: -2px;
+
+    background: linear-gradient(90deg, #7c6ff7 0%, #a855f7 50%, #d46ef7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Shimmer overlay — clipped to text, soldan sağa */
+  .logo-text::after {
+    content: 'highly';
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(
+      105deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.55) 48%,
+      rgba(255, 255, 255, 0.75) 50%,
+      rgba(255, 255, 255, 0.55) 52%,
+      transparent 70%
+    );
+    background-size: 250% 100%;
+    background-repeat: no-repeat;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    animation: shimmer 2s linear infinite;
+    z-index: 2;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 250% 0; }
+    100% { background-position: -100% 0; }
+  }
+
+  /* Subtle pulsing glow behind text */
+  .logo-glow {
+    position: absolute;
+    inset: -30px -60px;
+    background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.18) 0%, transparent 70%);
+    animation: glow-pulse 2s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.06); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-text::after { animation: none; }
+    .logo-glow        { animation: none; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="logo-wrap">
+    <div class="logo-glow"></div>
+    <div class="logo-text">highly</div>
+  </div>
+</body>
+</html>
