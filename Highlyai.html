@@ -2,33 +2,54 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Local AI WebLLM Test</title>
+  <title>Local AI WebLLM Asistanı</title>
   <style>
     body { font-family: sans-serif; background: #121212; color: #fff; padding: 20px; }
-    #output { background: #1e1e1e; padding: 15px; border-radius: 8px; min-height: 100px; white-space: pre-wrap; }
+    #output { background: #1e1e1e; padding: 15px; border-radius: 8px; min-height: 100px; white-space: pre-wrap; margin-top: 15px; }
     input, button { padding: 10px; margin-top: 10px; border-radius: 4px; border: none; }
     input { width: 70%; }
     button { background: #007bff; color: white; cursor: pointer; }
+    
+    /* Progress Bar Stilleri */
+    #progress-container { width: 100%; background: #333; border-radius: 5px; margin-top: 15px; overflow: hidden; display: none; }
+    #progress-bar { width: 0%; height: 20px; background: #28a745; text-align: center; line-height: 20px; color: white; font-size: 12px; transition: width 0.2s; }
   </style>
-  <!-- WebLLM CDN Linki -->
+  
   <script type="module">
     import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
-    // Cihazda çalışacak model (Gemma 2B)
     const selectedModel = "gemma-2b-it-q4f16_1-MLC";
     let engine;
 
     window.initAI = async function() {
       const statusDiv = document.getElementById("status");
-      statusDiv.innerText = "Model yükleniyor, lütfen bekleyin...";
+      const progressContainer = document.getElementById("progress-container");
+      const progressBar = document.getElementById("progress-bar");
       
-      // WebGPU Motorunu Başlat
-      engine = await webllm.CreateMLCEngine(selectedModel, {
-        initProgressCallback: (report) => {
-          statusDiv.innerText = report.text;
+      progressContainer.style.display = "block";
+
+      try {
+        if (!navigator.gpu) {
+          statusDiv.innerText = "Hata: Tarayıcın WebGPU desteklemiyor!";
+          return;
         }
-      });
-      statusDiv.innerText = "Model Hazır! Sorunu sorabilirsin.";
+
+        engine = await webllm.CreateMLCEngine(selectedModel, {
+          initProgressCallback: (report) => {
+            statusDiv.innerText = report.text;
+            // Yüzde hesaplama ve progress barı doldurma
+            if (report.progress) {
+              const percent = Math.round(report.progress * 100);
+              progressBar.style.width = percent + "%";
+              progressBar.innerText = percent + "%";
+            }
+          }
+        });
+        
+        statusDiv.innerText = "Model Hazır! Sorunu yazıp gönderebilirsin.";
+      } catch (err) {
+        statusDiv.innerText = "Yükleme Hatası: " + err.message;
+      }
     };
 
     window.sendMessage = async function() {
@@ -36,13 +57,14 @@
       const output = document.getElementById("output");
       if (!engine || !input) return;
 
-      output.innerText += "\nSen: " + input + "\nAI: Düşünüyor...";
+      output.innerText += "\n\nSen: " + input + "\nAI: Düşünüyor...";
       
       const reply = await engine.chat.completions.create({
         messages: [{ role: "user", content: input }]
       });
 
-      output.innerText += "\nAI: " + reply.choices[0].message.content + "\n";
+      // Son cevabı düzgün göstermek için çıktıyı yenileyelim
+      output.innerText = output.innerText.replace("AI: Düşünüyor...", "AI: " + reply.choices[0].message.content);
       document.getElementById("userInput").value = "";
     };
   </script>
@@ -51,10 +73,17 @@
 
   <h2>Tarayıcı İçi WebLLM Asistanı</h2>
   <div id="status">Sistemi başlatmak için butona bas.</div>
+  
+  <!-- İlerleme Çubuğu -->
+  <div id="progress-container">
+    <div id="progress-bar">0%</div>
+  </div>
+
   <button onclick="initAI()">Modeli Yükle</button>
 
-  <br><br>
-  <div id="output"></div>
+  <br>
+  <div id="output">Burada konuşmalar görünecek...</div>
+  <br>
   <input type="text" id="userInput" placeholder="Mesajını yaz...">
   <button onclick="sendMessage()">Gönder</button>
 
