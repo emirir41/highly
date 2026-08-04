@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Local AI WebLLM Test</title>
+  <style>
+    body { font-family: sans-serif; background: #121212; color: #fff; padding: 20px; }
+    #output { background: #1e1e1e; padding: 15px; border-radius: 8px; min-height: 100px; white-space: pre-wrap; }
+    input, button { padding: 10px; margin-top: 10px; border-radius: 4px; border: none; }
+    input { width: 70%; }
+    button { background: #007bff; color: white; cursor: pointer; }
+  </style>
+  <!-- WebLLM CDN Linki -->
+  <script type="module">
+    import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+
+    // Cihazda çalışacak model (Gemma 2B)
+    const selectedModel = "gemma-2b-it-q4f16_1-MLC";
+    let engine;
+
+    window.initAI = async function() {
+      const statusDiv = document.getElementById("status");
+      statusDiv.innerText = "Model yükleniyor, lütfen bekleyin...";
+      
+      // WebGPU Motorunu Başlat
+      engine = await webllm.CreateMLCEngine(selectedModel, {
+        initProgressCallback: (report) => {
+          statusDiv.innerText = report.text;
+        }
+      });
+      statusDiv.innerText = "Model Hazır! Sorunu sorabilirsin.";
+    };
+
+    window.sendMessage = async function() {
+      const input = document.getElementById("userInput").value;
+      const output = document.getElementById("output");
+      if (!engine || !input) return;
+
+      output.innerText += "\nSen: " + input + "\nAI: Düşünüyor...";
+      
+      const reply = await engine.chat.completions.create({
+        messages: [{ role: "user", content: input }]
+      });
+
+      output.innerText += "\nAI: " + reply.choices[0].message.content + "\n";
+      document.getElementById("userInput").value = "";
+    };
+  </script>
+</head>
+<body>
+
+  <h2>Tarayıcı İçi WebLLM Asistanı</h2>
+  <div id="status">Sistemi başlatmak için butona bas.</div>
+  <button onclick="initAI()">Modeli Yükle</button>
+
+  <br><br>
+  <div id="output"></div>
+  <input type="text" id="userInput" placeholder="Mesajını yaz...">
+  <button onclick="sendMessage()">Gönder</button>
+
+</body>
+</html>
