@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highly — Service Unavailable</title>
+<style>
+  :root{
+    --bg: #0a0b0f;
+    --bg-soft: #101219;
+    --line: #1e212b;
+    --text: #eef0f5;
+    --muted: #8891a3;
+    --accent: #7c5cff;
+    --accent-soft: #7c5cff26;
+    --danger: #ff5c7a;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html,body{
+    height:100%;
+  }
+
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #171a29 0%, var(--bg) 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding: 24px;
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* subtle scanline / grid texture to nod at the streaming/gaming subject */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.15;
+    mask-image: radial-gradient(circle at 50% 35%, black, transparent 70%);
+    pointer-events:none;
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width: 480px;
+    background: linear-gradient(180deg, var(--bg-soft), #0c0e14);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 48px 40px 40px;
+    text-align:center;
+    box-shadow:
+      0 40px 80px -30px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+
+  .icon-wrap{
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    position:relative;
+  }
+
+  .icon-wrap::after{
+    content:"";
+    position:absolute;
+    inset:-8px;
+    border-radius:50%;
+    border: 1px solid var(--accent-soft);
+    animation: pulse 2.6s ease-out infinite;
+  }
+
+  @keyframes pulse{
+    0%{ transform: scale(0.9); opacity: 0.9; }
+    100%{ transform: scale(1.35); opacity: 0; }
+  }
+
+  svg{ display:block; }
+
+  .eyebrow{
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--danger);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  h1{
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+
+  h1 .brand{
+    color: var(--accent);
+  }
+
+  p.desc{
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 360px;
+    margin: 0 auto 28px;
+  }
+
+  .code-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size: 12px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    background: #0d0f16;
+    padding: 8px 14px;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+  }
+
+  .code-pill .dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background: var(--danger);
+    box-shadow: 0 0 0 3px var(--danger)26;
+  }
+
+  .footer{
+    margin-top: 32px;
+    font-size: 11px;
+    color: #4a5063;
+    letter-spacing: 0.04em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .icon-wrap::after{ animation: none; }
+  }
+
+  @media (max-width: 420px){
+    .card{ padding: 40px 24px 32px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="icon-wrap">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="9" stroke="#7c5cff" stroke-width="1.6"/>
+        <path d="M3 12h18" stroke="#7c5cff" stroke-width="1.4" opacity="0.5"/>
+        <path d="M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9z" stroke="#7c5cff" stroke-width="1.4" opacity="0.5"/>
+        <line x1="5.5" y1="5.5" x2="18.5" y2="18.5" stroke="#ff5c7a" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="eyebrow">Region Restricted</div>
+    <h1>This <span class="brand">Highly</span> service is not available in your country/region.</h1>
+    <p class="desc">
+      Access to this service has been limited based on your current location.
+      If you believe this is a mistake, please try again later or reach out to support.
+    </p>
+
+    <div class="code-pill">
+      <span class="dot"></span>
+      ERROR 451 — GEO-BLOCKED
+    </div>
+
+    <div class="footer">HIGHLY</div>
+  </div>
+
+</body>
+</html>
