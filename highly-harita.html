@@ -361,7 +361,55 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
+// ============================================================
+// SUPABASE ENTEGRASYONU (opsiyonel — "tüm yolların/kullanıcıların" ortak trafik verisi için)
+// Kendi konumunun anlık trafiği HER ZAMAN localStorage ile çalışır (aşağıdaki
+// saveSpeedSample / loadTrafficLayer içinde). Supabase ise buna EK olarak,
+// tüm kullanıcıların örneklerini tek bir tabloda toplayıp, herkesin trafik
+// katmanını daha zengin görmesini sağlar. Kullanmak için:
+//   1) supabase.com'da ücretsiz proje aç
+//   2) SQL Editor'de şu tabloyu oluştur:
+//      create table traffic_samples (
+//        id bigint generated always as identity primary key,
+//        lat double precision not null,
+//        lon double precision not null,
+//        speed int not null,
+//        grid text,
+//        created_at timestamptz default now()
+//      );
+//      alter table traffic_samples enable row level security;
+//      create policy "anon insert" on traffic_samples for insert to anon with check (true);
+//      create policy "anon select" on traffic_samples for select to anon using (true);
+//   3) Project URL ve anon public key'i aşağıya yapıştır. Boş bırakırsan
+//      uygulama sorunsuz şekilde sadece localStorage ile çalışmaya devam eder.
+// ============================================================
+const SUPABASE_URL = '';      // örn: 'https://xxxxx.supabase.co'
+const SUPABASE_ANON_KEY = ''; // örn: 'eyJhbGciOi...'
+let sb = null;
+if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) {
+  try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch { sb = null; }
+}
+// Kendi örneğini Supabase'e gönder (arka planda, sessizce — hata olsa da uygulamayı etkilemez)
+async function pushSpeedSampleToSupabase(lat, lon, speedKmh, grid) {
+  if (!sb) return;
+  try { await sb.from('traffic_samples').insert({ lat, lon, speed: speedKmh, grid }); } catch {}
+}
+// Bölgedeki TÜM kullanıcıların son örneklerini çek (varsa)
+async function fetchSupabaseSpeedSamples(bounds) {
+  if (!sb) return [];
+  try {
+    const since = new Date(Date.now() - 30*60*1000).toISOString();
+    const { data, error } = await sb.from('traffic_samples').select('lat,lon,speed,created_at')
+      .gte('lat', bounds.getSouth()).lte('lat', bounds.getNorth())
+      .gte('lon', bounds.getWest()).lte('lon', bounds.getEast())
+      .gte('created_at', since).limit(2000);
+    if (error) return [];
+    return (data||[]).map(d => ({ lat:d.lat, lon:d.lon, speed:d.speed, time:new Date(d.created_at).getTime() }));
+  } catch { return []; }
+}
+
 // Kullanıcı
 const saved = localStorage.getItem('highly_user');
 if (!saved) location.href = 'highly-id.html';
@@ -787,7 +835,8 @@ function clearRoute() {
 }
 
 // Navigasyon
-let navActive=false, navWatcher=null, navMarker=null, navSteps=[], navStepIdx=0, lastSpokenIdx=-1;
+let navActive=false, navWatcher=null, navMarker=null, navSteps=[], navTargetIdx=1, lastSpokenIdx=-1;
+let navTrailSegs=[], navLastPoint=null;
 
 function speak(text) {
   if (!window.speechSynthesis) return;
@@ -823,46 +872,70 @@ function getStepText(s) {
   if (m==='uturn') return 'Geri dönün';
   return 'Düz devam edin'+(n?' '+n:'');
 }
+// Anlık hıza göre renk (duruyor/yavaş/orta/hızlı) — yol tipinden bağımsız, tek kullanıcı için de anında çalışır
+function speedColor(kmh) {
+  if (kmh < 3) return '#7f1d1d';   // duruyor — koyu kırmızı
+  if (kmh < 20) return '#ef4444';  // yavaş — kırmızı
+  if (kmh < 50) return '#f59e0b';  // orta — sarı
+  return '#34d399';                // hızlı — yeşil
+}
 async function startNavigation() {
   if (!allRoutes.length) return showToast('Önce rota oluştur!', false);
   showToast('Navigasyon başlıyor...', true);
   navSteps = allRoutes[activeRouteIdx].steps;
   if (!navSteps.length) return showToast('Talimatlar alınamadı!', false);
-  navActive=true; navStepIdx=0; lastSpokenIdx=-1;
+  navActive=true; navTargetIdx = navSteps.length>1 ? 1 : 0; lastSpokenIdx=-1;
+  navTrailSegs.forEach(l=>map.removeLayer(l)); navTrailSegs=[]; navLastPoint=null;
   document.getElementById('navStartBtn').style.display='none';
   document.getElementById('navStopBtn').style.display='block';
   document.getElementById('navStatus').style.display='none';
   document.getElementById('navDirection').classList.add('show');
   document.getElementById('topNavBanner').classList.add('show');
   if (sheetExpanded) toggleSheet();
-  speak('Navigasyon başladı. '+getStepText(navSteps[0]));
-  updateNavUI(navSteps[0], navSteps[0].distance);
+  speak('Navigasyon başladı. '+getStepText(navSteps[navTargetIdx]));
+  updateNavUI(navSteps[navTargetIdx], navSteps[0].distance);
   let lastSampleTime = 0;
   navWatcher = navigator.geolocation.watchPosition(pos => {
     const { latitude, longitude, speed, heading } = pos.coords;
-    const speedKmh = speed ? Math.round(speed*3.6) : 0;
+    const speedKmh = speed!==null && !isNaN(speed) ? Math.round(speed*3.6) : 0;
     document.getElementById('navSpeed').textContent = speedKmh;
     if (navMarker) map.removeLayer(navMarker);
     const rot = (heading!==null && !isNaN(heading)) ? 'transform:rotate('+Math.round(heading)+'deg)' : '';
     navMarker = L.marker([latitude,longitude], { icon:L.divIcon({ className:'', html:`<div style="width:22px;height:22px;background:linear-gradient(135deg,#34d399,#818cf8);border-radius:50%;border:3px solid #fff;box-shadow:0 0 14px rgba(52,211,153,.8);${rot};display:flex;align-items:center;justify-content:center;font-size:11px">▲</div>`, iconSize:[22,22], iconAnchor:[11,11] }) }).addTo(map);
     map.setView([latitude,longitude], 17, { animate:true });
-    // Hız örneklemesi: gerçek zamanlı trafik katmanı için biriktir (5sn'de bir)
+
+    // Gerçek zamanlı hız izi: geçtiğin yolu anlık hızına göre renklendir (koyu kırmızı/kırmızı/sarı/yeşil)
+    const col = speedColor(speedKmh);
+    if (navLastPoint) {
+      const seg = L.polyline([navLastPoint, [latitude,longitude]], { color:col, weight:6, opacity:.85 }).addTo(map);
+      navTrailSegs.push(seg);
+      if (navTrailSegs.length > 400) { map.removeLayer(navTrailSegs.shift()); }
+    }
+    navLastPoint = [latitude, longitude];
+
+    // Hız örneklemesi: 🚗 trafik katmanı (ana yollar) için de biriktir (5sn'de bir)
     const now = Date.now();
     if (now - lastSampleTime > 5000) {
       lastSampleTime = now;
       saveSpeedSample(latitude, longitude, speedKmh);
     }
-    const distToNext = calcDist(latitude,longitude,navSteps[navStepIdx].lat,navSteps[navStepIdx].lon);
-    if (distToNext<50 && navStepIdx<navSteps.length-1) navStepIdx++;
-    const cur=navSteps[navStepIdx];
-    const d=calcDist(latitude,longitude,cur.lat,cur.lon);
-    updateNavUI(cur,d);
-    if (navStepIdx!==lastSpokenIdx && d<200) { speak((d<50?'':Math.round(d)+' metre sonra, ')+getStepText(cur)); lastSpokenIdx=navStepIdx; }
-    let rem=d; for(let i=navStepIdx+1;i<navSteps.length;i++) rem+=navSteps[i].distance;
+
+    // Bir sonraki manevra noktasına olan mesafeyi hesapla (artık doğru şekilde azalır)
+    let target = navSteps[navTargetIdx];
+    let d = calcDist(latitude,longitude,target.lat,target.lon);
+    if (d<30 && navTargetIdx<navSteps.length-1) {
+      navTargetIdx++;
+      target = navSteps[navTargetIdx];
+      d = calcDist(latitude,longitude,target.lat,target.lon);
+      lastSpokenIdx = -1; // yeni hedef için tekrar anons edilebilsin
+    }
+    updateNavUI(target,d);
+    if (navTargetIdx!==lastSpokenIdx && d<200) { speak((d<50?'':Math.round(d)+' metre sonra, ')+getStepText(target)); lastSpokenIdx=navTargetIdx; }
+    let rem=d; for(let i=navTargetIdx;i<navSteps.length-1;i++) rem+=navSteps[i].distance;
     document.getElementById('navDist').textContent=fmtDist(rem);
     const etaMin=Math.round(rem/1000/50*60);
     document.getElementById('navEta').textContent=etaMin<60?etaMin+'dk':Math.floor(etaMin/60)+'s'+(etaMin%60)+'dk';
-    if (cur.type==='arrive'&&d<30) { speak('Varış noktasına ulaştınız.'); stopNavigation(); }
+    if (target.type==='arrive'&&d<30) { speak('Varış noktasına ulaştınız.'); stopNavigation(); }
   }, ()=>showToast('Konum takibi kesildi',false), { enableHighAccuracy:true, maximumAge:2000, timeout:10000 });
 }
 function updateNavUI(step,dist) {
@@ -877,6 +950,7 @@ function stopNavigation() {
   navActive=false;
   if (navWatcher!==null) { navigator.geolocation.clearWatch(navWatcher); navWatcher=null; }
   if (navMarker) { map.removeLayer(navMarker); navMarker=null; }
+  navTrailSegs.forEach(l=>map.removeLayer(l)); navTrailSegs=[]; navLastPoint=null;
   window.speechSynthesis&&window.speechSynthesis.cancel();
   document.getElementById('navStartBtn').style.display='';
   document.getElementById('navStopBtn').style.display='none';
@@ -888,11 +962,18 @@ function stopNavigation() {
 }
 
 // Gerçek zamanlı hız örnekleri (ana yollardaki trafiği tahmin etmek için)
+// grid: ~yaklaşık 100m'lik hücrelere yuvarlanmış anahtar — ileride çoklu kullanıcı/karşılaştırma
+// için veriyi hazır tutar (aynı grid hücresindeki örnekler tek yol/segment sayılabilir).
+function gridKey(lat, lon) { return lat.toFixed(3)+','+lon.toFixed(3); }
 function saveSpeedSample(lat, lon, speedKmh) {
+  const grid = gridKey(lat, lon);
   const samples = JSON.parse(localStorage.getItem('highly_speed')||'[]');
-  samples.push({ lat, lon, speed:speedKmh, time:Date.now() });
-  const fresh = samples.filter(s => Date.now()-s.time < 2*60*60*1000).slice(-400);
+  samples.push({ lat, lon, speed:speedKmh, time:Date.now(), grid });
+  // Veriyi biraz daha uzun süre sakla (24 saat) ki katman sık sık boş kalmasın
+  const fresh = samples.filter(s => Date.now()-s.time < 24*60*60*1000).slice(-800);
   localStorage.setItem('highly_speed', JSON.stringify(fresh));
+  // Supabase yapılandırılmışsa aynı örneği oraya da gönder (tüm kullanıcıların ortak katmanı için)
+  pushSpeedSampleToSupabase(lat, lon, speedKmh, grid);
 }
 
 // Bildirim
@@ -994,43 +1075,60 @@ function toggleTraffic(btn) {
   else { if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;} map.off('moveend zoomend',loadTrafficLayer); }
 }
 // Yol tipine göre beklenen serbest akış hızı (km/s) — gerçek örneklenen hız buna oranlanır
-const FREE_FLOW_SPEED = { motorway:110, trunk:90, primary:65, secondary:50, tertiary:40 };
+const FREE_FLOW_SPEED = { motorway:110, trunk:90, primary:65, secondary:50, tertiary:40, unclassified:35, residential:30 };
+async function overpassWays(bbox, filter) {
+  const q='[out:json][timeout:20];way["highway"~"'+filter+'"]('+bbox+');out body geom;';
+  const res = await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q));
+  if (!res.ok) throw new Error('overpass-fail');
+  return (await res.json()).elements || [];
+}
 async function loadTrafficLayer() {
   if (!trafficOn||map.getZoom()<12) { if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;} return; }
+  const b=map.getBounds();
+  const bbox=b.getSouth()+','+b.getWest()+','+b.getNorth()+','+b.getEast();
+  let elements = [];
   try {
-    const b=map.getBounds();
-    const bbox=b.getSouth()+','+b.getWest()+','+b.getNorth()+','+b.getEast();
-    // Sadece ana yollar/otoyollar (ara sokaklar/residential/service hariç)
-    const q='[out:json][timeout:15];way["highway"~"motorway|trunk|primary|secondary|tertiary"]('+bbox+');out body geom;';
-    const data=await (await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q))).json();
+    // 1) Önce sadece ana yollar/otoyollar (ara sokaklar/residential/service hariç)
+    elements = await overpassWays(bbox, 'motorway|trunk|primary|secondary|tertiary');
+    if (!elements.length) {
+      // 2) Bölgede ana yol yoksa (ör. kırsal alan) — tüm yollara düş, sadece yaya yollarını hariç tut
+      elements = await overpassWays(bbox, 'motorway|trunk|primary|secondary|tertiary|unclassified|residential');
+    }
+  } catch (err) {
     if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
-    const reports=JSON.parse(localStorage.getItem('highly_reports')||'[]');
-    const speedSamples=JSON.parse(localStorage.getItem('highly_speed')||'[]').filter(s=>Date.now()-s.time<20*60*1000);
-    const now=Date.now();
-    const features=data.elements.filter(e=>e.geometry&&e.geometry.length>1).map(e=>{
-      const mid=e.geometry[Math.floor(e.geometry.length/2)];
-      const hw=(e.tags&&e.tags.highway)||'tertiary';
-      // 1) Gerçek hız örneği varsa onu kullan (en güvenilir)
-      const nearSpeeds=speedSamples.filter(s=>calcDistSimple(mid.lat,mid.lon,s.lat,s.lon)<150);
-      let color, source;
-      if (nearSpeeds.length) {
-        const avgSpeed=nearSpeeds.reduce((a,s)=>a+s.speed,0)/nearSpeeds.length;
-        const ratio=avgSpeed/(FREE_FLOW_SPEED[hw]||50);
-        if (avgSpeed<3) color='#7f1d1d';        // duruyor — koyu kırmızı
-        else if (ratio<0.4) color='#ef4444';    // yavaş — kırmızı
-        else if (ratio<0.75) color='#f59e0b';   // orta — sarı
-        else color='#34d399';                   // hızlı — yeşil
-      } else {
-        // 2) Örnek yoksa kaza/trafik bildirimlerine göre tahmin et
-        const near=reports.filter(r=>calcDistSimple(mid.lat,mid.lon,r.lat,r.lon)<300&&(now-r.time)<30*60*1000&&(r.type==='trafik'||r.type==='kaza'));
-        color='#34d399';
-        if (near.length>=2) color='#ef4444';
-        else if (near.length===1) color='#f59e0b';
-      }
-      return { type:'Feature', properties:{ color, hw }, geometry:{ type:'LineString', coordinates:e.geometry.map(p=>[p.lon,p.lat]) } };
-    });
-    trafficLayer=L.geoJSON({ type:'FeatureCollection', features },{ style:f=>({ color:f.properties.color, weight:f.properties.hw==='motorway'||f.properties.hw==='trunk'?5:3, opacity:.8 }) }).addTo(map);
-  } catch {}
+    showToast('Trafik verisi alınamadı, tekrar deneyin', false);
+    return;
+  }
+  if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
+  const reports=JSON.parse(localStorage.getItem('highly_reports')||'[]');
+  const localSamples=JSON.parse(localStorage.getItem('highly_speed')||'[]').filter(s=>Date.now()-s.time<30*60*1000);
+  const supaSamples=await fetchSupabaseSpeedSamples(b); // sb yapılandırılmadıysa boş döner, sorun çıkarmaz
+  const speedSamples=localSamples.concat(supaSamples);
+  const now=Date.now();
+  const features=elements.filter(e=>e.geometry&&e.geometry.length>1).map(e=>{
+    const mid=e.geometry[Math.floor(e.geometry.length/2)];
+    const hw=(e.tags&&e.tags.highway)||'tertiary';
+    // 1) Gerçek hız örneği varsa onu kullan (tek kullanıcı olsa bile anında geçerli)
+    const nearSpeeds=speedSamples.filter(s=>calcDistSimple(mid.lat,mid.lon,s.lat,s.lon)<180);
+    let color;
+    if (nearSpeeds.length) {
+      const avgSpeed=nearSpeeds.reduce((a,s)=>a+s.speed,0)/nearSpeeds.length;
+      const ratio=avgSpeed/(FREE_FLOW_SPEED[hw]||45);
+      if (avgSpeed<3) color='#7f1d1d';        // duruyor — koyu kırmızı
+      else if (ratio<0.4) color='#ef4444';    // yavaş — kırmızı
+      else if (ratio<0.75) color='#f59e0b';   // orta — sarı
+      else color='#34d399';                   // hızlı — yeşil
+    } else {
+      // 2) Örnek yoksa kaza/trafik bildirimlerine göre tahmin et
+      const near=reports.filter(r=>calcDistSimple(mid.lat,mid.lon,r.lat,r.lon)<300&&(now-r.time)<30*60*1000&&(r.type==='trafik'||r.type==='kaza'));
+      color='#34d399';
+      if (near.length>=2) color='#ef4444';
+      else if (near.length===1) color='#f59e0b';
+    }
+    return { type:'Feature', properties:{ color, hw }, geometry:{ type:'LineString', coordinates:e.geometry.map(p=>[p.lon,p.lat]) } };
+  });
+  trafficLayer=L.geoJSON({ type:'FeatureCollection', features },{ style:f=>({ color:f.properties.color, weight:f.properties.hw==='motorway'||f.properties.hw==='trunk'?5:3, opacity:.8 }) }).addTo(map);
+  if (!features.length) showToast('Bu bölgede yol verisi bulunamadı', false);
 }
 
 // Toast
