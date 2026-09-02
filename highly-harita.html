@@ -169,6 +169,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .warning-box{background:var(--s1);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:28px;max-width:360px;width:90%;text-align:center}
 .warning-ok{width:100%;padding:13px;background:linear-gradient(135deg,#f59e0b,#ef4444);border:none;border-radius:10px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer}
 
+/* Trafik Paneli */
+.trafik-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.trafik-stat{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:11px 6px;text-align:center}
+.trafik-stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--accent)}
+.trafik-stat-lbl{font-size:9.5px;color:var(--muted);margin-top:3px;letter-spacing:.3px}
+.trafik-updated{font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px}
+.trafik-inc-list{display:flex;flex-direction:column;gap:8px}
+.trafik-inc-card{display:flex;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:10px 11px;cursor:pointer;transition:all .15s}
+.trafik-inc-card:hover,.trafik-inc-card.active{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.3)}
+.trafik-inc-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.trafik-inc-body{min-width:0;flex:1}
+.trafik-inc-title{font-weight:600;font-size:12.5px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.trafik-inc-meta{font-size:10.5px;color:var(--muted);margin-top:4px}
+
 /* Toast */
 .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-10px);background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;opacity:0;z-index:9998;transition:all .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -262,6 +276,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <button class="bnav-btn active" onclick="switchPanel('ara')">🔍 Ara</button>
     <button class="bnav-btn" onclick="switchPanel('rota')">🧭 Rota</button>
     <button class="bnav-btn" onclick="switchPanel('nav')">📍 Navigasyon</button>
+    <button class="bnav-btn" onclick="switchPanel('trafik')">🚦 Trafik</button>
     <button class="bnav-btn" onclick="switchPanel('bildirim')">⚠️ Bildir</button>
   </div>
 
@@ -324,6 +339,19 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       </div>
     </div>
 
+    <!-- Trafik paneli -->
+    <div class="panel" id="panel-trafik">
+      <div class="trafik-updated" id="trafikUpdatedLbl">Yükleniyor…</div>
+      <div class="trafik-stat-grid">
+        <div class="trafik-stat"><div class="trafik-stat-val" id="trafikStatCount">–</div><div class="trafik-stat-lbl">Canlı Olay</div></div>
+        <div class="trafik-stat"><div class="trafik-stat-val" id="trafikStatDelay">–</div><div class="trafik-stat-lbl">Ort. Gecikme</div></div>
+        <div class="trafik-stat"><div class="trafik-stat-val" id="trafikStatFlow">–</div><div class="trafik-stat-lbl">Genel Akış</div></div>
+      </div>
+      <div class="trafik-inc-list" id="trafikIncList">
+        <div style="text-align:center;padding:24px 8px;color:var(--muted);font-size:12px">Yükleniyor…</div>
+      </div>
+    </div>
+
     <!-- Bildirim paneli -->
     <div class="panel" id="panel-bildirim">
       <div class="report-wrap">
@@ -364,44 +392,107 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 // ============================================================
-// SUPABASE ENTEGRASYONU (opsiyonel — "tüm yolların/kullanıcıların" ortak trafik verisi için)
-// Kendi konumunun anlık trafiği HER ZAMAN localStorage ile çalışır (aşağıdaki
-// saveSpeedSample / loadTrafficLayer içinde). Supabase ise buna EK olarak,
-// tüm kullanıcıların örneklerini tek bir tabloda toplayıp, herkesin trafik
-// katmanını daha zengin görmesini sağlar. Kullanmak için:
-//   1) supabase.com'da ücretsiz proje aç
-//   2) SQL Editor'de şu tabloyu oluştur:
-//      create table traffic_samples (
-//        id bigint generated always as identity primary key,
-//        lat double precision not null,
-//        lon double precision not null,
-//        speed int not null,
-//        grid text,
-//        created_at timestamptz default now()
-//      );
-//      alter table traffic_samples enable row level security;
-//      create policy "anon insert" on traffic_samples for insert to anon with check (true);
-//      create policy "anon select" on traffic_samples for select to anon using (true);
-//   3) Project URL ve anon public key'i aşağıya yapıştır. Boş bırakırsan
-//      uygulama sorunsuz şekilde sadece localStorage ile çalışmaya devam eder.
+// SUPABASE ENTEGRASYONU — İKİ AYRI PROJE
+// Bu sayfada iki farklı Supabase client'ı var, birbirine KARIŞMASIN diye
+// ayrı isimlerle (sbAuth / sbTraffic) ve ayrı URL+KEY çiftleriyle tutuluyor:
+//
+//   1) sbAuth     -> Highly'nin ana/ortak Supabase projesi (kullanıcılar,
+//                     auth vb. — highly-id.html ve diğer sayfalarla AYNI proje).
+//                     URL zaten biliniyor, aşağıya sadege anon key'i yapıştır.
+//
+//   2) sbTraffic  -> SADECE trafik örnekleri (traffic_samples) için YENİ ve
+//                     AYRI bir Supabase projesi. Ana projeyle karışmaması için
+//                     bilinçli olarak izole edildi (yoğun insert trafiği ana
+//                     kullanıcı/auth verisini etkilemesin diye).
+//                     Kurulum:
+//                       a) supabase.com'da YENİ bir proje aç (ana projeden farklı)
+//                       b) SQL Editor'de şu tabloyu oluştur:
+//                          create table traffic_samples (
+//                            id bigint generated always as identity primary key,
+//                            lat double precision not null,
+//                            lon double precision not null,
+//                            speed int not null,
+//                            grid text,
+//                            created_at timestamptz default now()
+//                          );
+//                          alter table traffic_samples enable row level security;
+//                          create policy "anon insert" on traffic_samples for insert to anon with check (true);
+//                          create policy "anon select" on traffic_samples for select to anon using (true);
+//                       c) Project URL ve anon public key'i aşağıya yapıştır.
+//
+//   3) tomtom_flow -> AYNI trafik projesinde (sbTraffic), TomTom Traffic API'den
+//                     gelen veriler için AYRI bir tablo. Bu tabloya sadece bir
+//                     Cloudflare Worker (cron ile 5 dakikada bir çalışır) yazar;
+//                     TomTom API key'i HİÇBİR ZAMAN bu sayfada / tarayıcıda yer
+//                     almaz, sadece Worker'ın ortam değişkeninde durur. Sayfa
+//                     (bütün kullanıcılar) SADECE bu tabloyu OKUR — böylece
+//                     kullanıcı sayısı ne olursa olsun TomTom kotası sabit kalır
+//                     (kota sadece Worker'ın 5dk'lık cron çağrılarına bağlıdır).
+//                     Kurulum ve Worker kodu: tomtom-trafik-worker.js dosyasına bak.
+//                       SQL (aynı sbTraffic projesinin SQL Editor'ünde çalıştır):
+//                          create table tomtom_flow (
+//                            id bigint generated always as identity primary key,
+//                            lat double precision not null,
+//                            lon double precision not null,
+//                            current_speed real,
+//                            free_flow_speed real,
+//                            confidence real,
+//                            road_closure boolean default false,
+//                            updated_at timestamptz default now()
+//                          );
+//                          create unique index tomtom_flow_point_idx on tomtom_flow (lat, lon);
+//                          alter table tomtom_flow enable row level security;
+//                          create policy "anon select" on tomtom_flow for select to anon using (true);
+//                          -- Dikkat: INSERT/UPDATE policy YOK — bu tabloya sadece Worker'ın
+//                          -- service_role key'i yazabilir, anon (yani bu sayfa) asla yazamaz.
+//
+//   4) tomtom_incidents -> AYNI trafik projesinde (sbTraffic), kaza/yol çalışması/
+//                     yol kapalı gibi olaylar için AYRI bir tablo, yine sadece
+//                     Worker tarafından yazılır, sayfa sadece OKUR:
+//                          create table tomtom_incidents (
+//                            id bigint generated always as identity primary key,
+//                            incident_id text unique,
+//                            description text,
+//                            icon_category bigint,
+//                            delay_seconds bigint,
+//                            coordinates jsonb,
+//                            updated_at timestamptz default now()
+//                          );
+//                          alter table tomtom_incidents enable row level security;
+//                          create policy "anon select" on tomtom_incidents for select to anon using (true);
+//
+// Her iki proje de boş bırakılırsa uygulama sorunsuz şekilde sadece
+// localStorage ile çalışmaya devam eder (kendi konumunun anlık trafiği HER
+// ZAMAN localStorage ile çalışır — aşağıdaki saveSpeedSample / loadTrafficLayer).
 // ============================================================
-const SUPABASE_URL = '';      // örn: 'https://xxxxx.supabase.co'
-const SUPABASE_ANON_KEY = ''; // örn: 'eyJhbGciOi...'
-let sb = null;
-if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) {
-  try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch { sb = null; }
+
+// --- 1) AUTH / ANA PROJE (mevcut, paylaşılan Highly Supabase projesi) ---
+const SUPABASE_AUTH_URL = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
+const SUPABASE_AUTH_KEY = ''; // buraya ana projenin anon public key'ini yapıştır
+let sbAuth = null;
+if (SUPABASE_AUTH_URL && SUPABASE_AUTH_KEY && window.supabase) {
+  try { sbAuth = window.supabase.createClient(SUPABASE_AUTH_URL, SUPABASE_AUTH_KEY); } catch { sbAuth = null; }
 }
+
+// --- 2) TRAFİK / YENİ AYRI PROJE (sadece traffic_samples) ---
+const SUPABASE_TRAFFIC_URL = '';      // örn: 'https://xxxxx.supabase.co'
+const SUPABASE_TRAFFIC_KEY = '';      // örn: 'eyJhbGciOi...'
+let sbTraffic = null;
+if (SUPABASE_TRAFFIC_URL && SUPABASE_TRAFFIC_KEY && window.supabase) {
+  try { sbTraffic = window.supabase.createClient(SUPABASE_TRAFFIC_URL, SUPABASE_TRAFFIC_KEY); } catch { sbTraffic = null; }
+}
+
 // Kendi örneğini Supabase'e gönder (arka planda, sessizce — hata olsa da uygulamayı etkilemez)
 async function pushSpeedSampleToSupabase(lat, lon, speedKmh, grid) {
-  if (!sb) return;
-  try { await sb.from('traffic_samples').insert({ lat, lon, speed: speedKmh, grid }); } catch {}
+  if (!sbTraffic) return;
+  try { await sbTraffic.from('traffic_samples').insert({ lat, lon, speed: speedKmh, grid }); } catch {}
 }
 // Bölgedeki TÜM kullanıcıların son örneklerini çek (varsa)
 async function fetchSupabaseSpeedSamples(bounds) {
-  if (!sb) return [];
+  if (!sbTraffic) return [];
   try {
     const since = new Date(Date.now() - 30*60*1000).toISOString();
-    const { data, error } = await sb.from('traffic_samples').select('lat,lon,speed,created_at')
+    const { data, error } = await sbTraffic.from('traffic_samples').select('lat,lon,speed,created_at')
       .gte('lat', bounds.getSouth()).lte('lat', bounds.getNorth())
       .gte('lon', bounds.getWest()).lte('lon', bounds.getEast())
       .gte('created_at', since).limit(2000);
@@ -410,13 +501,169 @@ async function fetchSupabaseSpeedSamples(bounds) {
   } catch { return []; }
 }
 
-// Kullanıcı
+// TomTom trafik verisi — SADECE Supabase'den okunur, sayfa TomTom'a hiç istek atmaz.
+// Cloudflare Worker 5dk'da bir TomTom'dan çekip Supabase'e yazıyor; burada da
+// istemci tarafında 5dk'lık bir cache tutuyoruz ki harita her pan/zoom'da tekrar
+// tekrar Supabase'e gitmesin (Worker zaten bu sürede yeni veri üretmiyor).
+let tomtomCache = { time: 0, data: [] };
+const TOMTOM_CACHE_MS = 5 * 60 * 1000;
+// TomTom kaza/olay verisi — SADECE Supabase'den okunur (aynı Worker besliyor)
+async function fetchTomTomFromSupabase(forceRefresh) {
+  if (!sbTraffic) return [];
+  const now = Date.now();
+  if (!forceRefresh && (now - tomtomCache.time) < TOMTOM_CACHE_MS && tomtomCache.data.length) {
+    return tomtomCache.data; // hâlâ taze, Supabase'e yeniden gitme
+  }
+  try {
+    const since = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    const { data, error } = await sbTraffic.from('tomtom_flow')
+      .select('lat,lon,current_speed,free_flow_speed,updated_at')
+      .gte('updated_at', since).limit(3000);
+    if (error) return tomtomCache.data;
+    tomtomCache = {
+      time: now,
+      data: (data || []).map(d => ({ lat:d.lat, lon:d.lon, speed:d.current_speed, freeFlow:d.free_flow_speed, time:new Date(d.updated_at).getTime() }))
+    };
+    return tomtomCache.data;
+  } catch { return tomtomCache.data; }
+}
+
+let incidentsCache = { time: 0, data: [] };
+const INCIDENTS_CACHE_MS = 60 * 1000;
+async function fetchTomTomIncidents(forceRefresh) {
+  if (!sbTraffic) return [];
+  const now = Date.now();
+  if (!forceRefresh && (now - incidentsCache.time) < INCIDENTS_CACHE_MS && incidentsCache.data.length) {
+    return incidentsCache.data;
+  }
+  try {
+    const since = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();
+    const { data, error } = await sbTraffic.from('tomtom_incidents')
+      .select('incident_id,description,icon_category,delay_seconds,coordinates,updated_at')
+      .gte('updated_at', since).order('updated_at', { ascending:false }).limit(500);
+    if (error) return incidentsCache.data;
+    incidentsCache = { time: now, data: data || [] };
+    return incidentsCache.data;
+  } catch { return incidentsCache.data; }
+}
+
+// Olay ikon/etiket eşlemesi (TomTom icon_category)
+const INCIDENT_TYPES = {
+  0:{icon:'❓',label:'Bilinmiyor',color:'#6b7280'}, 1:{icon:'💥',label:'Kaza',color:'#ef4444'},
+  2:{icon:'🌫️',label:'Sis',color:'#9ca3af'}, 3:{icon:'⚠️',label:'Tehlikeli Durum',color:'#f59e0b'},
+  4:{icon:'🌧️',label:'Yağmur',color:'#818cf8'}, 5:{icon:'🧊',label:'Buzlanma',color:'#7dd3fc'},
+  6:{icon:'🚗',label:'Trafik Sıkışıklığı',color:'#f59e0b'}, 7:{icon:'🚧',label:'Şerit Kapalı',color:'#f59e0b'},
+  8:{icon:'⛔',label:'Yol Kapalı',color:'#8B0000'}, 9:{icon:'🚜',label:'Yol Çalışması',color:'#f59e0b'},
+  10:{icon:'💨',label:'Rüzgar',color:'#9ca3af'}, 11:{icon:'🌊',label:'Su Baskını',color:'#818cf8'},
+  14:{icon:'🐌',label:'Yoğun Akış',color:'#f59e0b'}
+};
+function incidentType(cat){ return INCIDENT_TYPES[cat] || INCIDENT_TYPES[0]; }
+function incidentLatLon(coordinates) {
+  try {
+    let c = coordinates; if (typeof c === 'string') c = JSON.parse(c);
+    if (!c) return null;
+    if (c.type === 'Point' && Array.isArray(c.coordinates)) return [c.coordinates[1], c.coordinates[0]];
+    if (c.type === 'LineString' && Array.isArray(c.coordinates) && c.coordinates.length) { const p=c.coordinates[0]; return [p[1],p[0]]; }
+    if (Array.isArray(c) && typeof c[0] === 'number') return [c[1], c[0]];
+    if (Array.isArray(c) && Array.isArray(c[0])) { const p=c[0]; return [p[1],p[0]]; }
+  } catch {}
+  return null;
+}
+function timeAgoTr(dateStr) {
+  const diffSec = Math.max(0, Math.floor((Date.now()-new Date(dateStr).getTime())/1000));
+  if (diffSec<60) return 'az önce';
+  const m=Math.floor(diffSec/60); if (m<60) return m+' dk önce';
+  return Math.floor(m/60)+' sa önce';
+}
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// Olay marker katmanı — Trafik overlay açıldığında haritada gösterilir
+let incidentLayer = L.layerGroup();
+let incidentMarkersById = {};
+let trafikPanelTimer = null;
+
+function trafikCardHtml(r, type) {
+  const delayMin = r.delay_seconds ? Math.round(r.delay_seconds/60) : 0;
+  return `<div class="trafik-inc-card" onclick="focusTrafikIncident('${r.incident_id}')" data-id="${r.incident_id}">
+    <div class="trafik-inc-icon" style="background:${type.color}22;color:${type.color}">${type.icon}</div>
+    <div class="trafik-inc-body">
+      <div class="trafik-inc-title">${escapeHtml(r.description || type.label)}</div>
+      <div class="trafik-inc-meta">${delayMin?`<span style="color:${delayMin>=15?'#ef4444':'#f59e0b'};font-weight:600">${delayMin} dk gecikme</span> · `:''}${timeAgoTr(r.updated_at)}</div>
+    </div>
+  </div>`;
+}
+async function refreshTrafikPanel(forceRefresh) {
+  const rows = await fetchTomTomIncidents(forceRefresh);
+  // Harita marker'ları
+  incidentLayer.clearLayers(); incidentMarkersById = {};
+  rows.forEach(r => {
+    const pos = incidentLatLon(r.coordinates);
+    if (!pos) return;
+    const type = incidentType(r.icon_category);
+    const icon = L.divIcon({ className:'', iconSize:[28,28], iconAnchor:[14,28], popupAnchor:[0,-26],
+      html:`<div style="width:26px;height:26px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);background:${type.color};border:2px solid rgba(255,255,255,.85);box-shadow:0 4px 12px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);font-size:12px">${type.icon}</span></div>` });
+    const m = L.marker(pos, { icon }).addTo(incidentLayer).bindPopup(
+      `<b style="font-family:Syne,sans-serif">${type.icon} ${type.label}</b><br>${escapeHtml(r.description||'Açıklama yok')}<br>`
+      + (r.delay_seconds?`Gecikme: ${Math.round(r.delay_seconds/60)} dk<br>`:'')
+      + `<small style="color:#6b7280">${timeAgoTr(r.updated_at)}</small>`);
+    incidentMarkersById[r.incident_id] = m;
+  });
+  if (!map.hasLayer(incidentLayer)) incidentLayer.addTo(map);
+  // Liste
+  const listEl = document.getElementById('trafikIncList');
+  if (listEl) {
+    listEl.innerHTML = rows.length ? rows.map(r => trafikCardHtml(r, incidentType(r.icon_category))).join('')
+      : `<div style="text-align:center;padding:24px 8px;color:var(--muted);font-size:12px">✅ Şu an bildirilen bir olay yok</div>`;
+  }
+  // İstatistikler
+  let totalDelay=0, delayCount=0;
+  rows.forEach(r => { if (r.delay_seconds) { totalDelay+=r.delay_seconds; delayCount++; } });
+  const avgDelayMin = delayCount ? Math.round((totalDelay/delayCount)/60) : 0;
+  setTxt('trafikStatCount', rows.length);
+  setTxt('trafikStatDelay', delayCount ? avgDelayMin+' dk' : '–');
+  const flowSamples = await fetchTomTomFromSupabase();
+  if (flowSamples.length) {
+    const ratios = flowSamples.filter(s=>s.freeFlow>0).map(s=>Math.min(1, s.speed/s.freeFlow));
+    const avgRatio = ratios.length ? ratios.reduce((a,b)=>a+b,0)/ratios.length : null;
+    setTxt('trafikStatFlow', avgRatio!=null ? Math.round(avgRatio*100)+'%' : '–');
+  } else setTxt('trafikStatFlow', '–');
+  setTxt('trafikUpdatedLbl', 'Güncellendi · ' + new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}));
+}
+function setTxt(id, val) { const el=document.getElementById(id); if (el) el.textContent = val; }
+function focusTrafikIncident(id) {
+  document.querySelectorAll('.trafik-inc-card').forEach(c=>c.classList.toggle('active', c.dataset.id===id));
+  const m = incidentMarkersById[id];
+  if (!m) { showToast('Bu olay için konum bilgisi yok', false); return; }
+  map.flyTo(m.getLatLng(), Math.max(map.getZoom(), 14), { duration:.9 });
+  setTimeout(()=>m.openPopup(), 700);
+}
+function startTrafikPanel() {
+  refreshTrafikPanel(true);
+  if (!trafikPanelTimer) trafikPanelTimer = setInterval(()=>refreshTrafikPanel(), 60000);
+}
+
+// Kullanıcı (giriş artık zorunlu değil — misafir modu destekleniyor)
 const saved = localStorage.getItem('highly_user');
-if (!saved) location.href = 'highly-id.html';
-const user = JSON.parse(saved || '{"name":"?"}');
+const isGuest = !saved;
+const user = saved ? JSON.parse(saved) : { name:'Misafir', guest:true };
 const av = document.getElementById('avatarBtn');
-if (user.avatarEmoji) { av.textContent = user.avatarEmoji; av.style.background = 'transparent'; av.style.fontSize = '22px'; }
+if (isGuest) {
+  av.textContent = '👤';
+  av.href = 'highly-id.html';
+  av.title = 'Giriş yap';
+} else if (user.avatarEmoji) { av.textContent = user.avatarEmoji; av.style.background = 'transparent'; av.style.fontSize = '22px'; }
 else { av.textContent = user.name[0].toUpperCase(); if (user.avatarBg) av.style.background = user.avatarBg; }
+
+// Misafir kısıtlamaları: Bildir butonu kaldırılır, Ev/İş adresi eklenemez
+if (isGuest) {
+  const bildirBtn = document.querySelector('.bnav-btn[onclick*="bildirim"]');
+  if (bildirBtn) bildirBtn.remove();
+}
+function requireLogin(msg) {
+  showToast(msg || 'Bu özellik için giriş yapman gerekiyor', false);
+  setTimeout(()=>{ location.href = 'highly-id.html'; }, 1400);
+  return false;
+}
 
 // Uyarı
 if (sessionStorage.getItem('warningShown')) document.getElementById('warningModal').style.display = 'none';
@@ -496,14 +743,16 @@ sheet.addEventListener('touchend', e => {
 
 // Panel geçişi
 function switchPanel(name) {
+  if (name === 'bildirim' && isGuest) return requireLogin('Bildirim göndermek için giriş yapmalısın');
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('show');
-  document.querySelectorAll('.bnav-btn')[['ara','rota','nav','bildirim'].indexOf(name)].classList.add('active');
-  const titles = { ara:'Konum Ara', rota:'Rota Oluştur', nav:'Navigasyon', bildirim:'Bildirim Gönder' };
+  document.querySelectorAll('.bnav-btn')[['ara','rota','nav','trafik','bildirim'].indexOf(name)].classList.add('active');
+  const titles = { ara:'Konum Ara', rota:'Rota Oluştur', nav:'Navigasyon', trafik:'Trafik Durumu', bildirim:'Bildirim Gönder' };
   document.getElementById('sheetTitle').textContent = titles[name] || 'Highly Harita';
   if (!sheetExpanded) toggleSheet();
   if (name === 'bildirim') getReportLocation();
+  if (name === 'trafik') startTrafikPanel();
 }
 
 // Arama
@@ -627,11 +876,13 @@ function useAsEnd() {
 
 // Ev / İş kaydetme + hızlı kartlar
 function saveHome() {
+  if (isGuest) return requireLogin('Ev adresi eklemek için giriş yapmalısın');
   if (!selectedCoords) return;
   localStorage.setItem('highly_home', JSON.stringify(selectedCoords));
   showToast('🏠 Ev kaydedildi!', true); hideCard(); renderQuickCards();
 }
 function saveWork() {
+  if (isGuest) return requireLogin('İş adresi eklemek için giriş yapmalısın');
   if (!selectedCoords) return;
   localStorage.setItem('highly_work', JSON.stringify(selectedCoords));
   showToast('🏢 İş yeri kaydedildi!', true); hideCard(); renderQuickCards();
@@ -773,11 +1024,14 @@ async function calculateRoute() {
   } catch { showToast('Bağlantı hatası!', false); }
 }
 
-function drawRoutes(start, end) {
+function drawRoutes(start, end, opts) {
+  opts = opts || {};
   routeLines.forEach(l => map.removeLayer(l)); routeLines = [];
-  if (startMarker) map.removeLayer(startMarker);
+  if (startMarker) { map.removeLayer(startMarker); startMarker = null; }
   if (endMarker) map.removeLayer(endMarker);
-  startMarker = L.marker([start.lat, start.lon], { icon:startIcon }).addTo(map);
+  // Navigasyon sırasında yeniden rota hesaplanınca başlangıç noktası artık
+  // navMarker (mavi ok) olduğu için ayrı bir "başlangıç" iğnesi göstermiyoruz.
+  if (!opts.skipStartMarker) startMarker = L.marker([start.lat, start.lon], { icon:startIcon }).addTo(map);
   endMarker = L.marker([end.lat, end.lon], { icon:endIcon }).addTo(map);
 
   // Önce pasif alternatifleri çiz (altta), aktif rotayı en üstte ve belirgin çiz
@@ -789,7 +1043,7 @@ function drawRoutes(start, end) {
   const activeR = allRoutes[activeRouteIdx];
   const activeLine = L.polyline(activeR.coords, { color:'#34d399', weight:6, opacity:.9 }).addTo(map);
   routeLines.push(activeLine);
-  map.fitBounds(activeLine.getBounds(), { padding:[60,60] });
+  if (!opts.skipFit) map.fitBounds(activeLine.getBounds(), { padding:[60,60] });
 
   renderRouteAlts();
   const km = (activeR.distance/1000).toFixed(1);
@@ -837,6 +1091,62 @@ function clearRoute() {
 // Navigasyon
 let navActive=false, navWatcher=null, navMarker=null, navSteps=[], navTargetIdx=1, lastSpokenIdx=-1;
 let navTrailSegs=[], navLastPoint=null;
+let isRerouting=false, lastRerouteTime=0;
+const OFF_ROUTE_METERS=45;       // rotadan bu kadar uzaklaşınca "sapma" sayılır
+const REROUTE_COOLDOWN_MS=12000; // art arda rota hesaplamayı önlemek için bekleme süresi
+
+// Bir noktanın çizili rotaya (polyline) olan en yakın mesafesi (metre) — sapma tespiti için
+function distToSegmentMeters(lat,lon,la1,lo1,la2,lo2) {
+  const mlat=111320, mlon=111320*Math.cos(lat*Math.PI/180);
+  const x=(lon-lo1)*mlon, y=(lat-la1)*mlat;
+  const dx=(lo2-lo1)*mlon, dy=(la2-la1)*mlat;
+  const len2=dx*dx+dy*dy;
+  let t = len2 ? ((x*dx+y*dy)/len2) : 0;
+  t = Math.max(0, Math.min(1, t));
+  return Math.sqrt((x-dx*t)**2 + (y-dy*t)**2);
+}
+function distanceToRoute(lat,lon,coords) {
+  let min=Infinity;
+  for (let i=0;i<coords.length-1;i++) {
+    const [la1,lo1]=coords[i], [la2,lo2]=coords[i+1];
+    const d=distToSegmentMeters(lat,lon,la1,lo1,la2,lo2);
+    if (d<min) min=d;
+    if (min<5) break; // zaten rotanın üstündeyiz, daha fazla taramaya gerek yok
+  }
+  return min;
+}
+
+// Rotadan sapıldığında bulunduğun konumdan varış noktasına yeni rota hesapla
+async function rerouteFromCurrentPosition(lat, lon) {
+  if (isRerouting || !routeEndPt) return;
+  isRerouting = true; lastRerouteTime = Date.now();
+  showToast('Rotadan sapıldı, yeni rota hesaplanıyor...', false);
+  speak('Rotadan sapıldı, yeni rota hesaplanıyor.');
+  try {
+    const exclude = [];
+    if (document.getElementById('avoidHighway').checked) exclude.push('motorway');
+    if (document.getElementById('avoidToll').checked) exclude.push('toll');
+    if (document.getElementById('avoidFerry').checked) exclude.push('ferry');
+    const newRoutes = await fetchRoutes(lat, lon, routeEndPt.lat, routeEndPt.lon, exclude.join(','));
+    if (!newRoutes || !newRoutes.length) { showToast('Yeni rota bulunamadı, tekrar denenecek', false); return; }
+    allRoutes = newRoutes;
+    activeRouteIdx = 0;
+    routeStartPt = { lat, lon };
+    drawRoutes(routeStartPt, routeEndPt, { skipStartMarker:true, skipFit:true });
+    if (navActive) {
+      navSteps = allRoutes[activeRouteIdx].steps;
+      navTargetIdx = navSteps.length>1 ? 1 : 0;
+      lastSpokenIdx = -1;
+      updateNavUI(navSteps[navTargetIdx], navSteps[0].distance);
+      speak('Yeni rota hazır. '+getStepText(navSteps[navTargetIdx]));
+    }
+    showToast('✅ Rota güncellendi', true);
+  } catch {
+    showToast('Rota güncellenemedi, bağlantı hatası', false);
+  } finally {
+    isRerouting = false;
+  }
+}
 
 function speak(text) {
   if (!window.speechSynthesis) return;
@@ -886,6 +1196,7 @@ async function startNavigation() {
   if (!navSteps.length) return showToast('Talimatlar alınamadı!', false);
   navActive=true; navTargetIdx = navSteps.length>1 ? 1 : 0; lastSpokenIdx=-1;
   navTrailSegs.forEach(l=>map.removeLayer(l)); navTrailSegs=[]; navLastPoint=null;
+  if (startMarker) { map.removeLayer(startMarker); startMarker=null; }
   document.getElementById('navStartBtn').style.display='none';
   document.getElementById('navStopBtn').style.display='block';
   document.getElementById('navStatus').style.display='none';
@@ -918,6 +1229,17 @@ async function startNavigation() {
     if (now - lastSampleTime > 5000) {
       lastSampleTime = now;
       saveSpeedSample(latitude, longitude, speedKmh);
+    }
+
+    // Rotadan sapma kontrolü: aktif rota çizgisine olan mesafe eşiği aşarsa
+    // (ve son yeniden hesaplamanın üstünden yeterince zaman geçtiyse) otomatik
+    // olarak bulunduğun konumdan varışa yeni rota hesapla.
+    if (!isRerouting && allRoutes[activeRouteIdx]) {
+      const offDist = distanceToRoute(latitude, longitude, allRoutes[activeRouteIdx].coords);
+      if (offDist > OFF_ROUTE_METERS && (Date.now() - lastRerouteTime) > REROUTE_COOLDOWN_MS) {
+        rerouteFromCurrentPosition(latitude, longitude);
+        return; // yeni rota gelene kadar bu tick'teki eski hedef hesaplamasını atla
+      }
     }
 
     // Bir sonraki manevra noktasına olan mesafeyi hesapla (artık doğru şekilde azalır)
@@ -1102,8 +1424,9 @@ async function loadTrafficLayer() {
   if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
   const reports=JSON.parse(localStorage.getItem('highly_reports')||'[]');
   const localSamples=JSON.parse(localStorage.getItem('highly_speed')||'[]').filter(s=>Date.now()-s.time<30*60*1000);
-  const supaSamples=await fetchSupabaseSpeedSamples(b); // sb yapılandırılmadıysa boş döner, sorun çıkarmaz
-  const speedSamples=localSamples.concat(supaSamples);
+  const supaSamples=await fetchSupabaseSpeedSamples(b); // sbTraffic yapılandırılmadıysa boş döner, sorun çıkarmaz
+  const tomtomSamples=await fetchTomTomFromSupabase(); // 5dk cache'li — TomTom'a hiç gitmez, Supabase'e de en fazla 5dk'da bir gider
+  const speedSamples=localSamples.concat(supaSamples, tomtomSamples);
   const now=Date.now();
   const features=elements.filter(e=>e.geometry&&e.geometry.length>1).map(e=>{
     const mid=e.geometry[Math.floor(e.geometry.length/2)];
