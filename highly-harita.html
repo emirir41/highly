@@ -468,7 +468,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
 // --- 1) AUTH / ANA PROJE (mevcut, paylaşılan Highly Supabase projesi) ---
 const SUPABASE_AUTH_URL = 'https://ttuxfivcwdpyvhmybbna.supabase.co';
-const SUPABASE_AUTH_KEY = ''; // buraya ana projenin anon public key'ini yapıştır
+const SUPABASE_AUTH_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0'; // buraya ana projenin anon public key'ini yapıştır
 let sbAuth = null;
 if (SUPABASE_AUTH_URL && SUPABASE_AUTH_KEY && window.supabase) {
   try { sbAuth = window.supabase.createClient(SUPABASE_AUTH_URL, SUPABASE_AUTH_KEY); } catch { sbAuth = null; }
