@@ -475,8 +475,8 @@ if (SUPABASE_AUTH_URL && SUPABASE_AUTH_KEY && window.supabase) {
 }
 
 // --- 2) TRAFİK / YENİ AYRI PROJE (sadece traffic_samples) ---
-const SUPABASE_TRAFFIC_URL = '';      // örn: 'https://xxxxx.supabase.co'
-const SUPABASE_TRAFFIC_KEY = '';      // örn: 'eyJhbGciOi...'
+const SUPABASE_TRAFFIC_URL = 'https://fjjqkrywmngcymulfvnx.supabase.co';      // örn: 'https://xxxxx.supabase.co'
+const SUPABASE_TRAFFIC_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqanFrcnl3bW5nY3ltdWxmdm54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzYwNzIsImV4cCI6MjEwMzk1MjA3Mn0.LBWjQSmnp2TjprOoMD4x-XPJt0OZvnOsGEzaccMk12s';      // örn: 'eyJhbGciOi...'
 let sbTraffic = null;
 if (SUPABASE_TRAFFIC_URL && SUPABASE_TRAFFIC_KEY && window.supabase) {
   try { sbTraffic = window.supabase.createClient(SUPABASE_TRAFFIC_URL, SUPABASE_TRAFFIC_KEY); } catch { sbTraffic = null; }
