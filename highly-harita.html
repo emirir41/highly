@@ -515,7 +515,9 @@ async function fetchTomTomFromSupabase(forceRefresh) {
     return tomtomCache.data; // hâlâ taze, Supabase'e yeniden gitme
   }
   try {
-    const since = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    // 40 noktalı rotasyon ~30dk'da bir tam turu tamamlıyor, o yüzden pencere
+    // 15dk yerine 45dk — yoksa henüz sırası gelmemiş şehirler görünmez olur.
+    const since = new Date(Date.now() - 45 * 60 * 1000).toISOString();
     const { data, error } = await sbTraffic.from('tomtom_flow')
       .select('lat,lon,current_speed,free_flow_speed,updated_at')
       .gte('updated_at', since).limit(3000);
@@ -1433,22 +1435,26 @@ async function overpassWays(bbox, filter) {
   }
   throw lastErr || new Error('overpass-fail-all-mirrors');
 }
+// Zoom seviyesine göre hangi yol tiplerinin gösterileceği — uzaktayken sadece
+// otoyol/devlet yolu, yaklaşınca anayollar, iyice yaklaşınca sokaklar da eklenir.
+function trafficRoadFilterForZoom(zoom) {
+  if (zoom < 13) return 'motorway|trunk';                                   // sadece otoyol + devlet yolu
+  if (zoom < 15) return 'motorway|trunk|primary|secondary';                 // + anayollar
+  if (zoom < 17) return 'motorway|trunk|primary|secondary|tertiary';        // + ara yollar
+  return 'motorway|trunk|primary|secondary|tertiary|unclassified|residential'; // + sokaklar
+}
 async function loadTrafficLayer() {
   if (!trafficOn||map.getZoom()<12) { if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;} return; }
   const b=map.getBounds();
   const bbox=b.getSouth()+','+b.getWest()+','+b.getNorth()+','+b.getEast();
   let elements = [];
   try {
-    // 1) Önce sadece ana yollar/otoyollar (ara sokaklar/residential/service hariç)
-    elements = await overpassWays(bbox, 'motorway|trunk|primary|secondary|tertiary');
-    if (!elements.length) {
-      // 2) Bölgede ana yol yoksa (ör. kırsal alan) — tüm yollara düş, sadece yaya yollarını hariç tut
-      elements = await overpassWays(bbox, 'motorway|trunk|primary|secondary|tertiary|unclassified|residential');
-    }
+    elements = await overpassWays(bbox, trafficRoadFilterForZoom(map.getZoom()));
   } catch (err) {
     if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
     showToast('Trafik verisi alınamadı (tüm sunucular yanıt vermedi), tekrar deneyin', false);
     return;
+
   }
   if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
   const reports=JSON.parse(localStorage.getItem('highly_reports')||'[]');
