@@ -1398,11 +1398,40 @@ function toggleTraffic(btn) {
 }
 // Yol tipine göre beklenen serbest akış hızı (km/s) — gerçek örneklenen hız buna oranlanır
 const FREE_FLOW_SPEED = { motorway:110, trunk:90, primary:65, secondary:50, tertiary:40, unclassified:35, residential:30 };
+// Tek sunucuya bağımlı kalmamak için birden fazla Overpass mirror'ı sırayla deneniyor.
+// overpass-api.de tek başına sık sık 429/504 veriyor; biri patlarsa diğerine geçilir.
+const OVERPASS_MIRRORS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://overpass.private.coffee/api/interpreter',
+  'https://overpass.openstreetmap.ru/api/interpreter'
+];
+// bbox+filter bazlı kısa süreli cache — her pan/zoom'da tüm mirror'ları
+// yeniden yormamak için (aynı bölge 2 dakika içinde tekrar istenirse cache'ten döner)
+const overpassCache = new Map();
+const OVERPASS_CACHE_MS = 2 * 60 * 1000;
 async function overpassWays(bbox, filter) {
-  const q='[out:json][timeout:20];way["highway"~"'+filter+'"]('+bbox+');out body geom;';
-  const res = await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q));
-  if (!res.ok) throw new Error('overpass-fail');
-  return (await res.json()).elements || [];
+  const cacheKey = bbox + '|' + filter;
+  const cached = overpassCache.get(cacheKey);
+  if (cached && (Date.now() - cached.time) < OVERPASS_CACHE_MS) return cached.data;
+
+  const q = '[out:json][timeout:20];way["highway"~"' + filter + '"](' + bbox + ');out body geom;';
+  let lastErr = null;
+  for (const base of OVERPASS_MIRRORS) {
+    try {
+      const controller = new AbortController();
+      const t = setTimeout(() => controller.abort(), 12000);
+      const res = await fetch(base + '?data=' + encodeURIComponent(q), { signal: controller.signal });
+      clearTimeout(t);
+      if (!res.ok) { lastErr = new Error('overpass-http-' + res.status); continue; }
+      const elements = (await res.json()).elements || [];
+      overpassCache.set(cacheKey, { time: Date.now(), data: elements });
+      return elements;
+    } catch (err) {
+      lastErr = err; // bu mirror başarısız, sıradakini dene
+    }
+  }
+  throw lastErr || new Error('overpass-fail-all-mirrors');
 }
 async function loadTrafficLayer() {
   if (!trafficOn||map.getZoom()<12) { if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;} return; }
@@ -1418,7 +1447,7 @@ async function loadTrafficLayer() {
     }
   } catch (err) {
     if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
-    showToast('Trafik verisi alınamadı, tekrar deneyin', false);
+    showToast('Trafik verisi alınamadı (tüm sunucular yanıt vermedi), tekrar deneyin', false);
     return;
   }
   if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
