@@ -1,0 +1,22 @@
+name: Update Road Network Cache
+
+on:
+  schedule:
+    # Her Pazartesi 03:00 UTC (06:00 TR saati) — yollar sık değişmediği için haftada 1 yeterli
+    - cron: '0 3 * * 1'
+  workflow_dispatch: {}   # GitHub'da "Run workflow" butonuyla elle de tetiklenebilir
+
+jobs:
+  update-roads:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Yol verisini çek ve Supabase'e yaz
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node scripts/update-roads.mjs
