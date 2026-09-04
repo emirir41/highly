@@ -1405,7 +1405,7 @@ const FREE_FLOW_SPEED = { motorway:110, trunk:90, primary:65, secondary:50, tert
 // hatası). Bunun yerine kendi Cloudflare Worker'ımız (highly-overpass-proxy)
 // sunucu tarafında Overpass'a gidip CORS header'ıyla bize geri veriyor.
 // ⚠️ Worker'ı deploy ettikten sonra aşağıdaki URL'yi kendi Worker adresinle değiştir:
-const OVERPASS_PROXY_URL = 'https://highly-overpass-proxy.SENIN-SUBDOMAININ.workers.dev';
+const OVERPASS_PROXY_URL = 'https://highly-overpass-proxy.emrir41.workers.dev';
 // bbox+filter bazlı kısa süreli cache — her pan/zoom'da proxy'i yeniden
 // yormamak için (aynı bölge 2 dakika içinde tekrar istenirse cache'ten döner)
 const overpassCache = new Map();
