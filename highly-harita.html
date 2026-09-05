@@ -1463,8 +1463,16 @@ async function loadTrafficLayer() {
   const features=elements.filter(e=>e.geometry&&e.geometry.length>1).map(e=>{
     const mid=e.geometry[Math.floor(e.geometry.length/2)];
     const hw=(e.tags&&e.tags.highway)||'tertiary';
-    // 1) Gerçek hız örneği varsa onu kullan (tek kullanıcı olsa bile anında geçerli)
-    const nearSpeeds=speedSamples.filter(s=>calcDistSimple(mid.lat,mid.lon,s.lat,s.lon)<180);
+    // 1) Gerçek hız örneği varsa onu kullan — yolun TÜM noktalarına bakıp
+    // en yakın örneği buluyoruz (sadece orta noktaya değil, çünkü uzun
+    // yollarda orta nokta köprü/kavşak gibi kritik noktalardan çok uzak
+    // kalabiliyor ve eşleşme kaçıyordu — "yalan yeşil" sorununun sebebiydi)
+    let nearSpeeds=[];
+    for (const s of speedSamples) {
+      for (const g of e.geometry) {
+        if (calcDistSimple(g.lat,g.lon,s.lat,s.lon)<250) { nearSpeeds.push(s); break; }
+      }
+    }
     let color;
     if (nearSpeeds.length) {
       const avgSpeed=nearSpeeds.reduce((a,s)=>a+s.speed,0)/nearSpeeds.length;
