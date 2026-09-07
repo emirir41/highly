@@ -1185,12 +1185,11 @@ function getStepText(s) {
   return 'Düz devam edin'+(n?' '+n:'');
 }
 // Anlık hıza göre renk (duruyor/yavaş/orta/hızlı) — yol tipinden bağımsız, tek kullanıcı için de anında çalışır
-// Not: eşikler artık m/s cinsinden (GPS'ten gelen speed zaten m/s, kmh'ye çevirip geri çevirmeye gerek yok)
-function speedColor(ms) {
-  if (ms < 0.83) return '#7f1d1d';   // duruyor — koyu kırmızı (~3 km/s)
-  if (ms < 5.56) return '#ef4444';   // yavaş — kırmızı (~20 km/s)
-  if (ms < 13.89) return '#f59e0b';  // orta — sarı (~50 km/s)
-  return '#34d399';                  // hızlı — yeşil
+function speedColor(kmh) {
+  if (kmh < 3) return '#7f1d1d';   // duruyor — koyu kırmızı
+  if (kmh < 20) return '#ef4444';  // yavaş — kırmızı
+  if (kmh < 50) return '#f59e0b';  // orta — sarı
+  return '#34d399';                // hızlı — yeşil
 }
 async function startNavigation() {
   if (!allRoutes.length) return showToast('Önce rota oluştur!', false);
@@ -1211,8 +1210,7 @@ async function startNavigation() {
   let lastSampleTime = 0;
   navWatcher = navigator.geolocation.watchPosition(pos => {
     const { latitude, longitude, speed, heading } = pos.coords;
-    const speedMs = speed!==null && !isNaN(speed) ? speed : 0;
-    const speedKmh = Math.round(speedMs*3.6);
+    const speedKmh = speed!==null && !isNaN(speed) ? Math.round(speed*3.6) : 0;
     document.getElementById('navSpeed').textContent = speedKmh;
     if (navMarker) map.removeLayer(navMarker);
     const rot = (heading!==null && !isNaN(heading)) ? 'transform:rotate('+Math.round(heading)+'deg)' : '';
@@ -1220,7 +1218,7 @@ async function startNavigation() {
     map.setView([latitude,longitude], 17, { animate:true });
 
     // Gerçek zamanlı hız izi: geçtiğin yolu anlık hızına göre renklendir (koyu kırmızı/kırmızı/sarı/yeşil)
-    const col = speedColor(speedMs);
+    const col = speedColor(speedKmh);
     if (navLastPoint) {
       const seg = L.polyline([navLastPoint, [latitude,longitude]], { color:col, weight:6, opacity:.85 }).addTo(map);
       navTrailSegs.push(seg);
