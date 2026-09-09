@@ -1432,6 +1432,27 @@ async function overpassWays(bbox, filter) {
     throw err;
   }
 }
+// ANA KAYNAK: Supabase'deki road_network tablosu (haftalık GitHub Actions
+// cron'u — scripts/update-roads.mjs — tarafından dolduruluyor). Canlı Overpass
+// proxy'sine artık ihtiyaç halinde (Supabase boşsa/hata verirse) YEDEK olarak
+// başvuruyoruz; ana yol bu değil, çünkü Cloudflare Workers IP'si Overpass
+// tarafından ara sıra engelleniyor ("tüm sunucular yanıt vermedi" hatasının sebebi).
+async function roadNetworkWays(bounds, filter) {
+  if (!sbTraffic) throw new Error('sbTraffic-not-configured');
+  const south=bounds.getSouth(), west=bounds.getWest(), north=bounds.getNorth(), east=bounds.getEast();
+  const classes = filter.split('|');
+  const { data, error } = await sbTraffic.from('road_network')
+    .select('osm_id,highway_type,name,geometry')
+    .in('highway_type', classes)
+    .lte('min_lat', north)
+    .gte('max_lat', south)
+    .lte('min_lon', east)
+    .gte('max_lon', west)
+    .limit(3000);
+  if (error) throw error;
+  if (!data || !data.length) throw new Error('road_network-empty'); // boşsa Overpass'a düş
+  return data.map(r => ({ geometry: r.geometry, tags: { highway: r.highway_type, name: r.name } }));
+}
 // Zoom seviyesine göre hangi yol tiplerinin gösterileceği — uzaktayken sadece
 // otoyol/devlet yolu, yaklaşınca anayollar, iyice yaklaşınca sokaklar da eklenir.
 function trafficRoadFilterForZoom(zoom) {
@@ -1443,15 +1464,19 @@ function trafficRoadFilterForZoom(zoom) {
 async function loadTrafficLayer() {
   if (!trafficOn||map.getZoom()<12) { if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;} return; }
   const b=map.getBounds();
-  const bbox=b.getSouth()+','+b.getWest()+','+b.getNorth()+','+b.getEast();
+  const filter=trafficRoadFilterForZoom(map.getZoom());
   let elements = [];
   try {
-    elements = await overpassWays(bbox, trafficRoadFilterForZoom(map.getZoom()));
-  } catch (err) {
-    if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
-    showToast('Trafik verisi alınamadı (tüm sunucular yanıt vermedi), tekrar deneyin', false);
-    return;
-
+    elements = await roadNetworkWays(b, filter); // 1) önce Supabase road_network (hızlı, güvenilir)
+  } catch (err1) {
+    try {
+      const bbox=b.getSouth()+','+b.getWest()+','+b.getNorth()+','+b.getEast();
+      elements = await overpassWays(bbox, filter); // 2) yedek: canlı Overpass proxy
+    } catch (err2) {
+      if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
+      showToast('Trafik verisi alınamadı (tüm sunucular yanıt vermedi), tekrar deneyin', false);
+      return;
+    }
   }
   if(trafficLayer){map.removeLayer(trafficLayer);trafficLayer=null;}
   const reports=JSON.parse(localStorage.getItem('highly_reports')||'[]');
