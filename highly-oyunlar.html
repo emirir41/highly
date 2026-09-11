@@ -16,6 +16,8 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM
 .nav-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;flex:1}
 .nav-dash{width:32px;height:32px;background:var(--s2);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--muted);font-size:14px;transition:all .2s;flex-shrink:0}
 .nav-dash:hover{color:var(--text);border-color:var(--border2)}
+.n-login-btn{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:999px;padding:7px 14px;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;cursor:pointer;text-decoration:none;transition:opacity .2s;flex-shrink:0}
+.n-login-btn:hover{opacity:.9}
 .page{max-width:680px;margin:0 auto;padding:16px}
 .section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;margin-top:4px}
 .game-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
@@ -154,7 +156,8 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM
 <body>
 
 <nav class="nav">
-  <a class="nav-avatar" id="navAvatar" href="highly-profil.html">?</a>
+  <a class="nav-avatar" id="navAvatar" href="highly-profil.html" style="display:none">?</a>
+  <a class="n-login-btn" id="loginBtn" href="highly-id.html" style="display:none">🔐 Giriş Yap</a>
   <span class="nav-title">🎮 Oyunlar</span>
   <a class="nav-dash" href="index.html" title="Dashboard">⊞</a>
 </nav>
@@ -488,12 +491,19 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM
 (function(){
   var t=localStorage.getItem('highly_theme')||'dark';
   document.documentElement.setAttribute('data-theme',t);
+  var av=document.getElementById('navAvatar');
+  var loginBtn=document.getElementById('loginBtn');
   try{
-    var u=JSON.parse(localStorage.getItem('highly_user')||'{}');
-    var av=document.getElementById('navAvatar');
-    if(u.avatarEmoji){av.textContent=u.avatarEmoji;av.style.background='transparent';av.style.fontSize='22px';}
-    else if(u.name){av.textContent=u.name[0].toUpperCase();}
-  }catch(e){}
+    var saved=localStorage.getItem('highly_user');
+    var u=saved?JSON.parse(saved):null;
+    if(u&&u.name){
+      av.style.display='flex';
+      if(u.avatarEmoji){av.textContent=u.avatarEmoji;av.style.background='transparent';av.style.fontSize='22px';}
+      else{av.textContent=u.name[0].toUpperCase();}
+    } else {
+      loginBtn.style.display='flex';
+    }
+  }catch(e){ loginBtn.style.display='flex'; }
 })();
 
 var currentGame=null;
