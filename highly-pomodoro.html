@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -9,22 +9,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--text:#e8e8ff;--muted:#4a4d6a;
-  --work:#f87171;--break:#34d399;--long:#38bdf8}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+[data-theme="dark"]{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#e8e8ff;--muted:#4a4d6a;--work:#f87171;--break:#34d399;--long:#38bdf8;--nav-bg:rgba(6,7,15,0.95);--menu-bg:#0d0f20;--a1:#f87171;--a2:#ef4444}
+[data-theme="glass"]{--bg:linear-gradient(135deg,#0a0f2e 0%,#0d1635 50%,#0a1628 100%);--s1:rgba(255,255,255,0.06);--s2:rgba(255,255,255,0.1);--border:rgba(255,255,255,0.12);--border2:rgba(255,255,255,0.2);--text:#f0f4ff;--muted:rgba(255,255,255,0.45);--work:#fb923c;--break:#4ade80;--long:#60a5fa;--nav-bg:rgba(10,15,46,0.7);--menu-bg:rgba(8,12,40,0.85);--a1:#fb923c;--a2:#f87171}
+[data-theme="light"]{--bg:#f0f2f8;--s1:#ffffff;--s2:#f5f6fa;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--text:#1a1b2e;--muted:#9095b0;--work:#ef4444;--break:#059669;--long:#0284c7;--nav-bg:rgba(240,242,248,0.95);--menu-bg:#ffffff;--a1:#ef4444;--a2:#dc2626}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;transition:background .3s,color .3s}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse at 50% 30%,rgba(248,113,113,0.07) 0%,transparent 55%)}
 
+[data-theme="glass"] nav{backdrop-filter:blur(30px);box-shadow:0 4px 24px rgba(0,0,0,.3)}
 nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
-    padding:12px 24px;background:rgba(6,7,15,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
+    padding:12px 24px;background:var(--nav-bg);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);transition:background .3s}
 .n-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
-.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--work),#ef4444);display:flex;align-items:center;justify-content:center;font-size:16px}
+.n-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#fff}
 .n-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
-.n-right{display:flex;align-items:center;gap:10px}
-.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px}
-.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--work),#ef4444);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px}
-.n-back{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s}
-.n-back:hover{color:var(--text)}
+.n-right{display:flex;align-items:center;gap:8px;position:relative}
+.n-icon-btn{width:36px;height:36px;background:var(--s1);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .2s;color:var(--text);text-decoration:none;flex-shrink:0}
+.n-icon-btn:hover{background:var(--s2);border-color:var(--border2)}
+.n-login-btn{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:999px;padding:8px 16px;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:12.5px;cursor:pointer;text-decoration:none;transition:opacity .2s,transform .15s}
+.n-login-btn:hover{opacity:.9;transform:translateY(-1px)}
+.n-user{display:flex;align-items:center;gap:8px;background:var(--s1);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--text);font-size:13px;cursor:pointer}
+.n-user:hover{border-color:var(--border2)}
+.n-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:#fff}
+.profile-dropdown{position:fixed;top:56px;right:24px;width:220px;border:1px solid var(--border2);border-radius:16px;z-index:160;transform:translateY(-8px) scale(.97);opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.4,0,.2,1);box-shadow:0 16px 48px rgba(0,0,0,.4);overflow:hidden;background:var(--menu-bg)}
+[data-theme="glass"] .profile-dropdown{backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)}
+.profile-dropdown.show{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+.pd-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.pd-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff;flex-shrink:0}
+.pd-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800}
+.pd-sub{font-size:10.5px;color:var(--muted);margin-top:1px}
+.pd-item{display:flex;align-items:center;gap:10px;padding:11px 14px;text-decoration:none;color:var(--text);font-size:13px;transition:background .2s;cursor:pointer;border:none;background:none;width:100%;font-family:'DM Sans',sans-serif}
+.pd-item:hover{background:var(--s2)}
+.pd-item-icon{font-size:15px;width:18px;text-align:center}
 
 main{position:relative;z-index:2;max-width:560px;margin:0 auto;padding:48px 24px 80px;width:100%;display:flex;flex-direction:column;align-items:center}
 
@@ -82,17 +97,30 @@ main{position:relative;z-index:2;max-width:560px;margin:0 auto;padding:48px 24px
 
 <nav>
   <a href="dashboard.html" class="n-logo">
-    <div class="n-icon">⏱</div>
+    <div class="n-icon">H</div>
     <span class="n-title">Highly Pomodoro</span>
   </a>
   <div class="n-right">
-    <a href="dashboard.html" class="n-user">
+    <a href="dashboard.html" class="n-icon-btn" title="Dashboard'a dön">←</a>
+    <a href="dashboard.html" class="n-user" id="userChip" style="display:none">
       <div class="n-avatar" id="navAvatar">?</div>
       <span id="navName">...</span>
     </a>
-    <a href="dashboard.html" class="n-back">← Dashboard</a>
+    <a href="highly-id.html" class="n-login-btn" id="loginBtn" style="display:none">🔐 Giriş Yap</a>
   </div>
 </nav>
+
+<div class="profile-dropdown" id="profileDropdown">
+  <div class="pd-head">
+    <div class="pd-avatar" id="pdAvatar">?</div>
+    <div>
+      <div class="pd-name" id="pdName">Kullanıcı</div>
+      <div class="pd-sub">Highly hesabı</div>
+    </div>
+  </div>
+  <a href="dashboard.html" class="pd-item"><span class="pd-item-icon">🏠</span> Dashboard'a dön</a>
+  <button class="pd-item" id="pdLogout"><span class="pd-item-icon">🚪</span> Çıkış Yap</button>
+</div>
 
 <main>
   <!-- Mode tabs -->
@@ -164,12 +192,38 @@ main{position:relative;z-index:2;max-width:560px;margin:0 auto;padding:48px 24px
 <div class="toast" id="toast"></div>
 
 <script>
-// Auth
+// Tema (dashboard ile senkron)
+document.documentElement.setAttribute('data-theme', localStorage.getItem('highly_theme') || 'dark');
+
+// Giriş durumu (zorunlu değil)
 const saved = localStorage.getItem('highly_user');
-if (!saved) location.href = 'highly-id.html';
-const user = JSON.parse(saved || '{"name":"?"}');
-document.getElementById('navAvatar').textContent = user.name[0].toUpperCase();
-document.getElementById('navName').textContent = user.name.split(' ')[0];
+const user  = saved ? JSON.parse(saved) : null;
+const userChip    = document.getElementById('userChip');
+const loginBtn     = document.getElementById('loginBtn');
+const profileDrop  = document.getElementById('profileDropdown');
+
+if (user && user.name) {
+  const initial = user.avatarEmoji || user.name[0].toUpperCase();
+  document.getElementById('navAvatar').textContent = initial;
+  document.getElementById('navName').textContent   = user.name.split(' ')[0];
+  document.getElementById('pdAvatar').textContent  = initial;
+  document.getElementById('pdName').textContent    = user.name;
+  if (user.avatarBg && !user.avatarEmoji) {
+    document.getElementById('navAvatar').style.background = user.avatarBg;
+    document.getElementById('pdAvatar').style.background = user.avatarBg;
+  }
+  userChip.style.display = 'flex';
+  userChip.addEventListener('click', e => { e.preventDefault(); profileDrop.classList.toggle('show'); });
+} else {
+  loginBtn.style.display = 'flex';
+}
+document.getElementById('pdLogout')?.addEventListener('click', () => {
+  localStorage.removeItem('highly_user');
+  location.reload();
+});
+document.addEventListener('click', e => {
+  if (!profileDrop.contains(e.target) && !userChip.contains(e.target)) profileDrop.classList.remove('show');
+});
 
 // State
 const MODES = {
