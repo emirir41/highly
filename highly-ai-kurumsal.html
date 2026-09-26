@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070f;--s1:#0b0d1c;--border:rgba(255,255,255,0.07);--a1:#6366f1;--a2:#4f46e5;--text:#e8e8ff;--muted:#9295b8}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 20% 20%,rgba(99,102,241,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(167,139,250,0.06) 0%,transparent 50%)}
+.back{position:fixed;top:20px;left:20px;z-index:10;width:42px;height:42px;border-radius:12px;background:var(--s1);border:1px solid var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:border-color .2s,background .2s,color .2s}
+.back:hover{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.35);color:#a78bfa}
+.back:focus-visible{outline:2px solid var(--a1);outline-offset:3px}
+.back svg{width:20px;height:20px}
+.card{position:relative;z-index:2;width:100%;max-width:640px;background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:56px 48px 44px;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.45)}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+.brand-icon{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:0 6px 20px rgba(99,102,241,.3)}
+.brand-name{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:.2px}
+.rule{width:56px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--a1),#a78bfa);margin-bottom:28px}
+h1{font-family:'Syne',sans-serif;font-weight:700;font-size:26px;line-height:1.45;max-width:500px;text-wrap:balance}
+h1 strong{font-weight:800;color:#fff}
+.thanks{margin-top:20px;color:var(--muted);font-size:15px;line-height:1.75;max-width:440px;text-wrap:balance}
+.more{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);width:100%;font-size:15px}
+.more a{color:#a78bfa;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;font-weight:500;transition:color .2s}
+.more a:hover{color:var(--text)}
+.more a:focus-visible{outline:2px solid var(--a1);outline-offset:4px;border-radius:4px}
+@media (max-width:520px){
+  .back{top:14px;left:14px}
+  .card{padding:40px 24px 32px;border-radius:16px;margin-top:48px}
+  h1{font-size:21px}
+  .thanks,.more{font-size:14px}
+}
+</style>
+</head>
+<body>
+<a class="back" href="https://highly.com.tr/dashboard.html" aria-label="Dashboard'a dön">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+</a>
+
+<main class="card">
+  <div class="brand">
+    <div class="brand-icon">🤖</div>
+    <span class="brand-name">Highly AI</span>
+  </div>
+  <div class="rule" aria-hidden="true"></div>
+
+  <h1>Highly AI, <strong>25 Eylül 2026 Cuma</strong> gününden itibaren hizmet vermeyecektir.</h1>
+  <p class="thanks">Bu süreç boyunca bize verdiğiniz destek ve gösterdiğiniz güven için teşekkür ederiz.</p>
+
+  <p class="more"><a href="https://devs.highly.com.tr/highly-ai-durdurma.html">Daha fazla bilgi</a></p>
+</main>
+</body>
+</html>
