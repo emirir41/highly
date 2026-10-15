@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#07080f">
+<meta name="robots" content="noindex">
+<title>Servisler kullanılamıyor · Highly</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236366f1'/%3E%3Cstop offset='1' stop-color='%234f46e5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='28' fill='url(%23g)'/%3E%3Cpath fill='%23fff' d='M26 36h11v9h26v-9h11v28H63V54H37v10H26z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080f;--surface:#0d0f1e;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);--accent:#6366f1;--accent2:#a78bfa;--warn:#fbbf24;--text:#f0f0ff;--muted:#8a8daf}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'DM Sans',ui-sans-serif,system-ui,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;padding:max(1.25rem,env(safe-area-inset-top)) 1.25rem max(1.25rem,env(safe-area-inset-bottom));overflow-x:hidden;position:relative}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+
+.bg{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:drift 11s ease-in-out infinite alternate}
+.orb-1{width:600px;height:600px;background:rgba(99,102,241,.16);top:-150px;left:-150px}
+.orb-2{width:500px;height:500px;background:rgba(167,139,250,.10);bottom:-120px;right:-120px;animation-duration:13s;animation-delay:-4s}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:64px 64px}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,25px) scale(1.1)}}
+
+.card{position:relative;overflow:hidden;width:100%;max-width:30rem;background:rgba(13,15,30,.9);border:1px solid var(--border2);border-radius:1.5rem;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);box-shadow:0 0 0 1px rgba(99,102,241,.1),0 24px 60px rgba(0,0,0,.55);padding:2.25rem 2rem 2rem;text-align:center;animation:rise .6s cubic-bezier(.16,1,.3,1) both}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#6366f1,#a78bfa,var(--warn))}
+@keyframes rise{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:none}}
+
+.brand{display:flex;align-items:center;justify-content:center;gap:.7rem;margin-bottom:1.75rem}
+.brand svg{width:2.6rem;height:2.6rem;filter:drop-shadow(0 4px 18px rgba(99,102,241,.45))}
+.brand span{font-family:'Syne',sans-serif;font-weight:800;font-size:1.45rem;letter-spacing:-.3px}
+
+
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,6vw,2rem);line-height:1.15;letter-spacing:-.6px;margin-bottom:.85rem;text-wrap:balance}
+p.lead{color:var(--muted);font-size:.95rem;line-height:1.65;max-width:26rem;margin:0 auto;text-wrap:pretty}
+
+.retry{margin-top:1.75rem;display:flex;flex-direction:column;align-items:center;gap:.75rem}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:0;border-radius:13px;padding:.8rem 1.4rem;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.3px;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));transition:transform .15s,box-shadow .15s}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.12),transparent);pointer-events:none}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(99,102,241,.4)}
+.btn:active{transform:none}
+.btn svg{width:1rem;height:1rem}
+.btn.spin svg{animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.auto{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.foot{margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted);line-height:1.6}
+.foot b{color:var(--text);font-weight:600}
+
+@media (max-width:420px){.card{padding:2rem 1.25rem 1.5rem}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><div class="grid"></div><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+<main class="card" role="main">
+  <div class="brand">
+    <svg viewBox="0 0 100 100" role="img" aria-label="Highly logosu">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#4f46e5"/></linearGradient></defs>
+      <rect width="100" height="100" rx="28" fill="url(#lg)"/>
+      <path fill="#fff" d="M26 36h11v9h26v-9h11v28H63V54H37v10H26z"/>
+    </svg>
+    <span>Highly</span>
+  </div>
+
+  <h1>Highly servisleri şu anda kullanılamıyor</h1>
+  <p class="lead">Servislerimize geçici olarak ulaşılamıyor. Giriş yapamayabilir ve uygulamalarına erişemeyebilirsin. Hesabın ve verilerin güvende, her şey hazır olduğunda kaldığın yerden devam edebilirsin.</p>
+
+  <div class="retry">
+    <button class="btn" id="retry" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+      Tekrar dene
+    </button>
+    <span class="auto" id="auto" aria-live="off">60 saniye sonra otomatik yenilenecek</span>
+  </div>
+
+  <p class="foot"><b>Bu sayfa kendiliğinden yenilenir.</b> Sorun uzun sürerse bir süre sonra tekrar ziyaret et.</p>
+</main>
+
+<script>
+(function(){
+  var left = 60, btn = document.getElementById('retry'), label = document.getElementById('auto');
+  function go(){ btn.classList.add('spin'); setTimeout(function(){ location.reload(); }, 400); }
+  btn.addEventListener('click', go);
+  setInterval(function(){
+    left--;
+    if (left <= 0) { go(); return; }
+    label.textContent = left + ' saniye sonra otomatik yenilenecek';
+  }, 1000);
+})();
+</script>
+</body>
+</html>
