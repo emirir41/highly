@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Döviz</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1842711344931829" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[data-theme=dark]{--bg:#06070f;--s1:#0b0d1c;--s2:#0f1125;--b:rgba(255,255,255,.07);--b2:rgba(255,255,255,.14);--a1:#818cf8;--a2:#4f6ef7;--t:#e8e8ff;--m:#7a7e9e;--nav:rgba(6,7,15,.95);--menu:#0d0f20;--h:rgba(255,255,255,.05);--up:#34d399;--dn:#f87171}
+[data-theme=glass]{--bg:linear-gradient(135deg,#0a0f2e,#0d1635 50%,#0a1628);--s1:rgba(255,255,255,.06);--s2:rgba(255,255,255,.1);--b:rgba(255,255,255,.12);--b2:rgba(255,255,255,.2);--a1:#a5b4fc;--a2:#818cf8;--t:#f0f4ff;--m:rgba(255,255,255,.55);--nav:rgba(10,15,46,.7);--menu:rgba(8,12,40,.9);--h:rgba(255,255,255,.07);--up:#34d399;--dn:#f87171}
+[data-theme=light]{--bg:#f0f2f8;--s1:#fff;--s2:#f5f6fa;--b:rgba(0,0,0,.08);--b2:rgba(0,0,0,.14);--a1:#4f6ef7;--a2:#3b57d9;--t:#1a1b2e;--m:#6b7090;--nav:rgba(240,242,248,.95);--menu:#fff;--h:rgba(0,0,0,.05);--up:#059669;--dn:#dc2626}
+body{background:var(--bg);color:var(--t);font-family:'DM Sans',sans-serif;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;transition:background .3s,color .3s}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 20%,rgba(129,140,248,.07),transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(79,110,247,.05),transparent 55%)}
+nav{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:var(--nav);border-bottom:1px solid var(--b);backdrop-filter:blur(20px);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--t)}
+.ni{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:14px;color:#fff}
+.nt{font-family:Syne,sans-serif;font-weight:800;font-size:17px}
+.nr{display:flex;align-items:center;gap:8px}
+.ib{width:36px;height:36px;background:var(--s1);border:1px solid var(--b);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--t);text-decoration:none;font-size:15px}
+.ib:hover{border-color:var(--b2)}
+.btn{display:flex;align-items:center;gap:7px;padding:8px 18px;background:linear-gradient(135deg,var(--a1),var(--a2));border:none;border-radius:999px;color:#fff;font-family:Syne,sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(129,140,248,.3);text-decoration:none}
+.btn:hover{opacity:.85}
+.uc{display:none;align-items:center;gap:8px;background:var(--s1);border:1px solid var(--b);border-radius:999px;padding:5px 12px 5px 6px;color:var(--t);font-size:13px;text-decoration:none}
+.av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:11px;color:#fff}
+.pd{position:fixed;top:56px;right:24px;width:200px;border:1px solid var(--b2);border-radius:16px;z-index:160;background:var(--menu);box-shadow:0 16px 48px rgba(0,0,0,.4);opacity:0;pointer-events:none;transform:translateY(-8px);transition:all .25s;overflow:hidden}
+.pd.show{opacity:1;pointer-events:all;transform:none}
+.pd a,.pd button{display:flex;gap:10px;padding:12px 14px;width:100%;border:none;background:none;color:var(--t);font:13px 'DM Sans',sans-serif;text-decoration:none;cursor:pointer;text-align:left}
+.pd a:hover,.pd button:hover{background:var(--s2)}
+.ly{display:flex;flex:1;overflow:hidden;position:relative;z-index:2}
+.sb{width:270px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--b);overflow-y:auto;padding:16px}
+.lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:8px}
+.row{display:flex;align-items:center;gap:10px;padding:8px;border-radius:9px;cursor:pointer;font-size:13px;border:none;background:none;color:var(--t);width:100%;text-align:left;font-family:inherit}
+.row:hover{background:var(--h)}.row.on{background:var(--h);font-weight:600}
+.cnt{margin-left:auto;font-size:10px;color:var(--m);background:var(--h);padding:1px 7px;border-radius:999px}
+.mv{padding:9px;border-radius:10px;background:var(--h);border:1px solid var(--b);margin-bottom:7px;display:flex;justify-content:space-between;font-size:12px;font-weight:600}
+.sub{font-size:11px;color:var(--m);line-height:1.6}
+.mn{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.tb{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 24px;border-bottom:1px solid var(--b);flex-shrink:0}
+.tt{font-family:Syne,sans-serif;font-size:20px;font-weight:800;letter-spacing:-.5px}
+.vt{display:flex;gap:3px;background:var(--h);border-radius:9px;padding:3px}
+.vtab{padding:6px 14px;border:none;background:none;color:var(--m);font:600 12px 'DM Sans',sans-serif;border-radius:7px;cursor:pointer;white-space:nowrap}
+.vtab.on{background:var(--a1);color:#fff}
+.bd{flex:1;overflow:auto;padding:16px 24px 28px}
+.chips{display:none;gap:6px;overflow-x:auto;margin-bottom:14px}
+.chip{flex-shrink:0;padding:6px 13px;border:1px solid var(--b);background:var(--s1);border-radius:999px;color:var(--m);font:600 12px 'DM Sans',sans-serif;cursor:pointer}
+.chip.on{background:var(--a1);color:#fff;border-color:var(--a1)}
+.hero{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.card{background:var(--s2);border:1px solid var(--b);border-radius:14px;padding:16px}
+.card:hover{border-color:rgba(129,140,248,.35)}
+.cn{font-size:11px;color:var(--m);margin:6px 0 2px}
+.cr{font-family:Syne,sans-serif;font-size:24px;font-weight:800;letter-spacing:-.5px}
+.up{color:var(--up)}.dn{color:var(--dn)}
+.ch{font-size:12px;font-weight:600;margin:3px 0 8px}
+.tw{background:var(--s2);border:1px solid var(--b);border-radius:14px;overflow:hidden}
+.tr{display:grid;grid-template-columns:2fr 1fr 1fr 90px 34px;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid var(--b);font-size:13px}
+.tr:last-child{border:none}
+.th{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:.5px;font-weight:700;padding:11px 18px}
+.tr:not(.th):hover{background:var(--h)}
+.who{display:flex;align-items:center;gap:10px;font-weight:600}.who small{display:block;color:var(--m);font-weight:400;font-size:11px}
+.rt{font-family:Syne,sans-serif;font-weight:700}
+.star{background:none;border:none;font-size:16px;color:var(--m);cursor:pointer}.star.on{color:#f59e0b}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.cv{max-width:520px}
+.cvr{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fi{background:var(--h);border:1px solid var(--b);border-radius:9px;padding:10px 13px;color:var(--t);font:14px 'DM Sans',sans-serif;outline:none}
+.fi:focus{border-color:var(--a1)}.fi option{background:var(--menu);color:var(--t)}
+#amt{flex:1;min-width:110px;font:800 18px Syne,sans-serif}
+.res{margin-top:16px;padding:16px;background:rgba(129,140,248,.1);border:1px solid rgba(129,140,248,.25);border-radius:12px;font:800 20px Syne,sans-serif;text-align:center;color:var(--a1)}
+.msg{color:var(--m);text-align:center;padding:50px 10px;line-height:2;font-size:14px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1px solid rgba(129,140,248,.3);border-radius:10px;padding:11px 20px;font-size:13px;color:var(--a1);opacity:0;z-index:9999;transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%)}
+@media(max-width:760px){.sb{display:none}.chips{display:flex}.hero{grid-template-columns:1fr}.tr{grid-template-columns:2fr 1.2fr 1fr 34px}.tr>.sp{display:none}.bd,.tb{padding-left:14px;padding-right:14px}nav{padding:10px 14px}.tt{font-size:16px}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="dashboard.html" class="logo"><div class="ni">H</div><span class="nt">Highly Döviz</span></a>
+  <div class="nr">
+    <button class="btn" id="rf">↻ Yenile</button>
+    <a href="dashboard.html" class="ib" title="Dashboard'a dön">←</a>
+    <a href="#" class="uc" id="uc"><div class="av" id="nav-av">?</div><span id="nav-nm">...</span></a>
+    <a href="highly-id.html" class="btn" id="lb" style="display:none">🔐 Giriş Yap</a>
+  </div>
+</nav>
+<div class="pd" id="pd"><a href="dashboard.html">🏠 Dashboard'a dön</a><button id="out">🚪 Çıkış Yap</button></div>
+<div class="ly">
+  <aside class="sb">
+    <div class="lbl">Gruplar</div><div id="grp"></div>
+    <div class="lbl" style="margin-top:18px">Günün hareketlileri</div><div id="mvs"></div>
+    <div class="sub" id="lu" style="margin-top:14px">Yükleniyor...</div>
+  </aside>
+  <div class="mn">
+    <div class="tb">
+      <span class="tt" id="tt">Kurlar</span>
+      <div class="vt">
+        <button class="vtab on" data-v="k">Kurlar</button>
+        <button class="vtab" data-v="m">Altın &amp; Metal</button>
+        <button class="vtab" data-v="c">Çevirici</button>
+      </div>
+    </div>
+    <div class="bd">
+      <div id="vk"><div class="chips" id="chips"></div><div class="hero" id="hero"></div><div class="tw" id="tbl"></div></div>
+      <div id="vm" style="display:none"><div class="mg" id="mg"></div><p class="sub" style="margin-top:14px" id="mnote"></p></div>
+      <div id="vc" style="display:none"><div class="card cv">
+        <div class="cvr"><input class="fi" id="amt" type="number" value="1" min="0" step="any"/><select class="fi" id="from"></select><span class="ib" id="swap" style="cursor:pointer">⇄</span><select class="fi" id="to"></select></div>
+        <div class="res" id="res">—</div><p class="sub" id="cvn" style="margin-top:10px;text-align:center"></p>
+      </div></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+document.documentElement.setAttribute('data-theme',localStorage.getItem('highly_theme')||'dark');
+addEventListener('storage',e=>{if(e.key==='highly_theme')document.documentElement.setAttribute('data-theme',e.newValue||'dark')});
+const $=id=>document.getElementById(id);
+const user=(()=>{try{return JSON.parse(localStorage.getItem('highly_user'))}catch{return null}})();
+if(user&&user.name){
+  $('nav-av').textContent=user.avatarEmoji||user.name[0].toUpperCase();
+  if(user.avatarBg&&!user.avatarEmoji)$('nav-av').style.background=user.avatarBg;
+  $('nav-nm').textContent=user.name.split(' ')[0];$('uc').style.display='flex';
+  $('uc').onclick=e=>{e.preventDefault();$('pd').classList.toggle('show')};
+}else $('lb').style.display='flex';
+$('out').onclick=()=>{localStorage.removeItem('highly_user');location.reload()};
+document.addEventListener('click',e=>{if(!$('pd').contains(e.target)&&!$('uc').contains(e.target))$('pd').classList.remove('show')});
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+const C=[
+ {c:'USD',f:'🇺🇸',n:'Amerikan Doları',g:'major'},{c:'EUR',f:'🇪🇺',n:'Euro',g:'major'},
+ {c:'GBP',f:'🇬🇧',n:'İngiliz Sterlini',g:'major'},{c:'CHF',f:'🇨🇭',n:'İsviçre Frangı',g:'major'},
+ {c:'JPY',f:'🇯🇵',n:'Japon Yeni',g:'major'},{c:'CAD',f:'🇨🇦',n:'Kanada Doları',g:'other'},
+ {c:'AUD',f:'🇦🇺',n:'Avustralya Doları',g:'other'},{c:'CNY',f:'🇨🇳',n:'Çin Yuanı',g:'other'},
+ {c:'SEK',f:'🇸🇪',n:'İsveç Kronası',g:'other'},{c:'SAR',f:'🇸🇦',n:'Suudi Riyali',g:'gulf'},{c:'AED',f:'🇦🇪',n:'BAE Dirhemi',g:'gulf'}];
+const GR=[['all','Tümü'],['fav','★ Favoriler'],['major','Majör'],['other','Diğer'],['gulf','Körfez']];
+const PEG={SAR:3.75,AED:3.6725}; // USD'ye sabitlenmiş resmi kurlar
+let H={},R={},M=null,grp='all',view='k',meta='';
+let fav=(()=>{try{return JSON.parse(localStorage.getItem('highly_doviz_fav'))||['USD','EUR']}catch{return['USD','EUR']}})();
+
+const fr=v=>v==null?'—':v.toLocaleString('tr-TR',{minimumFractionDigits:v<1?4:2,maximumFractionDigits:v<1?4:2});
+const chg=c=>{const h=H[c];return h&&h.length>1?(h[h.length-1]/h[h.length-2]-1)*100:null};
+const chHtml=v=>v==null?'<span class="sub">—</span>':`<span class="${v>=0?'up':'dn'}">${v>=0?'▲':'▼'} %${Math.abs(v).toLocaleString('tr-TR',{maximumFractionDigits:2,minimumFractionDigits:2})}</span>`;
+function spark(a,w=80,h=24){
+  if(!a||a.length<2)return'';
+  const mn=Math.min(...a),mx=Math.max(...a),d=mx-mn||1;
+  const p=a.map((v,i)=>`${(i/(a.length-1)*w).toFixed(1)},${(h-2-((v-mn)/d)*(h-4)).toFixed(1)}`).join(' ');
+  return`<svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${p}" fill="none" stroke="var(--${a[a.length-1]>=a[0]?'up':'dn'})" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>`;
+}
+
+async function load(){
+  $('lu').textContent='Güncelleniyor...';
+  try{
+    const s=new Date(Date.now()-35*864e5).toISOString().slice(0,10);
+    const r=await fetch(`https://api.frankfurter.dev/v1/${s}..?base=TRY&symbols=USD,EUR,GBP,JPY,CHF,CAD,AUD,CNY,SEK`);
+    if(!r.ok)throw new Error(r.status);
+    const d=await r.json(),days=Object.keys(d.rates).sort(),h={};
+    ['USD','EUR','GBP','JPY','CHF','CAD','AUD','CNY','SEK'].forEach(k=>{
+      let last=null;
+      h[k]=days.map(x=>{const v=d.rates[x]&&d.rates[x][k];if(v)last=1/v;return last}).filter(v=>v);
+    });
+    Object.keys(PEG).forEach(k=>h[k]=h.USD.map(v=>v/PEG[k]));
+    H=h;meta='Veri tarihi: '+days[days.length-1];
+    localStorage.setItem('highly_doviz_cache',JSON.stringify({H,meta,t:Date.now()}));
+  }catch(e){
+    console.error('Kur hatası:',e);
+    try{const c=JSON.parse(localStorage.getItem('highly_doviz_cache'));if(!c)throw 0;H=c.H;meta='Önbellekten ('+new Date(c.t).toLocaleString('tr-TR')+') · bağlantı yok'}
+    catch{H={};$('lu').textContent='';}
+  }
+  C.forEach(x=>R[x.c]=H[x.c]?H[x.c][H[x.c].length-1]:null);R.TRY=1;
+  await loadMetals();render();
+  $('lu').innerHTML=Object.keys(H).length?`Son güncelleme: ${new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})}<br>${meta}`:'';
+}
+async function loadMetals(){
+  try{
+    const g=async s=>{const r=await fetch('https://api.gold-api.com/price/'+s);return(await r.json()).price};
+    const [au,ag,pt]=await Promise.all([g('XAU'),g('XAG'),g('XPT')]);
+    M=au&&ag&&pt?{au,ag,pt}:null;
+  }catch{M=null}
+}
+
+function render(){renderGrp();renderMv();renderK();renderM();calc()}
+function inGrp(x){return grp==='all'||(grp==='fav'?fav.includes(x.c):x.g===grp)}
+function renderGrp(){
+  const cnt=k=>k==='all'?C.length:k==='fav'?fav.length:C.filter(x=>x.g===k).length;
+  $('grp').innerHTML=GR.map(([k,l])=>`<button class="row${grp===k?' on':''}" data-g="${k}">${l}<span class="cnt">${cnt(k)}</span></button>`).join('');
+  $('chips').innerHTML=GR.map(([k,l])=>`<button class="chip${grp===k?' on':''}" data-g="${k}">${l}</button>`).join('');
+  document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{grp=b.dataset.g;renderGrp();renderK()});
+}
+function renderMv(){
+  const a=C.map(x=>({x,v:chg(x.c)})).filter(o=>o.v!=null).sort((p,q)=>Math.abs(q.v)-Math.abs(p.v)).slice(0,3);
+  $('mvs').innerHTML=a.length?a.map(o=>`<div class="mv"><span>${o.x.f} ${o.x.c}</span>${chHtml(o.v)}</div>`).join(''):'<div class="sub">Veri yok</div>';
+}
+function renderK(){
+  if(!Object.keys(H).length){$('hero').innerHTML='';$('tbl').innerHTML='<div class="msg">Kurlar alınamadı. İnternet bağlantını kontrol edip tekrar dene.<br><button class="btn" style="margin:10px auto 0" onclick="load()">↻ Tekrar dene</button></div>';return}
+  $('hero').innerHTML=['USD','EUR','GBP'].map(c=>{const x=C.find(y=>y.c===c);return`<div class="card"><div style="font-size:26px">${x.f}</div><div class="cn">${c} / TRY · ${x.n}</div><div class="cr">${fr(R[c])} ₺</div><div class="ch">${chHtml(chg(c))}</div>${spark(H[c],160,34)}</div>`}).join('');
+  const rows=C.filter(inGrp);
+  $('tbl').innerHTML=`<div class="tr th"><div>Para birimi</div><div>Kur</div><div>Değişim</div><div class="sp">30 gün</div><div></div></div>`+
+  (rows.length?rows.map(x=>`<div class="tr"><div class="who"><span style="font-size:20px">${x.f}</span><div>${x.n}<small>${x.c}</small></div></div><div class="rt">${fr(R[x.c])} ₺</div><div>${chHtml(chg(x.c))}</div><div class="sp">${spark(H[x.c])}</div><button class="star${fav.includes(x.c)?' on':''}" data-s="${x.c}" title="Favorilere ekle">${fav.includes(x.c)?'★':'☆'}</button></div>`).join(''):'<div class="msg">Henüz favori eklemedin.<br>Satırın sonundaki ☆ ile ekleyebilirsin.</div>');
+  document.querySelectorAll('.star').forEach(b=>b.onclick=()=>{
+    const c=b.dataset.s;fav=fav.includes(c)?fav.filter(z=>z!==c):[...fav,c];
+    localStorage.setItem('highly_doviz_fav',JSON.stringify(fav));renderGrp();renderK();toast(fav.includes(c)?'★ Favorilere eklendi':'Favorilerden çıkarıldı');
+  });
+}
+function renderM(){
+  if(!M||!R.USD){$('mg').innerHTML='<div class="msg" style="grid-column:1/-1">Altın ve metal fiyatları şu an alınamadı.<br><button class="btn" style="margin:10px auto 0" onclick="load()">↻ Tekrar dene</button></div>';$('mnote').textContent='';return}
+  const u=R.USD,g=M.au/31.1035*u;
+  const L=[['🥇','Gram altın',g,'₺'],['🪙','Çeyrek altın',g*1.6065,'₺'],['💍','Yarım altın',g*3.213,'₺'],['🏅','Tam altın',g*6.427,'₺'],['🥈','Gümüş (gram)',M.ag/31.1035*u,'₺'],['💎','Platin (gram)',M.pt/31.1035*u,'₺'],['🌍','Ons altın',M.au,'$']];
+  $('mg').innerHTML=L.map(([i,n,v,s])=>`<div class="card"><div style="font-size:26px">${i}</div><div class="cn">${n}</div><div class="cr">${fr(v)} ${s}</div></div>`).join('');
+  $('mnote').textContent='Fiyatlar ons değerinden ve güncel USD/TL kurundan hesaplanır; kuyumcu fiyatları farklı olabilir.';
+}
+function fillSel(){
+  const o=[{c:'TRY',f:'🇹🇷'},...C].map(x=>`<option value="${x.c}">${x.f} ${x.c}</option>`).join('');
+  $('from').innerHTML=o;$('to').innerHTML=o;$('from').value='USD';$('to').value='TRY';
+}
+function calc(){
+  const a=parseFloat($('amt').value)||0,f=$('from').value,t=$('to').value;
+  if(!R[f]||!R[t]){$('res').textContent='—';$('cvn').textContent='Kur verisi yok';return}
+  $('res').textContent=`${fr(a)} ${f} = ${(a*R[f]/R[t]).toLocaleString('tr-TR',{maximumFractionDigits:4})} ${t}`;
+  $('cvn').textContent=`1 ${f} = ${(R[f]/R[t]).toLocaleString('tr-TR',{maximumFractionDigits:4})} ${t}`;
+}
+['amt','from','to'].forEach(i=>$(i).addEventListener('input',calc));
+$('swap').onclick=()=>{const t=$('from').value;$('from').value=$('to').value;$('to').value=t;calc()};
+document.querySelectorAll('.vtab').forEach(b=>b.onclick=()=>{
+  view=b.dataset.v;document.querySelectorAll('.vtab').forEach(x=>x.classList.toggle('on',x===b));
+  ['k','m','c'].forEach(k=>$('v'+k).style.display=k===view?'block':'none');
+  $('tt').textContent={k:'Kurlar',m:'Altın & Metal',c:'Çevirici'}[view];
+});
+$('rf').onclick=async()=>{await load();toast('✅ Güncellendi')};
+fillSel();
+try{const c=JSON.parse(localStorage.getItem('highly_doviz_cache'));if(c){H=c.H;meta='Önbellekten';C.forEach(x=>R[x.c]=H[x.c]?H[x.c][H[x.c].length-1]:null);R.TRY=1;render()}}catch{}
+load();setInterval(load,5*60*1000);
+</script>
+</body>
+</html>
