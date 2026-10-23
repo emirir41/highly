@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Highly Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ===== LINEAR TASARIM TOKENLARI ===== */
+:root{
+  --primary:#5e6ad2;--on-primary:#ffffff;--primary-hover:#828fff;--primary-focus:#5e69d1;
+  --ink:#f7f8f8;--ink-muted:#d0d6e0;--ink-subtle:#8a8f98;--ink-tertiary:#62666d;
+  --canvas:#010102;--s1:#0f1011;--s2:#141516;--s3:#18191a;--s4:#191a1b;
+  --hairline:#23252a;--hairline-strong:#34343a;--hairline-tertiary:#3e3e44;
+  --success:#27a644;
+  --r-xs:4px;--r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-pill:9999px;
+  --font:'Inter','SF Pro Display',-apple-system,system-ui,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --edge:inset 0 1px 0 rgba(255,255,255,.04);
+}
+html{scroll-behavior:smooth;color-scheme:dark}
+body{background:var(--canvas);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;letter-spacing:-.05px;
+     min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+svg.ic{display:block;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+:focus-visible{outline:2px solid rgba(94,105,209,.5);outline-offset:2px}
+
+/* ===== NAV ===== */
+nav{position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;background:var(--canvas);border-bottom:1px solid var(--hairline)}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.n-logomark{width:28px;height:28px;border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);
+            display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;letter-spacing:-.2px}
+.n-brand{font-weight:600;font-size:16px;letter-spacing:-.3px}
+.n-right{display:flex;align-items:center;gap:8px}
+.n-icon-btn{width:36px;height:36px;background:var(--s1);border:1px solid var(--hairline);border-radius:var(--r-md);
+            display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-muted);transition:background .15s,border-color .15s,color .15s}
+.n-icon-btn:hover{background:var(--s2);border-color:var(--hairline-strong);color:var(--ink)}
+.n-avatar-btn{width:36px;height:36px;border-radius:var(--r-pill);background:var(--s3);border:1px solid var(--hairline-strong);color:var(--ink);
+              display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;cursor:pointer;transition:border-color .15s;flex-shrink:0}
+.n-avatar-btn:hover{border-color:var(--primary)}
+
+/* ===== HERO ===== */
+.hero{display:flex;flex-direction:column;align-items:center;padding:80px 24px 56px;position:relative;z-index:10;isolation:isolate}
+.hero-greeting{font-size:13px;font-weight:500;letter-spacing:.4px;color:var(--ink-subtle);text-transform:uppercase;margin-bottom:16px}
+.hero-clock{font-size:80px;font-weight:600;letter-spacing:-3px;line-height:1.05;color:var(--ink);font-variant-numeric:tabular-nums}
+.hero-date{font-size:16px;color:var(--ink-subtle);margin:8px 0 32px}
+.hero-name{font-size:28px;font-weight:600;letter-spacing:-.6px;line-height:1.2;margin-bottom:32px;text-align:center}
+.hero-name span{color:var(--ink)}
+.hero-name em{font-style:normal;color:var(--ink-subtle);font-weight:400}
+
+/* ===== ARAMA ===== */
+.search-wrap{width:100%;max-width:640px;position:relative;z-index:999}
+.search-bar{display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--hairline);border-radius:var(--r-md);
+            padding:10px 12px;box-shadow:var(--edge);transition:border-color .15s,box-shadow .15s}
+.search-bar:focus-within{border-color:var(--hairline-strong);box-shadow:var(--edge),0 0 0 2px rgba(94,105,209,.5)}
+.search-icon{color:var(--ink-subtle)}
+.search-input{flex:1;background:none;border:none;outline:none;font-family:var(--font);font-size:16px;color:var(--ink);min-width:0;letter-spacing:-.05px}
+.search-input::placeholder{color:var(--ink-tertiary)}
+.search-go{background:var(--primary);color:var(--on-primary);border:none;border-radius:var(--r-md);padding:8px 14px;font-family:var(--font);
+           font-size:14px;font-weight:500;line-height:1.2;cursor:pointer;transition:background .15s}
+.search-go:hover{background:var(--primary-hover)}
+.search-go:active{background:var(--primary-focus)}
+.search-suggestions{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--s3);border:1px solid var(--hairline-strong);
+  border-radius:var(--r-lg);overflow:hidden;z-index:999;display:none;box-shadow:var(--edge)}
+.search-suggestions.show{display:block}
+.ss-section{padding:8px}
+.ss-label{font-size:12px;font-weight:500;color:var(--ink-tertiary);letter-spacing:.4px;text-transform:uppercase;padding:6px 10px 4px}
+.ss-item{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:var(--r-md);cursor:pointer;text-decoration:none;color:var(--ink);transition:background .12s}
+.ss-item:hover,.ss-item.highlighted{background:var(--s4)}
+.ss-item-icon{color:var(--ink-subtle);display:flex}
+.ss-item-text{font-size:14px;font-weight:500}
+.ss-item-text strong{font-weight:500;color:var(--ink-muted)}
+.ss-item-sub{font-size:12px;color:var(--ink-tertiary);margin-left:auto;white-space:nowrap}
+.ss-divider{height:1px;background:var(--hairline);margin:0 8px}
+
+/* ===== APPS MENU ===== */
+.apps-menu-overlay{position:fixed;inset:0;z-index:150;pointer-events:none;opacity:0}
+.apps-menu-overlay.show{pointer-events:all}
+.apps-menu{position:fixed;top:64px;right:24px;width:360px;background:var(--s3);border:1px solid var(--hairline-strong);border-radius:var(--r-xl);
+           z-index:160;transform:translateY(-6px);opacity:0;pointer-events:none;transition:all .18s ease;overflow:hidden;box-shadow:var(--edge)}
+.apps-menu.show{transform:translateY(0);opacity:1;pointer-events:all}
+.am-header{padding:16px 18px 8px}
+.am-title{font-size:13px;font-weight:500;color:var(--ink-subtle);letter-spacing:.4px;text-transform:uppercase}
+.am-tabs{display:flex;gap:4px;padding:4px 14px 8px;flex-wrap:wrap}
+.am-tab{padding:6px 14px;border-radius:var(--r-pill);font-size:14px;font-weight:500;line-height:1.2;cursor:pointer;color:var(--ink-subtle);transition:all .15s}
+.am-tab.active{background:var(--s4);color:var(--ink)}
+.am-tab:hover:not(.active){color:var(--ink)}
+.am-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px 12px 14px;max-height:320px;overflow-y:auto}
+.am-app{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 4px;border-radius:var(--r-md);text-decoration:none;color:var(--ink);transition:background .15s}
+.am-app:hover{background:var(--s4)}
+.am-app-icon{width:40px;height:40px;border-radius:var(--r-md);background:var(--s1);border:1px solid var(--hairline);color:var(--ink-muted);display:flex;align-items:center;justify-content:center}
+.am-app:hover .am-app-icon{border-color:var(--hairline-strong);color:var(--ink)}
+.am-app-name{font-size:12px;font-weight:500;text-align:center;color:var(--ink-muted);line-height:1.3}
+
+/* ===== BÖLÜM BAŞLIKLARI ===== */
+.section{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+.sec-title{font-size:13px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--hairline)}
+
+/* ===== İSTATİSTİKLER ===== */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:64px}
+.stat-pill{background:var(--s1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:20px 24px;box-shadow:var(--edge);transition:border-color .15s}
+.stat-pill:hover{border-color:var(--hairline-strong)}
+.sp-val{font-size:40px;font-weight:600;letter-spacing:-1px;line-height:1.15;font-variant-numeric:tabular-nums}
+.sp-lbl{font-size:13px;font-weight:500;color:var(--ink-subtle);letter-spacing:.4px;text-transform:uppercase;margin-top:4px}
+
+/* ===== WIDGETLAR ===== */
+.widgets-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:64px}
+.widget{background:var(--s1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:24px;box-shadow:var(--edge);
+        display:flex;flex-direction:column;transition:border-color .15s,background .15s}
+.widget:hover{border-color:var(--hairline-strong);background:var(--s2)}
+.widget-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;color:var(--ink-subtle)}
+.widget-title{font-size:13px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-subtle)}
+.widget-body{flex:1}
+.widget-desc{font-size:14px;color:var(--ink-subtle);line-height:1.5}
+.widget-link{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:14px;font-weight:500;color:var(--primary-hover);text-decoration:none;transition:color .15s}
+.widget-link:hover{color:var(--ink)}
+.cal-today{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.cal-date-big{font-size:56px;font-weight:600;letter-spacing:-1.8px;line-height:1.1;color:var(--ink)}
+.cal-day{font-size:20px;font-weight:500;letter-spacing:-.2px}
+.cal-month{font-size:14px;color:var(--ink-subtle)}
+.cal-event{display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--s2);border:1px solid var(--hairline);border-left:2px solid var(--primary);border-radius:var(--r-md);margin-bottom:8px}
+.cal-event-time{font-family:var(--mono);font-size:12px;color:var(--ink-subtle);min-width:44px}
+.cal-event-name{font-size:14px;font-weight:500;color:var(--ink-muted)}
+.cal-empty{font-size:14px;color:var(--ink-tertiary);padding:12px 0}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mini-stat{background:var(--s2);border:1px solid var(--hairline);border-radius:var(--r-md);padding:12px}
+.mini-stat-val{font-size:22px;font-weight:600;letter-spacing:-.4px;line-height:1.25;font-variant-numeric:tabular-nums}
+.mini-stat-lbl{font-size:12px;color:var(--ink-subtle);margin-top:2px}
+.hava-main{display:flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.hava-temp{font-size:40px;font-weight:600;letter-spacing:-1px;line-height:1.15}
+.hava-city{font-size:14px;color:var(--ink-subtle)}
+.hava-desc{font-size:14px;color:var(--ink-muted);margin-bottom:12px;text-transform:capitalize}
+.hava-details{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hava-detail{background:var(--s2);border:1px solid var(--hairline);border-radius:var(--r-md);padding:10px 12px;font-size:12px;color:var(--ink-subtle)}
+.hava-detail span{display:block;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.1px}
+.muted-center{color:var(--ink-tertiary);font-size:14px;padding:16px 0}
+
+/* ===== HABERLER ===== */
+.news-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.news-cat{padding:6px 14px;border-radius:var(--r-pill);font-size:14px;font-weight:500;line-height:1.2;cursor:pointer;color:var(--ink-subtle);transition:all .15s}
+.news-cat.active{background:var(--s2);color:var(--ink)}
+.news-cat:hover:not(.active){color:var(--ink)}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:64px}
+.news-card{background:var(--s1);border:1px solid var(--hairline);border-radius:var(--r-lg);overflow:hidden;text-decoration:none;color:var(--ink);
+           display:flex;flex-direction:column;box-shadow:var(--edge);transition:border-color .15s,background .15s}
+.news-card:hover{border-color:var(--hairline-strong);background:var(--s2)}
+.nc-img{width:100%;height:140px;object-fit:cover;display:block;background:var(--s2);border-bottom:1px solid var(--hairline)}
+.nc-img-placeholder{width:100%;height:140px;background:var(--s2);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--ink-tertiary)}
+.nc-body{padding:16px 20px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.nc-source{font-size:12px;font-weight:500;color:var(--ink-subtle);letter-spacing:.4px;text-transform:uppercase}
+.nc-title{font-size:16px;font-weight:500;letter-spacing:-.2px;line-height:1.35}
+.nc-desc{font-size:14px;color:var(--ink-subtle);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nc-time{font-family:var(--mono);font-size:12px;color:var(--ink-tertiary);margin-top:auto}
+.news-loading{text-align:center;padding:32px;color:var(--ink-tertiary);font-size:14px}
+
+/* ===== TÜM UYGULAMALAR ===== */
+.quick-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:96px}
+.quick-chip{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--s1);border:1px solid var(--hairline);border-radius:var(--r-md);
+            text-decoration:none;color:var(--ink-muted);font-size:14px;font-weight:500;transition:all .15s;white-space:nowrap}
+.quick-chip:hover{background:var(--s2);border-color:var(--hairline-strong);color:var(--ink)}
+.quick-chip .ic{color:var(--ink-subtle)}
+
+/* ===== AYARLAR ===== */
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
+.settings-overlay.show{opacity:1;pointer-events:all}
+.settings-panel{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:100vw;background:var(--s1);border-left:1px solid var(--hairline);
+                z-index:201;transform:translateX(100%);transition:transform .25s ease;overflow-y:auto;display:flex;flex-direction:column}
+.settings-panel.show{transform:translateX(0)}
+.sp-header{height:56px;padding:0 20px;border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sp-title{font-size:16px;font-weight:600;letter-spacing:-.2px}
+.sp-close{width:32px;height:32px;background:var(--s2);border:1px solid var(--hairline);border-radius:var(--r-md);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-muted)}
+.sp-close:hover{color:var(--ink);border-color:var(--hairline-strong)}
+.sp-body{padding:24px 20px;flex:1;display:flex;flex-direction:column;gap:32px}
+.sp-section{display:flex;flex-direction:column;gap:10px}
+.sp-sec-title{font-size:13px;font-weight:500;color:var(--ink-subtle);letter-spacing:.4px;text-transform:uppercase}
+.sp-label{font-size:13px;color:var(--ink-subtle);display:block;margin-bottom:6px}
+.sp-input{width:100%;background:var(--s1);border:1px solid var(--hairline-strong);border-radius:var(--r-md);padding:8px 12px;color:var(--ink);
+          font-family:var(--font);font-size:16px;outline:none;transition:box-shadow .15s}
+.sp-input:focus{box-shadow:0 0 0 2px rgba(94,105,209,.5)}
+.sp-input::placeholder{color:var(--ink-tertiary)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:8px 14px;border-radius:var(--r-md);font-family:var(--font);
+     font-size:14px;font-weight:500;line-height:1.2;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s}
+.btn-primary{background:var(--primary);color:var(--on-primary);border:1px solid transparent}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-primary:active{background:var(--primary-focus)}
+.btn-secondary{background:var(--s1);color:var(--ink);border:1px solid var(--hairline)}
+.btn-secondary:hover{background:var(--s2);border-color:var(--hairline-strong)}
+.sp-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--s1);border:1px solid var(--hairline);
+        border-radius:var(--r-md);text-decoration:none;color:var(--ink);cursor:pointer;width:100%;font-family:var(--font);text-align:left;transition:all .15s}
+.sp-row:hover{background:var(--s2);border-color:var(--hairline-strong)}
+.sp-row-left{display:flex;align-items:center;gap:12px;color:var(--ink-subtle)}
+.sp-row-text{font-size:14px;font-weight:500;color:var(--ink)}
+.sp-row-sub{font-size:12px;color:var(--ink-subtle);margin-top:1px}
+.sp-row-arrow{color:var(--ink-tertiary)}
+
+/* ===== PROFİL DROPDOWN ===== */
+.profile-dropdown{position:fixed;top:64px;right:24px;width:248px;background:var(--s3);border:1px solid var(--hairline-strong);border-radius:var(--r-lg);
+                  z-index:160;transform:translateY(-6px);opacity:0;pointer-events:none;transition:all .18s ease;overflow:hidden;box-shadow:var(--edge)}
+.profile-dropdown.show{transform:translateY(0);opacity:1;pointer-events:all}
+.pd-head{padding:16px;border-bottom:1px solid var(--hairline);display:flex;align-items:center;gap:12px}
+.pd-avatar{width:40px;height:40px;border-radius:var(--r-pill);background:var(--s4);border:1px solid var(--hairline-strong);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;flex-shrink:0}
+.pd-name{font-size:14px;font-weight:600}
+.pd-sub{font-size:12px;color:var(--ink-subtle)}
+.pd-menu{padding:6px}
+.pd-item{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:var(--r-md);text-decoration:none;color:var(--ink-muted);font-size:14px;font-weight:500;cursor:pointer;border:none;background:none;width:100%;font-family:var(--font);transition:background .12s,color .12s}
+.pd-item:hover{background:var(--s4);color:var(--ink)}
+.pd-divider{height:1px;background:var(--hairline);margin:6px 4px}
+
+/* ===== TOAST / FOOTER ===== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--s3);border:1px solid var(--hairline-strong);border-radius:var(--r-md);
+       padding:10px 16px;font-size:14px;font-weight:500;opacity:0;z-index:9999;transition:all .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--success);margin-right:10px;vertical-align:middle}
+footer{padding:48px 24px;color:var(--ink-subtle);font-size:12px;border-top:1px solid var(--hairline);text-align:center;position:relative;z-index:2}
+footer a{color:var(--ink-subtle);text-decoration:none;transition:color .15s}
+footer a:hover{color:var(--ink)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--hairline-strong);border-radius:var(--r-xs)}
+
+/* ===== DUYARLI ===== */
+@media(max-width:1280px){.quick-row{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:1024px){.widgets-row,.news-grid{grid-template-columns:repeat(2,1fr)}.stats-strip{grid-template-columns:repeat(2,1fr)}.quick-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){
+  .widgets-row,.news-grid{grid-template-columns:1fr}
+  .hero{padding:56px 24px 40px}
+  .hero-clock{font-size:48px;letter-spacing:-1.8px}
+  .hero-name{font-size:22px}
+  .quick-row{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .hero-clock{font-size:40px}
+  .apps-menu{width:calc(100vw - 32px);right:16px}
+  .stats-strip{gap:8px}.sp-val{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- Ayarlar -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="sp-header">
+    <div class="sp-title">Ayarlar</div>
+    <button class="sp-close" onclick="closeSettings()" aria-label="Kapat"><i data-i="close" data-s="16"></i></button>
+  </div>
+  <div class="sp-body">
+    <div class="sp-section">
+      <div class="sp-sec-title">Profil</div>
+      <div>
+        <label class="sp-label" for="spName">Ad Soyad</label>
+        <input class="sp-input" id="spName" type="text" placeholder="Adın ve soyadın"/>
+      </div>
+      <div>
+        <label class="sp-label" for="spPass">Yeni Şifre</label>
+        <input class="sp-input" id="spPass" type="password" placeholder="Değiştirmek için yaz..."/>
+      </div>
+      <button class="btn btn-primary" onclick="saveProfile()">Kaydet</button>
+      <a href="highly-profil.html" class="sp-row">
+        <div class="sp-row-left"><i data-i="user" data-s="18"></i>
+          <div><div class="sp-row-text">Avatar &amp; Profil</div><div class="sp-row-sub">Emoji ve renk seç</div></div></div>
+        <span class="sp-row-arrow"><i data-i="arrow" data-s="16"></i></span>
+      </a>
+    </div>
+    <div class="sp-section">
+      <div class="sp-sec-title">Yasal</div>
+      <a href="https://emirir41.github.io/highly/highly-sozlesme.html" target="_blank" class="sp-row">
+        <div class="sp-row-left"><i data-i="notlar" data-s="18"></i>
+          <div><div class="sp-row-text">Kullanım Koşulları</div><div class="sp-row-sub">Ve Gizlilik Sözleşmesi</div></div></div>
+        <span class="sp-row-arrow"><i data-i="external" data-s="16"></i></span>
+      </a>
+    </div>
+    <div class="sp-section">
+      <div class="sp-sec-title">Veriler</div>
+      <button class="sp-row" onclick="clearData()">
+        <div class="sp-row-left"><i data-i="trash" data-s="18"></i>
+          <div><div class="sp-row-text">Tüm Verileri Temizle</div><div class="sp-row-sub">Notlar, etkinlikler, istatistikler</div></div></div>
+        <span class="sp-row-arrow"><i data-i="arrow" data-s="16"></i></span>
+      </button>
+    </div>
+    <div class="sp-section">
+      <button class="btn btn-secondary" onclick="logout()">Çıkış Yap</button>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--ink-tertiary)">
+      Highly v2.0 · <a href="https://emirir41.github.io/highly/highly-sozlesme.html" target="_blank" style="color:var(--ink-subtle);text-decoration:none">Gizlilik</a>
+    </div>
+  </div>
+</div>
+
+<!-- Apps Menu -->
+<div class="apps-menu-overlay" id="appsOverlay" onclick="closeAppsMenu()"></div>
+<div class="apps-menu" id="appsMenu">
+  <div class="am-header"><div class="am-title">Uygulamalar</div></div>
+  <div class="am-tabs">
+    <div class="am-tab active" onclick="filterApps('hepsi',this)">Hepsi</div>
+    <div class="am-tab" onclick="filterApps('araclar',this)">Araçlar</div>
+    <div class="am-tab" onclick="filterApps('oyunlar',this)">Oyunlar</div>
+    <div class="am-tab" onclick="filterApps('bilgi',this)">Bilgi</div>
+  </div>
+  <div class="am-grid" id="amGrid"></div>
+</div>
+
+<!-- Profil Dropdown -->
+<div class="apps-menu-overlay" id="profileOverlay" onclick="closeProfileMenu()"></div>
+<div class="profile-dropdown" id="profileDropdown">
+  <div class="pd-head">
+    <div class="pd-avatar" id="pdAvatar">?</div>
+    <div><div class="pd-name" id="pdName">...</div><div class="pd-sub">Highly Üyesi</div></div>
+  </div>
+  <div class="pd-menu">
+    <a href="highly-profil.html" class="pd-item"><i data-i="edit" data-s="16"></i> Profili Düzenle</a>
+    <div class="pd-item" onclick="closeProfileMenu();openSettings()"><i data-i="settings" data-s="16"></i> Ayarlar</div>
+    <div class="pd-divider"></div>
+    <div class="pd-item" onclick="logout()"><i data-i="logout" data-s="16"></i> Çıkış Yap</div>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <a href="index.html" class="n-logo">
+    <div class="n-logomark">H</div>
+    <span class="n-brand">Highly</span>
+  </a>
+  <div class="n-right">
+    <button class="n-icon-btn" onclick="toggleAppsMenu()" title="Uygulamalar" aria-label="Uygulamalar"><i data-i="grid" data-s="18"></i></button>
+    <button class="n-icon-btn" onclick="openSettings()" title="Ayarlar" aria-label="Ayarlar"><i data-i="settings" data-s="18"></i></button>
+    <div class="n-avatar-btn" id="navAvatar" onclick="toggleProfileMenu()" title="Profil">?</div>
+  </div>
+</nav>
+
+<!-- Hero + Arama -->
+<div class="hero">
+  <div class="hero-greeting" id="greetTime">GÜNAYDIN</div>
+  <div class="hero-clock" id="clockDisplay">00:00</div>
+  <div class="hero-date" id="clockDate">—</div>
+  <div class="hero-name"><em>Merhaba,</em> <span id="greetName">...</span></div>
+
+  <div class="search-wrap" id="searchWrap">
+    <div class="search-bar">
+      <span class="search-icon"><i data-i="arama" data-s="18"></i></span>
+      <input class="search-input" id="searchInput" type="text" placeholder="Web'de ara, uygulama aç veya URL gir..."
+             oninput="onSearchInput()" onkeydown="handleSearch(event)" onfocus="onSearchFocus()" autocomplete="off"/>
+      <button class="search-go" onclick="doSearch()">Ara</button>
+    </div>
+    <div class="search-suggestions" id="searchSuggestions"></div>
+  </div>
+</div>
+
+<!-- İstatistikler -->
+<div class="section">
+  <div class="stats-strip">
+    <div class="stat-pill"><div class="sp-val" id="statPom">0</div><div class="sp-lbl">Pomodoro</div></div>
+    <div class="stat-pill"><div class="sp-val" id="statFocus">0</div><div class="sp-lbl">Odak (dk)</div></div>
+    <div class="stat-pill"><div class="sp-val" id="statNotes">0</div><div class="sp-lbl">Not</div></div>
+    <div class="stat-pill"><div class="sp-val" id="statEvents">0</div><div class="sp-lbl">Etkinlik</div></div>
+  </div>
+</div>
+
+<!-- Widgetlar -->
+<div class="section">
+  <div class="sec-title">Widget'lar</div>
+  <div class="widgets-row">
+    <div class="widget">
+      <div class="widget-head"><i data-i="takvim" data-s="16"></i><div class="widget-title">Bugün</div></div>
+      <div class="widget-body">
+        <div class="cal-today">
+          <div class="cal-date-big" id="calDay">—</div>
+          <div><div class="cal-day" id="calDayName">—</div><div class="cal-month" id="calMonthYear">—</div></div>
+        </div>
+        <div id="calEvents"></div>
+      </div>
+      <a href="highly-takvim.html" class="widget-link">Takvime git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+
+    <div class="widget">
+      <div class="widget-head"><i data-i="pomodoro" data-s="16"></i><div class="widget-title">Pomodoro</div></div>
+      <div class="widget-body">
+        <div class="mini-grid">
+          <div class="mini-stat"><div class="mini-stat-val" id="pomPom">0</div><div class="mini-stat-lbl">Pomodoro</div></div>
+          <div class="mini-stat"><div class="mini-stat-val" id="pomFocus">0</div><div class="mini-stat-lbl">Dakika</div></div>
+          <div class="mini-stat"><div class="mini-stat-val" id="pomStreak">0</div><div class="mini-stat-lbl">Seri</div></div>
+          <div class="mini-stat"><div class="mini-stat-val" id="pomHours">0.0</div><div class="mini-stat-lbl">Saat</div></div>
+        </div>
+      </div>
+      <a href="highly-pomodoro.html" class="widget-link">Pomodoro'ya git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+
+    <div class="widget">
+      <div class="widget-head"><i data-i="hava" data-s="16"></i><div class="widget-title">Hava Durumu</div></div>
+      <div class="widget-body" id="havaWidget"><div class="muted-center">Yükleniyor...</div></div>
+      <a href="highly-hava.html" class="widget-link">Hava durumuna git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+
+    <div class="widget">
+      <div class="widget-head"><i data-i="haberler" data-s="16"></i><div class="widget-title">Haberler</div></div>
+      <div class="widget-body" id="newsWidgetList"><div class="cal-empty">Yükleniyor...</div></div>
+      <a href="highly-haberler.html" class="widget-link">Haberlere git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+
+    <div class="widget">
+      <div class="widget-head"><i data-i="doviz" data-s="16"></i><div class="widget-title">Döviz</div></div>
+      <div class="widget-body" id="dovizWidget"><div class="muted-center">Yükleniyor...</div></div>
+      <a href="highly-doviz.html" class="widget-link">Dövize git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+
+    <div class="widget">
+      <div class="widget-head"><i data-i="notlar" data-s="16"></i><div class="widget-title">Notlar</div></div>
+      <div class="widget-body" id="notesWidget"></div>
+      <a href="highly-notlar.html" class="widget-link">Notlara git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+
+    <div class="widget">
+      <div class="widget-head"><i data-i="ai" data-s="16"></i><div class="widget-title">Highly AI</div></div>
+      <div class="widget-body widget-desc">Sorularını sor, saniyeler içinde yanıt al. Yazım, kod, analiz ve daha fazlası için hazır.</div>
+      <a href="highly-ai.html" class="widget-link">Highly AI'ya git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+    <div class="widget">
+      <div class="widget-head"><i data-i="harita" data-s="16"></i><div class="widget-title">Harita</div></div>
+      <div class="widget-body widget-desc">Rota çiz, trafiği anlık takip et, en yakın yerleri keşfet.</div>
+      <a href="highly-harita.html" class="widget-link">Haritaya git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+    <div class="widget">
+      <div class="widget-head"><i data-i="butce" data-s="16"></i><div class="widget-title">Bütçe</div></div>
+      <div class="widget-body widget-desc">Gelir ve giderlerini takip et, harcama grafiklerini incele.</div>
+      <a href="highly-butce.html" class="widget-link">Bütçeye git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+    <div class="widget">
+      <div class="widget-head"><i data-i="muzik" data-s="16"></i><div class="widget-title">Müzik</div></div>
+      <div class="widget-body widget-desc">MP3, WAV ve FLAC dosyalarını çal, çalma listeni oluştur.</div>
+      <a href="highly-muzik.html" class="widget-link">Müziğe git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+    <div class="widget">
+      <div class="widget-head"><i data-i="oyunlar" data-s="16"></i><div class="widget-title">Oyunlar</div></div>
+      <div class="widget-body widget-desc">2048, Yılan ve Kelime Bul ile kısa bir mola ver.</div>
+      <a href="highly-oyunlar.html" class="widget-link">Oyunlara git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+    <div class="widget">
+      <div class="widget-head"><i data-i="cevirmen" data-s="16"></i><div class="widget-title">Çevirmen</div></div>
+      <div class="widget-body widget-desc">13 dilde otomatik algılamalı anlık çeviri yap.</div>
+      <a href="highly-cevirmen.html" class="widget-link">Çevirmene git <i data-i="arrow" data-s="14"></i></a>
+    </div>
+  </div>
+</div>
+
+<!-- Haberler -->
+<div class="section">
+  <div class="sec-title">Haberler</div>
+  <div class="news-cats">
+    <div class="news-cat active" data-cat="gundem" onclick="loadNews('gundem',this)">Gündem</div>
+    <div class="news-cat" data-cat="teknoloji" onclick="loadNews('teknoloji',this)">Teknoloji</div>
+    <div class="news-cat" data-cat="spor" onclick="loadNews('spor',this)">Spor</div>
+    <div class="news-cat" data-cat="dunya" onclick="loadNews('dunya',this)">Dünya</div>
+    <div class="news-cat" data-cat="ekonomi" onclick="loadNews('ekonomi',this)">Ekonomi</div>
+  </div>
+  <div class="news-grid" id="newsGrid">
+    <div class="news-loading" style="grid-column:1/-1">Haberler yükleniyor...</div>
+  </div>
+</div>
+
+<!-- Tüm Uygulamalar -->
+<div class="section">
+  <div class="sec-title">Tüm Uygulamalar</div>
+  <div class="quick-row">
+    <a href="highly-ai.html" class="quick-chip"><i data-i="ai" data-s="16"></i>Highly AI</a>
+    <a href="highly-hava.html" class="quick-chip"><i data-i="hava" data-s="16"></i>Hava</a>
+    <a href="highly-harita.html" class="quick-chip"><i data-i="harita" data-s="16"></i>Harita</a>
+    <a href="highly-takvim.html" class="quick-chip"><i data-i="takvim" data-s="16"></i>Takvim</a>
+    <a href="highly-notlar.html" class="quick-chip"><i data-i="notlar" data-s="16"></i>Notlar</a>
+    <a href="highly-pomodoro.html" class="quick-chip"><i data-i="pomodoro" data-s="16"></i>Pomodoro</a>
+    <a href="highly-muzik.html" class="quick-chip"><i data-i="muzik" data-s="16"></i>Müzik</a>
+    <a href="highly-oyunlar.html" class="quick-chip"><i data-i="oyunlar" data-s="16"></i>Oyunlar</a>
+    <a href="highly-haberler.html" class="quick-chip"><i data-i="haberler" data-s="16"></i>Haberler</a>
+    <a href="highly-doviz.html" class="quick-chip"><i data-i="doviz" data-s="16"></i>Döviz</a>
+    <a href="highly-butce.html" class="quick-chip"><i data-i="butce" data-s="16"></i>Bütçe</a>
+    <a href="highly-cevirmen.html" class="quick-chip"><i data-i="cevirmen" data-s="16"></i>Çevirmen</a>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <strong style="color:var(--ink-muted);font-weight:500">Highly</strong>. Tüm hakları saklıdır. &nbsp;·&nbsp;
+  <a href="https://emirir41.github.io/highly/highly-sozlesme.html" target="_blank">Gizlilik &amp; Kullanım Koşulları</a>
+  &nbsp;·&nbsp; Tüm veriler tarayıcında saklanır.</p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== İKONLAR (tek renk, çizgi) =====
+const ICONS = {
+  ai:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 17v4M17 19h4"/>',
+  hava:'<path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.7 1.5A4 4 0 0 0 6.5 19z"/>',
+  harita:'<path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  arama:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  takvim:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  cevirmen:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>',
+  notlar:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  pomodoro:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/>',
+  butce:'<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M16 15h2"/>',
+  muzik:'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  doviz:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6v2M12 16v2"/>',
+  haberler:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h10M7 17h6"/>',
+  oyunlar:'<rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 10v5M4.5 12.5h5M16 12h.01M18.5 14h.01"/>',
+  g2048:'<path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4z"/>',
+  yilan:'<path d="M4 16c4 0 4-8 8-8s4 8 8 8"/>',
+  kelime:'<path d="M5 19l7-14 7 14M8 14h8"/>',
+  grid:'<circle cx="5" cy="5" r="1.5"/><circle cx="12" cy="5" r="1.5"/><circle cx="19" cy="5" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="19" r="1.5"/><circle cx="12" cy="19" r="1.5"/><circle cx="19" cy="19" r="1.5"/>',
+  settings:'<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  logout:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',
+  edit:'<path d="M12 20h9M16.5 3.5l4 4L8 20H4v-4z"/>',
+  trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  external:'<path d="M7 17L17 7M8 7h9v9"/>',
+  close:'<path d="M6 6l12 12M18 6L6 18"/>',
+  page:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-9 9"/>',
+  youtube:'<rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z"/>'
+};
+function ic(name, size) {
+  size = size || 18;
+  return '<svg class="ic" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[name]||'')+'</svg>';
+}
+function hydrateIcons(root) {
+  (root||document).querySelectorAll('i[data-i]').forEach(function(el){
+    el.outerHTML = ic(el.dataset.i, parseInt(el.dataset.s)||18);
+  });
+}
+hydrateIcons();
+
+// ===== PARKING =====
+(async function(){
+  var _H = {'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dXhmaXZjd2RweXZobXliYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjcyODAsImV4cCI6MjA4ODc0MzI4MH0.tjpNvX5iJBY4dxk3FdeO6exlGVUYOZYRuCSFNfwA5M0'};
+  try {
+    var res  = await fetch('https://ttuxfivcwdpyvhmybbna.supabase.co/rest/v1/admin_settings?key=eq.parking_enabled&select=value', {headers:_H});
+    var data = await res.json();
+    if (data && data.length && data[0].value === 'true') { location.href = 'parking.html'; return; }
+  } catch(e) {}
+})();
+
+// ===== KULLANICI =====
+const saved = localStorage.getItem('highly_user');
+if (!saved) location.href = 'highly-id.html';
+const user = JSON.parse(saved || '{"name":"?"}');
+const navAv = document.getElementById('navAvatar');
+navAv.textContent = user.avatarEmoji || user.name[0].toUpperCase();
+document.getElementById('greetName').textContent = user.name.split(' ')[0];
+document.getElementById('spName').value = user.name || '';
+document.getElementById('pdAvatar').textContent = user.avatarEmoji || user.name[0].toUpperCase();
+document.getElementById('pdName').textContent = user.name;
+
+// ===== TARİH/SAAT =====
+const DAYS   = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const now    = new Date();
+const h      = now.getHours();
+document.getElementById('greetTime').textContent = h<6?'İyi geceler':h<12?'Günaydın':h<17?'Tünaydın':h<21?'İyi akşamlar':'İyi geceler';
+document.getElementById('calDay').textContent       = now.getDate();
+document.getElementById('calDayName').textContent   = DAYS[now.getDay()];
+document.getElementById('calMonthYear').textContent = `${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+
+function updateClock() {
+  const d = new Date();
+  document.getElementById('clockDisplay').textContent =
+    `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('clockDate').textContent =
+    `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+updateClock(); setInterval(updateClock, 1000);
+
+// ===== İSTATİSTİKLER =====
+const notes  = JSON.parse(localStorage.getItem('highly_notes')  || '[]');
+const events = JSON.parse(localStorage.getItem('highly_events') || '[]');
+const pom    = parseInt(localStorage.getItem('hp_pomodoros') || '0');
+const focus  = parseInt(localStorage.getItem('hp_focus')     || '0');
+const streak = parseInt(localStorage.getItem('hp_streak')    || '0');
+document.getElementById('statPom').textContent    = pom;
+document.getElementById('statFocus').textContent  = focus;
+document.getElementById('statNotes').textContent  = notes.length;
+document.getElementById('statEvents').textContent = events.length;
+document.getElementById('pomPom').textContent     = pom;
+document.getElementById('pomFocus').textContent   = focus;
+document.getElementById('pomStreak').textContent  = streak;
+document.getElementById('pomHours').textContent   = (focus/60).toFixed(1);
+
+// ===== NOTLAR WIDGET =====
+(function() {
+  const nw = document.getElementById('notesWidget');
+  if (!nw) return;
+  if (!notes.length) { nw.innerHTML = '<div class="cal-empty">Henüz not yok</div>'; return; }
+  try {
+    const sorted = [...notes].sort((a,b) => new Date(b.date||b.updatedAt||b.createdAt||0) - new Date(a.date||a.updatedAt||a.createdAt||0));
+    const last = sorted[0];
+    const lastTitle = (last.title || last.baslik || last.text || 'Son not').toString().substring(0,40);
+    nw.innerHTML = `<div class="mini-stat">
+        <div class="mini-stat-lbl" style="margin:0 0 4px">Toplam ${notes.length} not</div>
+        <div style="font-size:14px;font-weight:500;color:var(--ink-muted)">${lastTitle}</div>
+      </div>`;
+  } catch { nw.innerHTML = `<div class="cal-empty">${notes.length} not var</div>`; }
+})();
+
+// ===== TAKVİM =====
+const today  = now.toISOString().split('T')[0];
+const todays = events.filter(e=>e.date===today).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+document.getElementById('calEvents').innerHTML = todays.length
+  ? todays.slice(0,4).map(e=>`<div class="cal-event"><span class="cal-event-time">${e.time||'—'}</span><span class="cal-event-name">${e.title}</span></div>`).join('')
+  : `<div class="cal-empty">Bugün etkinlik yok</div>`;
+
+// ===== HAVA =====
+async function loadHava() {
+  try {
+    const geo = await fetch('https://ipapi.co/json/');
+    const gd  = await geo.json();
+    const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${gd.latitude}&lon=${gd.longitude}&appid=bd5e378503939ddaee76f12ad7a97608&units=metric&lang=tr`);
+    const d   = await res.json();
+    if (!d.weather || !d.weather[0]) throw new Error();
+    document.getElementById('havaWidget').innerHTML = `
+      <div class="hava-main"><div class="hava-temp">${Math.round(d.main.temp)}°C</div><div class="hava-city">${d.name}</div></div>
+      <div class="hava-desc">${d.weather[0].description}</div>
+      <div class="hava-details">
+        <div class="hava-detail"><span>${d.main.humidity}%</span>Nem</div>
+        <div class="hava-detail"><span>${Math.round(d.wind.speed*3.6)} km/s</span>Rüzgar</div>
+      </div>`;
+  } catch { document.getElementById('havaWidget').innerHTML='<div class="muted-center">Hava bilgisi alınamadı</div>'; }
+}
+loadHava();
+
+// ===== DÖVİZ =====
+async function loadDoviz() {
+  const el = document.getElementById('dovizWidget');
+  if (!el) return;
+  try {
+    const res = await fetch('https://open.er-api.com/v6/latest/USD');
+    const d   = await res.json();
+    if (!d.rates || !d.rates.TRY) throw new Error();
+    const usdTry = d.rates.TRY;
+    const eurTry = usdTry / d.rates.EUR;
+    const gbpTry = usdTry / d.rates.GBP;
+    el.innerHTML = `
+      <div class="hava-details" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="hava-detail"><span>₺${usdTry.toFixed(2)}</span>USD</div>
+        <div class="hava-detail"><span>₺${eurTry.toFixed(2)}</span>EUR</div>
+        <div class="hava-detail"><span>₺${gbpTry.toFixed(2)}</span>GBP</div>
+      </div>`;
+  } catch { el.innerHTML = '<div class="muted-center">Kur bilgisi alınamadı</div>'; }
+}
+loadDoviz();
+
+// ===== ARAMA =====
+const SITE_PAGES = [
+  {icon:'ai',name:'Highly AI',sub:'Yapay zeka asistan',url:'highly-ai.html',keywords:['ai','yapay zeka','asistan','highly ai']},
+  {icon:'hava',name:'Hava Durumu',sub:'Anlık ve 5 günlük tahmin',url:'highly-hava.html',keywords:['hava','hava durumu','meteoroloji','sicaklik']},
+  {icon:'harita',name:'Harita',sub:'Rota, navigasyon, trafik',url:'highly-harita.html',keywords:['harita','navigasyon','rota','konum','maps']},
+  {icon:'arama',name:'Arama',sub:'Web, görsel ve haber',url:'highly-arama.html',keywords:['arama','ara','search']},
+  {icon:'takvim',name:'Takvim',sub:'Etkinlik ve hatırlatıcı',url:'highly-takvim.html',keywords:['takvim','etkinlik','hatirlatici','randevu']},
+  {icon:'cevirmen',name:'Çevirmen',sub:'13 dil, otomatik algılama',url:'highly-cevirmen.html',keywords:['cevirmen','ceviri','translate','dil']},
+  {icon:'notlar',name:'Not Defteri',sub:'Notlar ve kategoriler',url:'highly-notlar.html',keywords:['not','notlar','defteri','yazmak']},
+  {icon:'pomodoro',name:'Pomodoro',sub:'Odaklanma zamanlayıcı',url:'highly-pomodoro.html',keywords:['pomodoro','zamanlayici','odak','timer']},
+  {icon:'butce',name:'Bütçe Takibi',sub:'Gelir/gider, grafikler',url:'highly-butce.html',keywords:['butce','para','gelir','gider','harcama']},
+  {icon:'muzik',name:'Müzik Çalar',sub:'MP3/WAV/FLAC çal',url:'highly-muzik.html',keywords:['muzik','calar','mp3','sarki','music']},
+  {icon:'doviz',name:'Döviz',sub:'Canlı kurlar, altın',url:'highly-doviz.html',keywords:['doviz','kur','dolar','euro','altin']},
+  {icon:'haberler',name:'Haberler',sub:'Gündem, spor, teknoloji',url:'highly-haberler.html',keywords:['haber','haberler','gundem','news']},
+  {icon:'oyunlar',name:'Oyunlar',sub:'2048, Yılan, Kelime Bul',url:'highly-oyunlar.html',keywords:['oyun','oyunlar','game','2048','yilan','kelime']},
+  {icon:'g2048',name:'2048',sub:'Sayı birleştirme oyunu',url:'highly-oyunlar.html#2048',keywords:['2048']},
+  {icon:'yilan',name:'Yılan Oyunu',sub:'Klasik yılan',url:'highly-oyunlar.html#yilan',keywords:['yilan','snake']},
+  {icon:'kelime',name:'Kelime Bul',sub:'Kelime bulmaca',url:'highly-oyunlar.html#kelime',keywords:['kelime','bulmaca','wordle']},
+  {icon:'user',name:'Profil',sub:'Profil ayarları',url:'highly-profil.html',keywords:['profil','avatar','hesap']},
+];
+
+const NEWS_KEYWORDS = {
+  gundem:    ['gundem','turkiye','guncel'],
+  teknoloji: ['teknoloji','tech','bilim'],
+  spor:      ['spor','futbol','basketbol','mac'],
+  dunya:     ['dunya','global'],
+  ekonomi:   ['ekonomi','borsa','doviz','altin','para'],
+};
+
+function highlySearch(q, mode) {
+  var params = 'q=' + encodeURIComponent(q);
+  if (mode && mode !== 'web') params += '&mode=' + mode;
+  location.href = 'highly-arama.html?' + params;
+}
+
+var highlightedIdx = -1;
+
+function doSearch() {
+  var q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+  hideSuggestions();
+  if (/^https?:\/\//i.test(q) || /^(www\.)?[\w-]+\.\w{2,}/.test(q)) {
+    window.open(q.startsWith('http') ? q : 'https://'+q, '_blank');
+    return;
+  }
+  highlySearch(q, 'web');
+}
+
+function handleSearch(e) {
+  if (e.key === 'Enter') {
+    var items = document.querySelectorAll('.ss-item');
+    if (highlightedIdx >= 0 && items[highlightedIdx]) { items[highlightedIdx].click(); return; }
+    doSearch();
+  }
+  if (e.key === 'Escape') hideSuggestions();
+  if (e.key === 'ArrowDown') { e.preventDefault(); moveSuggestion(1); }
+  if (e.key === 'ArrowUp')   { e.preventDefault(); moveSuggestion(-1); }
+}
+
+function moveSuggestion(dir) {
+  var items = document.querySelectorAll('.ss-item');
+  if (!items.length) return;
+  if (highlightedIdx >= 0) items[highlightedIdx].classList.remove('highlighted');
+  highlightedIdx = (highlightedIdx + dir + items.length) % items.length;
+  items[highlightedIdx].classList.add('highlighted');
+  items[highlightedIdx].scrollIntoView({block:'nearest'});
+}
+
+function onSearchFocus() {
+  var q = document.getElementById('searchInput').value.trim();
+  if (!q) showDefaultSuggestions(); else onSearchInput();
+}
+
+function pageItem(p) {
+  return '<a class="ss-item" href="' + p.url + '"><span class="ss-item-icon">' + ic(p.icon,16) + '</span><span class="ss-item-text">' + p.name + '</span><span class="ss-item-sub">' + p.sub + '</span></a>';
+}
+
+function showDefaultSuggestions() {
+  var html = '<div class="ss-section"><div class="ss-label">Hızlı erişim</div>';
+  SITE_PAGES.slice(0,8).forEach(function(p) { html += pageItem(p); });
+  html += '</div>';
+  var el = document.getElementById('searchSuggestions');
+  el.innerHTML = html; el.classList.add('show'); highlightedIdx = -1;
+}
+
+function onSearchInput() {
+  var raw = document.getElementById('searchInput').value.trim();
+  var norm = function(s){ return s.toLowerCase().replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c'); };
+  var q = norm(raw);
+  if (!q) { showDefaultSuggestions(); return; }
+
+  var matched = SITE_PAGES.filter(function(p) {
+    if (norm(p.name).includes(q)) return true;
+    return p.keywords.some(function(k) { return k.includes(q) || q.includes(k); });
+  }).slice(0, 5);
+
+  var newsMatch = null;
+  var nkeys = Object.keys(NEWS_KEYWORDS);
+  for (var i=0; i<nkeys.length; i++) {
+    var cat = nkeys[i];
+    if (NEWS_KEYWORDS[cat].some(function(k){ return k.includes(q) || q.includes(k); })) { newsMatch = cat; break; }
+  }
+
+  var safeRaw = raw.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  var html = '';
+
+  if (matched.length) {
+    html += '<div class="ss-section"><div class="ss-label">Highly\'de aç</div>';
+    matched.forEach(function(p) { html += pageItem(p); });
+    html += '</div><div class="ss-divider"></div>';
+  }
+
+  if (newsMatch) {
+    var catLabels = {gundem:'Gündem',teknoloji:'Teknoloji',spor:'Spor',dunya:'Dünya',ekonomi:'Ekonomi'};
+    html += '<div class="ss-section"><div class="ss-label">Haberlerde göster</div>';
+    html += '<div class="ss-item" onclick="scrollToNewsAndLoad(\'' + newsMatch + '\')"><span class="ss-item-icon">' + ic('haberler',16) + '</span><span class="ss-item-text">' + catLabels[newsMatch] + ' haberlerini göster</span></div>';
+    html += '</div><div class="ss-divider"></div>';
+  }
+
+  html += '<div class="ss-section"><div class="ss-label">Ara</div>';
+  html += '<div class="ss-item" onclick="highlySearch(\'' + safeRaw + '\',\'web\')"><span class="ss-item-icon">' + ic('arama',16) + '</span><span class="ss-item-text">Web\'de ara: <strong>' + raw + '</strong></span></div>';
+  html += '<div class="ss-item" onclick="highlySearch(\'' + safeRaw + '\',\'gorsel\')"><span class="ss-item-icon">' + ic('page',16) + '</span><span class="ss-item-text">Görsellerde ara: <strong>' + raw + '</strong></span></div>';
+  html += '<div class="ss-item" onclick="highlySearch(\'' + safeRaw + '\',\'haber\')"><span class="ss-item-icon">' + ic('haberler',16) + '</span><span class="ss-item-text">Haberlerde ara: <strong>' + raw + '</strong></span></div>';
+  html += '<div class="ss-item" onclick="window.open(\'https://www.youtube.com/results?search_query=' + encodeURIComponent(raw) + '\',\'_blank\')"><span class="ss-item-icon">' + ic('youtube',16) + '</span><span class="ss-item-text">YouTube\'da ara: <strong>' + raw + '</strong></span></div>';
+  html += '</div>';
+
+  var el = document.getElementById('searchSuggestions');
+  el.innerHTML = html; el.classList.add('show'); highlightedIdx = -1;
+}
+
+function scrollToNewsAndLoad(cat) {
+  hideSuggestions();
+  document.getElementById('newsGrid').scrollIntoView({behavior:'smooth', block:'start'});
+  var btn = document.querySelector('.news-cat[data-cat="' + cat + '"]');
+  if (btn) { document.querySelectorAll('.news-cat').forEach(function(c){c.classList.remove('active');}); btn.classList.add('active'); loadNews(cat, btn); }
+}
+
+function hideSuggestions() {
+  document.getElementById('searchSuggestions').classList.remove('show');
+  highlightedIdx = -1;
+}
+
+document.addEventListener('click', function(e) {
+  if (!document.getElementById('searchWrap').contains(e.target)) hideSuggestions();
+});
+
+// ===== RSS HABERLER =====
+const RSS_FEEDS = {
+  gundem:    'https://api.rss2json.com/v1/api.json?rss_url=https://www.hurriyet.com.tr/rss/anasayfa',
+  teknoloji: 'https://api.rss2json.com/v1/api.json?rss_url=https://www.chip.com.tr/feed/',
+  spor:      'https://api.rss2json.com/v1/api.json?rss_url=https://www.hurriyet.com.tr/rss/spor',
+  dunya:     'https://api.rss2json.com/v1/api.json?rss_url=https://www.bbc.com/turkce/index.xml',
+  ekonomi:   'https://api.rss2json.com/v1/api.json?rss_url=https://www.hurriyet.com.tr/rss/ekonomi',
+};
+const CAT_NAMES = { gundem:'Gündem', teknoloji:'Teknoloji', spor:'Spor', dunya:'Dünya', ekonomi:'Ekonomi' };
+let newsCache = {};
+
+function timeAgo(dateStr) {
+  const d = new Date(dateStr);
+  const diff = Math.floor((Date.now() - d) / 1000);
+  if (diff < 60) return 'Az önce';
+  if (diff < 3600) return `${Math.floor(diff/60)} dk önce`;
+  if (diff < 86400) return `${Math.floor(diff/3600)} sa önce`;
+  return `${Math.floor(diff/86400)} gün önce`;
+}
+
+async function loadNews(cat, el) {
+  document.querySelectorAll('.news-cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const grid = document.getElementById('newsGrid');
+
+  if (newsCache[cat]) { renderNews(newsCache[cat], cat); return; }
+
+  grid.innerHTML = `<div class="news-loading" style="grid-column:1/-1">Haberler yükleniyor...</div>`;
+  try {
+    const res  = await fetch(RSS_FEEDS[cat]);
+    const data = await res.json();
+    if (!data.items || !data.items.length) throw new Error();
+    newsCache[cat] = data.items;
+    renderNews(data.items, cat);
+  } catch {
+    const demos = getDemoNews(cat);
+    newsCache[cat] = demos;
+    renderNews(demos, cat);
+  }
+}
+
+function getDemoNews(cat) {
+  const items = {
+    gundem: [
+      {title:'Türkiye ekonomisinde büyüme beklentisi artıyor', description:'Yılın ilk çeyreğinde beklentilerin üzerinde büyüme kaydedildi.', link:'#', pubDate: new Date(Date.now()-3600000).toISOString()},
+      {title:'İstanbul\'da yeni metro hattı açılıyor', description:'Bakanlık, yeni hat için tarih açıkladı. Günlük 200 bin yolcu taşıması bekleniyor.', link:'#', pubDate: new Date(Date.now()-7200000).toISOString()},
+      {title:'Hava sıcaklıkları mevsim normalleri üzerinde seyrediyor', description:'Meteoroloji uyardı: Bu hafta sıcaklıklar 5-8 derece yüksek olacak.', link:'#', pubDate: new Date(Date.now()-10800000).toISOString()},
+      {title:'Yeni eğitim reformu hazırlıkları başladı', description:'Milli Eğitim Bakanlığı yeni müfredat çalışmalarını kamuoyuyla paylaştı.', link:'#', pubDate: new Date(Date.now()-14400000).toISOString()},
+    ],
+    teknoloji: [
+      {title:'Yapay zeka modellerinde yeni rekor kırıldı', description:'Büyük dil modelleri artık insandan daha hızlı matematik çözüyor.', link:'#', pubDate: new Date(Date.now()-1800000).toISOString()},
+      {title:'Türk girişimi uluslararası yatırım aldı', description:'İstanbul merkezli yapay zeka şirketi 50 milyon dolar yatırım turunu kapattı.', link:'#', pubDate: new Date(Date.now()-5400000).toISOString()},
+      {title:'Yeni akıllı telefon modelleri tanıtıldı', description:'Büyük üreticiler bu yıl pil ömrüne odaklandı, şarj süreleri dramatik düştü.', link:'#', pubDate: new Date(Date.now()-9000000).toISOString()},
+      {title:'Kuantum bilgisayar araştırmalarında ilerleme', description:'Araştırmacılar yeni kuantum hata düzeltme yöntemini duyurdu.', link:'#', pubDate: new Date(Date.now()-18000000).toISOString()},
+    ],
+    spor: [
+      {title:'Süper Lig\'de heyecan dorukta', description:'Şampiyonluk yarışı son haftaya kaldı, iki takım eşit puanda.', link:'#', pubDate: new Date(Date.now()-2700000).toISOString()},
+      {title:'Milli takım hazırlık maçı programı açıklandı', description:'Teknik direktör kadro listesini basınla paylaştı.', link:'#', pubDate: new Date(Date.now()-6300000).toISOString()},
+      {title:'Basketbolda Türk takımı finale yükseldi', description:'EuroLeague çeyrek finalinde büyük sürpriz yaşandı.', link:'#', pubDate: new Date(Date.now()-10800000).toISOString()},
+      {title:'Atletizm şampiyonasında altın madalya', description:'Türk atlet 100 metre finalinde Avrupa rekoru kırdı.', link:'#', pubDate: new Date(Date.now()-18000000).toISOString()},
+    ],
+    dunya: [
+      {title:'Avrupa\'da enerji krizi tartışılıyor', description:'AB ülkeleri yeni enerji paketi üzerine zirve gerçekleştirdi.', link:'#', pubDate: new Date(Date.now()-4500000).toISOString()},
+      {title:'G7 zirvesinde yapay zeka düzenlemesi gündeme geldi', description:'Dünya liderleri AI yönetişimi için ortak çerçeve üzerinde anlaşmaya çalışıyor.', link:'#', pubDate: new Date(Date.now()-9000000).toISOString()},
+      {title:'Uzay araştırmalarında yeni dönem', description:'NASA ve ESA ortaklığı güneş sistemi dışı görev için tarih belirledi.', link:'#', pubDate: new Date(Date.now()-14400000).toISOString()},
+      {title:'İklim değişikliği raporunda kritik uyarılar', description:'BM raporu: 2030 hedeflerine ulaşmak için acil önlem şart.', link:'#', pubDate: new Date(Date.now()-21600000).toISOString()},
+    ],
+    ekonomi: [
+      {title:'Dolar/TL kuru güne nasıl başladı?', description:'Merkez Bankası kararlarının ardından piyasalarda kıpırdama gözlemleniyor.', link:'#', pubDate: new Date(Date.now()-1800000).toISOString()},
+      {title:'Borsa İstanbul yükselişte', description:'BIST 100 endeksi güne artıyla başladı, bankacılık hisseleri öne çıkıyor.', link:'#', pubDate: new Date(Date.now()-5400000).toISOString()},
+      {title:'Altın fiyatları rekor seviyelerde', description:'Gram altın 4.000 TL eşiğini aşarak tarihi zirveyi test etti.', link:'#', pubDate: new Date(Date.now()-9000000).toISOString()},
+      {title:'Enflasyon verileri açıklandı', description:'TÜİK açıkladı: Aylık enflasyon beklentilerin altında kaldı.', link:'#', pubDate: new Date(Date.now()-14400000).toISOString()},
+    ],
+  };
+  return items[cat] || items.gundem;
+}
+
+function renderNews(items, cat) {
+  const grid = document.getElementById('newsGrid');
+  const catName = CAT_NAMES[cat] || cat;
+  const placeholder = '<div class="nc-img-placeholder">' + ic('haberler', 28) + '</div>';
+  grid.innerHTML = items.slice(0, 6).map(item => {
+    const desc = item.description ? item.description.replace(/<[^>]*>/g,'').substring(0,90) : '';
+    const img  = item.enclosure?.link || item.thumbnail || null;
+    const imgHtml = img
+      ? `<img class="nc-img" src="${img}" alt="" onerror="this.outerHTML=this.dataset.ph" data-ph='${placeholder.replace(/'/g,"&#39;")}' loading="lazy">`
+      : placeholder;
+    return `
+    <a class="news-card" href="${item.link||'#'}" target="_blank" rel="noopener">
+      ${imgHtml}
+      <div class="nc-body">
+        <div class="nc-source">${catName}</div>
+        <div class="nc-title">${item.title}</div>
+        ${desc ? `<div class="nc-desc">${desc}...</div>` : ''}
+        <div class="nc-time">${timeAgo(item.pubDate)}</div>
+      </div>
+    </a>`;
+  }).join('');
+
+  const widgetList = document.getElementById('newsWidgetList');
+  if (widgetList) {
+    widgetList.innerHTML = items.slice(0, 3).map(item => {
+      const t = item.title.length > 42 ? item.title.substring(0,42) + '…' : item.title;
+      return `<a href="${item.link||'#'}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+        <div class="cal-event"><span class="cal-event-time" style="min-width:56px">${timeAgo(item.pubDate)}</span><span class="cal-event-name">${t}</span></div>
+      </a>`;
+    }).join('');
+  }
+}
+
+loadNews('gundem', document.querySelector('.news-cat.active'));
+
+// ===== UYGULAMALAR MENÜSÜ =====
+const ALL_APPS = [
+  {icon:'ai',name:'Highly AI',url:'highly-ai.html',cat:'araclar'},
+  {icon:'hava',name:'Hava',url:'highly-hava.html',cat:'bilgi'},
+  {icon:'harita',name:'Harita',url:'highly-harita.html',cat:'araclar'},
+  {icon:'arama',name:'Arama',url:'highly-arama.html',cat:'araclar'},
+  {icon:'takvim',name:'Takvim',url:'highly-takvim.html',cat:'araclar'},
+  {icon:'cevirmen',name:'Çevirmen',url:'highly-cevirmen.html',cat:'araclar'},
+  {icon:'notlar',name:'Notlar',url:'highly-notlar.html',cat:'araclar'},
+  {icon:'pomodoro',name:'Pomodoro',url:'highly-pomodoro.html',cat:'araclar'},
+  {icon:'butce',name:'Bütçe',url:'highly-butce.html',cat:'araclar'},
+  {icon:'muzik',name:'Müzik',url:'highly-muzik.html',cat:'araclar'},
+  {icon:'doviz',name:'Döviz',url:'highly-doviz.html',cat:'bilgi'},
+  {icon:'haberler',name:'Haberler',url:'highly-haberler.html',cat:'bilgi'},
+  {icon:'oyunlar',name:'Oyunlar',url:'highly-oyunlar.html',cat:'oyunlar'},
+  {icon:'g2048',name:'2048',url:'highly-oyunlar.html#2048',cat:'oyunlar'},
+  {icon:'yilan',name:'Yılan',url:'highly-oyunlar.html#yilan',cat:'oyunlar'},
+  {icon:'kelime',name:'Kelime Bul',url:'highly-oyunlar.html#kelime',cat:'oyunlar'},
+];
+
+function renderApps(apps) {
+  document.getElementById('amGrid').innerHTML = apps.map(app => `
+    <a class="am-app" href="${app.url}">
+      <div class="am-app-icon">${ic(app.icon,20)}</div>
+      <div class="am-app-name">${app.name}</div>
+    </a>`).join('');
+}
+function filterApps(cat, el) {
+  document.querySelectorAll('.am-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderApps(cat === 'hepsi' ? ALL_APPS : ALL_APPS.filter(a => a.cat === cat));
+}
+renderApps(ALL_APPS);
+
+function toggleAppsMenu() {
+  const menu = document.getElementById('appsMenu');
+  const overlay = document.getElementById('appsOverlay');
+  const isOpen = menu.classList.contains('show');
+  closeProfileMenu();
+  if (isOpen) { menu.classList.remove('show'); overlay.classList.remove('show'); }
+  else { menu.classList.add('show'); overlay.classList.add('show'); }
+}
+function closeAppsMenu() {
+  document.getElementById('appsMenu').classList.remove('show');
+  document.getElementById('appsOverlay').classList.remove('show');
+}
+
+// ===== PROFİL DROPDOWN =====
+function toggleProfileMenu() {
+  const dd = document.getElementById('profileDropdown');
+  const ov = document.getElementById('profileOverlay');
+  const isOpen = dd.classList.contains('show');
+  closeAppsMenu();
+  if (isOpen) { dd.classList.remove('show'); ov.classList.remove('show'); }
+  else { dd.classList.add('show'); ov.classList.add('show'); }
+}
+function closeProfileMenu() {
+  document.getElementById('profileDropdown').classList.remove('show');
+  document.getElementById('profileOverlay').classList.remove('show');
+}
+
+// ===== AYARLAR =====
+function openSettings()  { document.getElementById('settingsPanel').classList.add('show'); document.getElementById('settingsOverlay').classList.add('show'); }
+function closeSettings() { document.getElementById('settingsPanel').classList.remove('show'); document.getElementById('settingsOverlay').classList.remove('show'); }
+
+async function saveProfile() {
+  const name = document.getElementById('spName').value.trim();
+  const pass = document.getElementById('spPass').value;
+  if (!name) return showToast('İsim boş olamaz!', 'err');
+  const u = JSON.parse(localStorage.getItem('highly_user') || '{}');
+  u.name = name;
+  if (pass && pass.length >= 6) u.password = pass;
+  else if (pass && pass.length < 6) return showToast('Şifre en az 6 karakter olmalı!', 'err');
+  localStorage.setItem('highly_user', JSON.stringify(u));
+  document.getElementById('greetName').textContent = name.split(' ')[0];
+  document.getElementById('pdName').textContent = name;
+  document.getElementById('spPass').value = '';
+  showToast('Profil kaydedildi', 'ok');
+}
+
+function clearData() {
+  if (!confirm('Tüm notlar, etkinlikler ve istatistikler silinecek. Emin misin?')) return;
+  ['highly_notes','highly_events','hp_pomodoros','hp_focus','hp_streak','highly_reports'].forEach(k => localStorage.removeItem(k));
+  showToast('Veriler temizlendi', 'ok');
+  setTimeout(() => location.reload(), 1000);
+}
+
+function logout() {
+  if (!confirm('Çıkış yapmak istiyor musun?')) return;
+  localStorage.removeItem('highly_user');
+  location.href = 'index.html';
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${type||'ok'}`;
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeAppsMenu(); closeProfileMenu(); closeSettings(); }
+});
+</script>
+</body>
+</html>
