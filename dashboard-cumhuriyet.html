@@ -363,6 +363,27 @@ footer a:hover{color:var(--text)}
   </div>
   <div class="sp-body">
     <div class="sp-section">
+      <div class="sp-sec-title">🎨 Tema</div>
+      <div class="theme-options">
+        <div class="theme-opt" id="themeNormal" onclick="setTheme('dark')">
+          <div class="theme-opt-preview theme-preview-dark">🌑</div>
+          <div class="theme-opt-name">Normal</div>
+        </div>
+        <div class="theme-opt" id="themeGlass" onclick="setTheme('glass')">
+          <div class="theme-opt-preview theme-preview-glass">🪟</div>
+          <div class="theme-opt-name">Cam</div>
+        </div>
+        <div class="theme-opt" id="themeLight" onclick="setTheme('light')">
+          <div class="theme-opt-preview theme-preview-light">☀️</div>
+          <div class="theme-opt-name">Açık</div>
+        </div>
+        <div class="theme-opt" id="themeHalloween" onclick="setTheme('halloween')">
+          <div class="theme-opt-preview theme-preview-halloween">🎃</div>
+          <div class="theme-opt-name">Balkabağı</div>
+        </div>
+      </div>
+    </div>
+    <div class="sp-section">
       <div class="sp-sec-title">👤 Profil</div>
       <label class="sp-label">Ad Soyad</label>
       <input class="sp-input" id="spName" type="text" placeholder="Adın ve soyadın"/>
@@ -1078,7 +1099,7 @@ function closeProfileMenu() {
 }
 
 // ===== TEMA (Cumhuriyet - sabit, değiştirilemez) =====
-function setTheme() { /* tema kilitli */ }
+function setTheme() { showToast('Tema değiştirilemiyor! 29 Ekim Cumhuriyet Bayramı teması aktif 🇹🇷', 'err'); }
 document.documentElement.setAttribute('data-theme', 'cumhuriyet');
 try { localStorage.setItem('highly_theme', 'cumhuriyet'); } catch(e) {}
 
