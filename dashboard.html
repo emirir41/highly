@@ -1098,10 +1098,30 @@ function closeProfileMenu() {
   document.getElementById('profileOverlay').classList.remove('show');
 }
 
-// ===== TEMA (Cumhuriyet - sabit, değiştirilemez) =====
-function setTheme() { showToast('Tema değiştirilemiyor! 29 Ekim Cumhuriyet Bayramı teması aktif 🇹🇷', 'err'); }
-document.documentElement.setAttribute('data-theme', 'cumhuriyet');
-try { localStorage.setItem('highly_theme', 'cumhuriyet'); } catch(e) {}
+// ===== TEMA =====
+// Bu sayfada Cumhuriyet teması sabit. Diğer sayfalar 'highly_theme' değerini
+// localStorage'dan okuduğu için orada kullanıcının seçtiği tema saklanmaya devam eder.
+const THEME_LOCKED = true;
+const LOCKED_THEME = 'cumhuriyet';
+const themeMap = { dark:'themeNormal', glass:'themeGlass', light:'themeLight', halloween:'themeHalloween' };
+function markActiveTheme(theme) {
+  document.querySelectorAll('.theme-opt').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById(themeMap[theme]);
+  if (el) el.classList.add('active');
+}
+function setTheme(theme) {
+  if (THEME_LOCKED) {
+    showToast('Tema değiştirilemiyor! 29 Ekim Cumhuriyet Bayramı teması aktif 🇹🇷', 'err');
+    return;
+  }
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('highly_theme', theme);
+  markActiveTheme(theme);
+  showToast('Tema değiştirildi!', 'ok');
+}
+const savedTheme = localStorage.getItem('highly_theme') || 'dark';
+document.documentElement.setAttribute('data-theme', THEME_LOCKED ? LOCKED_THEME : savedTheme);
+markActiveTheme(savedTheme);
 
 // ===== AYARLAR =====
 function openSettings()  { document.getElementById('settingsPanel').classList.add('show'); document.getElementById('settingsOverlay').classList.add('show'); }
