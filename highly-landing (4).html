@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Highly – Kişisel başlangıç sayfan</title>
+<meta name="description" content="Highly; arama, hava durumu, harita, takvim, notlar ve bütçeni tek bir başlangıç sayfasında toplar.">
+<meta name="theme-color" content="#0b2250">
+<meta property="og:title" content="Highly – Kişisel başlangıç sayfan">
+<meta property="og:description" content="Günün için ihtiyacın olan her şey tek yerde.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236366f1'/%3E%3Cstop offset='1' stop-color='%234f46e5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='400' rx='112' fill='url(%23g)'/%3E%3Cpath fill='white' stroke='white' stroke-width='4' stroke-linejoin='round' d='M100 143h45v39h110v-39h45v113h-45v-40H145v40h-45z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0b2250;--navy2:#071735;--ice:#8fd3fb;--gold:#f2c14e;
+  --blue:#0a6cf0;--blue-h:#0859c7;--ink:#1d1d1f;--muted:#6e6e73;--gray:#f5f5f7;
+  --head:"Syne",system-ui,sans-serif;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:56px}
+body{margin:0;font-family:var(--font);color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{font-family:var(--head);font-weight:800}
+:focus-visible{outline:3px solid #8fb8ff;outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.logo{width:26px;height:26px;display:block}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:50;background:rgba(7,23,53,.86);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);color:#fff}
+.nav-in{height:52px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:800;font-size:19px}
+.nav-links{display:flex;align-items:center;gap:32px;font-size:14px;color:#d6def0}
+.nav-links a:hover,.nav-r a:hover{color:#fff}
+.nav-r{display:flex;align-items:center;gap:8px;font-size:14px;color:#d6def0}
+.menu-btn{display:none;width:44px;height:44px;border:0;background:none;cursor:pointer;align-items:center;justify-content:center;color:#fff}
+.mobile-menu{display:none;padding:8px 24px 16px;border-top:1px solid rgba(255,255,255,.12)}
+.mobile-menu a{display:block;padding:14px 0;font-size:17px;border-bottom:1px solid rgba(255,255,255,.1)}
+.mobile-menu.open{display:block}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 28px;border-radius:999px;font-size:17px;border:1.5px solid transparent;cursor:pointer;transition:background .15s;white-space:nowrap}
+.btn-p{background:var(--blue);color:#fff}
+.btn-p:hover{background:var(--blue-h)}
+.btn-o{border-color:#7fb0ff;color:#9cc5ff}
+.btn-o:hover{background:rgba(127,176,255,.14)}
+.btn-w{background:#fff;color:var(--navy)}
+.btn-w:hover{background:#e7efff}
+
+/* HERO */
+.hero{position:relative;background:var(--navy);color:#fff;text-align:center;overflow:hidden}
+#snow{position:absolute;top:0;left:0;width:100%;height:clamp(230px,38vw,400px);pointer-events:none;z-index:2}
+.mosaic{display:grid;grid-template-columns:1.1fr 1fr 1fr;height:clamp(230px,38vw,400px)}
+.p1{background:#6b5bd2;display:flex;align-items:center;justify-content:center}
+.big{width:min(62%,190px);aspect-ratio:1;display:block;filter:drop-shadow(0 12px 24px rgba(11,34,80,.35))}
+.p2{background:var(--ice);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1.2fr}
+.orn{margin:12%;border-radius:50%;background:#fff;color:#4d9bd0;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -6px 12px rgba(77,155,208,.18)}
+.orn .i{width:36%;height:36%}
+.tree{grid-column:1/-1;background:#e6f5ff;display:flex;align-items:center;justify-content:center}
+.tree svg{height:84%;width:auto}
+.p3{background:#12a9e6;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ribbon{width:130%;transform:rotate(-8deg);background:var(--gold);color:var(--navy2);text-align:center;padding:14px 0;font-family:var(--head);font-weight:800;font-size:clamp(30px,7vw,76px);line-height:1;letter-spacing:-.02em;box-shadow:0 0 0 5px rgba(255,255,255,.4)}
+.hero-t{padding:64px 24px 88px;position:relative;z-index:3}
+.hero h1{color:#fff;text-shadow:0 2px 16px rgba(7,23,53,.6);font-size:clamp(38px,7.2vw,76px);line-height:1.04;letter-spacing:-.02em}
+.hero .sub{margin-top:18px;font-size:clamp(18px,2.4vw,24px);color:#d3def5}
+.hero-b{margin-top:32px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.count{margin-top:28px;font-size:15px;color:#9fb2d6}
+.count b{color:var(--gold);font-weight:600}
+
+/* SECTIONS */
+.sec{padding:104px 0;text-align:center}
+.sec.g{background:var(--gray)}
+.h2{font-size:clamp(32px,5vw,56px);line-height:1.06;letter-spacing:-.02em;max-width:780px;margin:0 auto}
+.lead{margin:18px auto 0;max-width:560px;font-size:clamp(18px,2.2vw,21px);color:var(--muted)}
+.grid{margin-top:56px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;text-align:left}
+.card{padding:28px;border-radius:24px;background:#fff}
+.card .i{width:30px;height:30px;color:var(--blue)}
+.card h3{margin:20px 0 6px;font-size:20px}
+.card p{font-size:16px;line-height:1.5;color:var(--muted)}
+
+/* SEARCH DEMO */
+.demo{margin:48px auto 0;max-width:560px;padding:24px;border-radius:28px;background:var(--gray);text-align:left}
+.demo-in{display:flex;align-items:center;gap:12px;padding:0 20px;min-height:52px;border:2px solid var(--blue);border-radius:999px;background:#fff;font-size:16px}
+.caret{display:inline-block;width:2px;height:19px;background:var(--ink);margin-left:1px;vertical-align:middle;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.dd{margin-top:12px;border-radius:20px;background:#fff;overflow:hidden;padding:6px 0}
+.dd-l{padding:12px 20px 4px;font-size:13px;color:var(--muted)}
+.dd-i{display:flex;justify-content:space-between;gap:12px;padding:10px 20px;font-size:15px}
+.dd-i.hl{background:var(--gray)}
+.dd-i small{font-size:13px;color:var(--muted)}
+
+/* PRIVACY */
+.trio{margin-top:56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:40px;text-align:center}
+.trio h3{font-size:21px}
+.trio p{margin:10px auto 0;max-width:300px;font-size:16px;color:var(--muted)}
+.more{display:inline-block;margin-top:40px;font-size:17px;color:var(--blue)}
+.more:hover{text-decoration:underline}
+
+/* CTA + FOOTER */
+.cta{padding:112px 0;background:var(--navy);color:#fff;text-align:center}
+.cta h2{font-size:clamp(32px,5vw,56px);line-height:1.06;letter-spacing:-.02em;max-width:760px;margin:0 auto}
+.cta p{margin-top:16px;font-size:20px;color:#c3d0ec}
+.cta .btn{margin-top:32px}
+.foot{background:var(--gray);font-size:13px;color:var(--muted)}
+.foot-in{padding:28px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+.foot-l{display:flex;align-items:center;gap:10px}
+.foot-l .logo{width:20px;height:20px}
+.foot a:hover{color:var(--ink);text-decoration:underline}
+
+@media(max-width:820px){
+  .nav-links,.nav-r .gi{display:none}
+  .menu-btn{display:inline-flex}
+  .hero-t{padding:48px 20px 72px}
+  .sec{padding:72px 0}
+  .cta{padding:80px 0}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .caret{animation:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#4f46e5"/></linearGradient>
+    <symbol id="logo" viewBox="0 0 400 400"><rect width="400" height="400" rx="112" fill="url(#lg)"/><path fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round" d="M100 143h45v39h110v-39h45v113h-45v-40H145v40h-45z"/></symbol>
+    <symbol id="s" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+    <symbol id="map" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></symbol>
+    <symbol id="cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+    <symbol id="note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5"/></symbol>
+    <symbol id="timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 3h5"/></symbol>
+    <symbol id="wallet" viewBox="0 0 24 24"><path d="M4 7a2 2 0 012-2h11v4"/><rect x="4" y="9" width="16" height="11" rx="2"/><circle cx="16" cy="14.5" r="1"/></symbol>
+    <symbol id="music" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></symbol>
+    <symbol id="fx" viewBox="0 0 24 24"><path d="M5 9h13l-3-3M19 15H6l3 3"/></symbol>
+    <symbol id="news" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 12.5h8M8 16h4"/></symbol>
+    <symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+    <symbol id="game" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 11v4M6 13h4M16 12h.01M18 14h.01"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="Highly ana sayfa"><svg class="logo" aria-hidden="true"><use href="#logo"/></svg><span>Highly</span></a>
+    <nav class="nav-links" aria-label="Ana menü">
+      <a href="#araclar">Araçlar</a>
+      <a href="#arama">Arama</a>
+      <a href="#gizlilik">Gizlilik</a>
+    </nav>
+    <div class="nav-r">
+      <a class="gi" href="highly-id.html">Giriş yap</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Menüyü aç" aria-expanded="false" aria-controls="mobileMenu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 9h16M4 15h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#araclar">Araçlar</a>
+    <a href="#arama">Arama</a>
+    <a href="#gizlilik">Gizlilik</a>
+    <a href="highly-id.html">Giriş yap</a>
+  </div>
+</header>
+
+<main>
+
+<section class="hero" id="top">
+  <canvas id="snow" aria-hidden="true"></canvas>
+  <div class="mosaic" aria-hidden="true">
+    <div class="p1"><svg class="big"><use href="#logo"/></svg></div>
+    <div class="p2">
+      <div class="orn"><svg class="i"><use href="#s"/></svg></div>
+      <div class="orn"><svg class="i"><use href="#cal"/></svg></div>
+      <div class="orn"><svg class="i"><use href="#sun"/></svg></div>
+      <div class="orn"><svg class="i"><use href="#map"/></svg></div>
+      <div class="tree">
+        <svg viewBox="0 0 80 100"><path d="M40 14L62 46H50l16 24H14l16-24H18z" fill="#1c7c54"/><rect x="35" y="70" width="10" height="14" fill="#7a4a2a"/><path d="M40 2l3 7h7l-5.5 4.5 2 7.5L40 17l-6.5 4 2-7.5L30 9h7z" fill="#f2c14e"/><circle cx="32" cy="52" r="3" fill="#fff"/><circle cx="48" cy="62" r="3" fill="#f2c14e"/><circle cx="38" cy="38" r="2.5" fill="#fff"/></svg>
+      </div>
+    </div>
+    <div class="p3"><div class="ribbon">2027</div></div>
+  </div>
+  <div class="hero-t">
+    <h1>Yeni yıl, yeni<br>başlangıç sayfası.</h1>
+    <p class="sub">Arama, harita, takvim ve notlar. Hepsi tek yerde.</p>
+    <div class="hero-b">
+      <a class="btn btn-p" href="highly-id.html">Hemen başla</a>
+      <a class="btn btn-o" href="#araclar">Araçları keşfet</a>
+    </div>
+    <p class="count">2027’ye <b id="cd">47</b> gün kaldı.</p>
+  </div>
+</section>
+
+<section class="sec g" id="araclar">
+  <div class="wrap">
+    <h2 class="h2">Her gün kullandığın her şey.</h2>
+    <p class="lead">Sekmeler arasında kaybolmadan, tek çatı altında.</p>
+    <div class="grid">
+            <div class="card"><svg class="i"><use href="#map"/></svg><h3>Harita</h3><p>Rota çiz, trafiği anlık takip et.</p></div>
+      <div class="card"><svg class="i"><use href="#sun"/></svg><h3>Hava Durumu</h3><p>Anlık durum ve 5 günlük tahmin.</p></div>
+      <div class="card"><svg class="i"><use href="#cal"/></svg><h3>Takvim</h3><p>Etkinliklerini ve hatırlatıcılarını düzenle.</p></div>
+      <div class="card"><svg class="i"><use href="#note"/></svg><h3>Notlar</h3><p>Fikirlerini yaz, kategorilere ayır.</p></div>
+      <div class="card"><svg class="i"><use href="#timer"/></svg><h3>Pomodoro</h3><p>Odaklan, serini ve istatistiklerini takip et.</p></div>
+      <div class="card"><svg class="i"><use href="#wallet"/></svg><h3>Bütçe</h3><p>Gelir ve giderlerini tek yerden izle.</p></div>
+      <div class="card"><svg class="i"><use href="#music"/></svg><h3>Müzik</h3><p>MP3, WAV ve FLAC dosyalarını çal.</p></div>
+      <div class="card"><svg class="i"><use href="#fx"/></svg><h3>Döviz</h3><p>Canlı kurlar ve altın fiyatları.</p></div>
+      <div class="card"><svg class="i"><use href="#news"/></svg><h3>Haberler</h3><p>Gündem, teknoloji, spor ve ekonomi.</p></div>
+      <div class="card"><svg class="i"><use href="#globe"/></svg><h3>Çevirmen</h3><p>13 dilde anlık çeviri.</p></div>
+      <div class="card"><svg class="i"><use href="#game"/></svg><h3>Oyunlar</h3><p>2048, Yılan ve Kelime Bul ile mola ver.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="arama">
+  <div class="wrap">
+    <h2 class="h2">Tek kutu. Hem web, hem uygulamaların.</h2>
+    <p class="lead">Bir uygulamanın adını yaz, doğrudan aç. Ya da web, görsel, haber ve YouTube’da ara.</p>
+    <div class="demo" aria-hidden="true">
+      <div class="demo-in">
+        <svg class="i" style="width:18px;height:18px;color:#6e6e73"><use href="#s"/></svg>
+        <span><span id="typed">not</span><span class="caret"></span></span>
+      </div>
+      <div class="dd">
+        <div class="dd-l">Highly’de aç</div>
+        <div class="dd-i hl"><b id="ddName">Not Defteri</b><small id="ddSub">Notlar ve kategoriler</small></div>
+        <div class="dd-l">Ara</div>
+        <div class="dd-i">Web’de ara: <b class="q">not</b></div>
+        <div class="dd-i">Görsellerde ara: <b class="q">not</b></div>
+        <div class="dd-i">Haberlerde ara: <b class="q">not</b></div>
+        <div class="dd-i">YouTube’da ara: <b class="q">not</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec g" id="gizlilik">
+  <div class="wrap">
+    <h2 class="h2">Verilerin tarayıcında kalır.</h2>
+    <div class="trio">
+      <div><h3>Tarayıcında saklanır</h3><p>Notların, takvimin ve istatistiklerin cihazında durur.</p></div>
+      <div><h3>Tek tıkla temizle</h3><p>Ayarlar’dan tüm verilerini dilediğinde silebilirsin.</p></div>
+      <div><h3>Açık koşullar</h3><p>Kullanım koşulları ve gizlilik sözleşmesi herkese açık.</p></div>
+    </div>
+    <a class="more" href="https://emirir41.github.io/highly/highly-sozlesme.html" target="_blank" rel="noopener">Gizlilik ve Kullanım Koşulları</a>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <h2>Highly’yi başlangıç sayfan yap.</h2>
+    <p>Hesabını oluştur, araçlarını tek yerde topla.</p>
+    <a class="btn btn-w" href="highly-id.html">Hemen başla</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-l"><svg class="logo" aria-hidden="true"><use href="#logo"/></svg><span>© 2026 Highly. Tüm hakları saklıdır.</span></div>
+    <a href="https://emirir41.github.io/highly/highly-sozlesme.html" target="_blank" rel="noopener">Gizlilik ve Kullanım Koşulları</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var pad=function(n){return String(n).padStart(2,"0")};
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Yeni yıl sayacı
+  function tick(){
+    var d=new Date();
+    var ny=new Date(d.getFullYear()+1,0,1);
+    $("cd").textContent=Math.ceil((ny-d)/864e5);
+  }
+  tick(); setInterval(tick,3600000);
+
+  // Mobil menü
+  var mb=$("menuBtn"),mm=$("mobileMenu");
+  function setMenu(open){
+    mm.classList.toggle("open",open);
+    mb.setAttribute("aria-expanded",open);
+    mb.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");
+  }
+  mb.addEventListener("click",function(){setMenu(!mm.classList.contains("open"))});
+  mm.addEventListener("click",function(e){if(e.target.tagName==="A")setMenu(false)});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")setMenu(false)});
+  window.addEventListener("resize",function(){if(window.innerWidth>820)setMenu(false)});
+
+  // Arama demosu
+  var demos=[
+    {q:"not",name:"Not Defteri",sub:"Notlar ve kategoriler"},
+    {q:"harita",name:"Harita",sub:"Rota, navigasyon, trafik"},
+    {q:"dolar",name:"Döviz",sub:"Canlı kurlar, altın"},
+    {q:"pomodoro",name:"Pomodoro",sub:"Odaklanma zamanlayıcı"}
+  ];
+  var typed=$("typed"),ddName=$("ddName"),ddSub=$("ddSub"),qs=document.querySelectorAll(".q");
+  function show(d,text){
+    typed.textContent=text;
+    for(var i=0;i<qs.length;i++)qs[i].textContent=text||"";
+    ddName.textContent=d.name; ddSub.textContent=d.sub;
+  }
+  if(!reduce){
+    var di=0,ci=0,dir=1,wait=0;
+    setInterval(function(){
+      var d=demos[di];
+      if(wait>0){wait--;return}
+      if(dir===1){ci++;show(d,d.q.slice(0,ci));if(ci>=d.q.length){dir=-1;wait=14}}
+      else{ci--;show(d,d.q.slice(0,ci));if(ci<=0){dir=1;di=(di+1)%demos.length;wait=3}}
+    },110);
+  }
+
+  // Kar yağışı (sadece hero)
+  var cv=$("snow");
+  if(cv&&!reduce){
+    var cx=cv.getContext("2d"),W=0,H=0,fl=[],dpr=Math.min(window.devicePixelRatio||1,2);
+    function size(){
+      W=cv.clientWidth;H=cv.clientHeight;
+      cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    size(); window.addEventListener("resize",size);
+    for(var k=0;k<55;k++)fl.push({x:Math.random(),y:Math.random(),r:1+Math.random()*2.4,v:.25+Math.random()*.6,p:Math.random()*6.28});
+    (function frame(){
+      cx.clearRect(0,0,W,H);
+      cx.fillStyle="rgba(255,255,255,.85)";
+      for(var j=0;j<fl.length;j++){
+        var f=fl[j];
+        f.y+=f.v/H*1.6; f.p+=.012;
+        if(f.y>1.02){f.y=-.02;f.x=Math.random()}
+        cx.beginPath();
+        cx.arc(f.x*W+Math.sin(f.p)*12,f.y*H,f.r,0,6.283);
+        cx.fill();
+      }
+      requestAnimationFrame(frame);
+    })();
+  }
+})();
+</script>
+</body>
+</html>
